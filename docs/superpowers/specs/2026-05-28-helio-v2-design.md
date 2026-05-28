@@ -1,4 +1,5 @@
-# Helio v2 — Design Spec
+# Helio — Solar Opportunity Intelligence
+## v2 Design Spec
 **Date:** 2026-05-28  
 **Status:** Approved  
 **Branch target:** `feat-helio-v2`
