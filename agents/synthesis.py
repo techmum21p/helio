@@ -11,37 +11,45 @@ from loguru import logger
 import config
 from graph.state import SolarLeadState
 
-client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
+client = anthropic.Anthropic(api_key=config.XIAOMI_API_KEY, base_url=config.XIAOMI_BASE_URL)
 
 
 SYNTHESIS_PROMPT = """You are a market intelligence analyst for a solar panel installation company in the Philippines.
 
-Given the data below for a municipality, provide:
-1. A 2-3 sentence assessment of its solar installation potential
-2. A confidence level: HIGH / MEDIUM / LOW
-3. One key opportunity and one key risk
+Given the data below for a municipality, provide a grounded assessment using your knowledge of this specific place and the data provided.
 
 Municipality: {municipality}
+Province: {province}
+Region: {region}
+Urban/Rural: {urban_rural}
+Income Classification: {income_class} class (1st = highest, 6th = lowest)
+Estimated Population: {population:,}
 
-Geo/ML Scores:
-- Solar irradiance (normalized 0-1): {solar_norm:.2f}
-- Population density (normalized 0-1): {pop_norm:.2f}
-- Income level (normalized 0-1): {income_norm:.2f}
+Scored Data (normalized 0-1 relative to other municipalities in this run):
+- Solar irradiance score: {solar_norm:.2f}  (est. {solar_kwh:.0f} kWh/kWp/year)
+- Population score: {pop_norm:.2f}
+- Income score: {income_norm:.2f}
 - Composite geo score: {geo_score:.2f}
 
-Web Intelligence:
-- Business count nearby: {business_count}
-- Avg price level (1-4): {avg_price_level}
-- Economic news: {news_snippet}
-- Property signal: {property_snippet}
-- Commerce activity: {commerce_snippet}
+Web Intelligence (Google Places + Tavily):
+- Businesses found nearby: {business_count} (avg rating: {avg_rating}/5, {total_reviews} reviews)
+- Commercial/industrial anchors (malls, factories, warehouses): {commercial_anchors}
+- Avg price level of businesses (0-4): {avg_price_level}
+- Economic activity news: {news_snippet}
+- Property market signals: {property_snippet}
+- Commerce: {commerce_snippet}
 - Solar awareness: {solar_news_snippet}
 
+Using your knowledge of {municipality}, {province} and the data above:
+1. Write a 2-3 sentence assessment grounded in what you know about this specific place.
+2. Rate confidence: HIGH / MEDIUM / LOW
+3. Identify one concrete opportunity and one real risk specific to this municipality.
+
 Respond in this exact format:
-ASSESSMENT: <your 2-3 sentence assessment>
+ASSESSMENT: <2-3 sentence assessment referencing the specific municipality>
 CONFIDENCE: <HIGH|MEDIUM|LOW>
-OPPORTUNITY: <one key opportunity>
-RISK: <one key risk>
+OPPORTUNITY: <specific opportunity for {municipality}>
+RISK: <specific risk for {municipality}>
 """
 
 
@@ -53,11 +61,20 @@ def synthesize_municipality(
     """Claude synthesizes geo scores + web intel into a final profile."""
     prompt = SYNTHESIS_PROMPT.format(
         municipality=municipality,
+        province=geo.get("province", "Philippines"),
+        region=geo.get("region", "Philippines"),
+        urban_rural="Urban" if geo.get("is_urban") else "Rural",
+        income_class=geo.get("income_class", "3rd"),
+        population=int(geo.get("population_raw", 0)),
         solar_norm=geo.get("solar_norm", 0),
+        solar_kwh=geo.get("solar_yield_kwh", 0),
         pop_norm=geo.get("pop_norm", 0),
         income_norm=geo.get("income_norm", 0),
         geo_score=geo.get("geo_score", 0),
         business_count=intel.get("business_count", 0),
+        avg_rating=intel.get("avg_rating", 0),
+        total_reviews=intel.get("total_reviews", 0),
+        commercial_anchors=intel.get("commercial_anchors", 0),
         avg_price_level=intel.get("avg_price_level", 0),
         news_snippet=intel.get("news_snippet", "No data"),
         property_snippet=intel.get("property_snippet", "No data"),
@@ -68,10 +85,10 @@ def synthesize_municipality(
     try:
         response = client.messages.create(
             model=config.REPORT_MODEL,
-            max_tokens=400,
+            max_tokens=2000,
             messages=[{"role": "user", "content": prompt}],
         )
-        raw = response.content[0].text
+        raw = next(b.text for b in response.content if hasattr(b, "text"))
 
         # Parse structured response
         lines = {
@@ -99,15 +116,28 @@ def synthesize_municipality(
 
 def compute_final_score(geo: dict, intel: dict) -> float:
     """
-    Final score blends geo score with web intel signals.
-    Web intel adds up to 0.2 bonus on top of geo score (0.8 weight).
+    Final score = 0.80 × geo_score + 0.20 × web_score
+
+    web_score combines four Places + Tavily signals (each 0-1):
+      - business_density  : commercial activity (count, capped at 20)
+      - price_signal      : avg price level of businesses (0-4 scale)
+      - rating_signal     : avg Google rating (1-5, normalized) — economic quality proxy
+      - anchor_signal     : malls/factories/industrial anchors (B2B solar opportunity)
     """
     geo_score = geo.get("geo_score", 0)
 
-    # Normalize business count (cap at 20 = max signal)
-    biz_score = min(intel.get("business_count", 0) / 20, 1.0)
-    price_score = min(intel.get("avg_price_level", 0) / 4, 1.0)
-    web_score = (biz_score + price_score) / 2
+    biz_density   = min(intel.get("business_count", 0) / 20, 1.0)
+    price_signal  = min(intel.get("avg_price_level", 0) / 4, 1.0)
+    rating_raw    = intel.get("avg_rating", 0)
+    rating_signal = max((rating_raw - 1.0) / 4.0, 0) if rating_raw else 0  # normalize 1-5 → 0-1
+    anchor_signal = min(intel.get("commercial_anchors", 0) / 5, 1.0)       # cap at 5 anchors
+
+    web_score = (
+        0.35 * biz_density
+        + 0.25 * price_signal
+        + 0.25 * rating_signal
+        + 0.15 * anchor_signal
+    )
 
     return round(0.80 * geo_score + 0.20 * web_score, 4)
 
@@ -134,6 +164,11 @@ def synthesis_agent(state: SolarLeadState) -> SolarLeadState:
             "assessment": narrative["assessment"],
             "opportunity": narrative["opportunity"],
             "risk": narrative["risk"],
+            "province": geo.get("province", ""),
+            "region": geo.get("region", ""),
+            "income_class": geo.get("income_class", ""),
+            "population": int(geo.get("population_raw", 0)),
+            "is_urban": geo.get("is_urban", False),
         }
 
     # Rank and return top N

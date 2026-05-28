@@ -1,0 +1,214 @@
+{
+  "Laguna::Los Baños": [
+    14.17909,
+    121.2217911
+  ],
+  "Laguna::City of Santa Rosa": [
+    14.3146042,
+    121.1137004
+  ],
+  "Laguna::Bay": [
+    14.1809859,
+    121.284764
+  ],
+  "Laguna::Alaminos": [
+    14.0650417,
+    121.2463809
+  ],
+  "Laguna::Calauan": [
+    14.1453986,
+    121.3149851
+  ],
+  "Laguna::Cavinti": [
+    14.2453833,
+    121.5070018
+  ],
+  "Laguna::City of Biñan": [
+    14.3388259,
+    121.0841826
+  ],
+  "Laguna::City of Cabuyao": [
+    14.2795538,
+    121.1235712
+  ],
+  "Laguna::City of Calamba": [
+    14.2060217,
+    121.1556496
+  ],
+  "Laguna::City of San Pablo": [
+    14.0700502,
+    121.3255974
+  ],
+  "Laguna::City of San Pedro": [
+    14.3639435,
+    121.056771
+  ],
+  "Laguna::Famy": [
+    14.4354493,
+    121.4491564
+  ],
+  "Laguna::Kalayaan": [
+    14.3276464,
+    121.4798659
+  ],
+  "Laguna::Liliw": [
+    14.1303236,
+    121.4358499
+  ],
+  "Laguna::Luisiana": [
+    14.1850164,
+    121.5100243
+  ],
+  "Laguna::Lumban": [
+    14.2974791,
+    121.4590515
+  ],
+  "Laguna::Mabitac": [
+    14.4259361,
+    121.429439
+  ],
+  "Laguna::Magdalena": [
+    14.1996471,
+    121.4292603
+  ],
+  "Laguna::Majayjay": [
+    14.1455816,
+    121.4725083
+  ],
+  "Laguna::Nagcarlan": [
+    14.1332036,
+    121.4153448
+  ],
+  "Laguna::Paete": [
+    14.3641222,
+    121.4815784
+  ],
+  "Laguna::Pagsanjan": [
+    14.2728846,
+    121.4558355
+  ],
+  "Laguna::Pakil": [
+    14.3807742,
+    121.4786229
+  ],
+  "Laguna::Pangil": [
+    14.4029123,
+    121.4677652
+  ],
+  "Laguna::Pila": [
+    14.2347317,
+    121.3640614
+  ],
+  "Laguna::Rizal": [
+    14.1100269,
+    121.3934407
+  ],
+  "Laguna::Santa Cruz": [
+    14.2818168,
+    121.4148892
+  ],
+  "Laguna::Santa Maria": [
+    14.4700204,
+    121.4230494
+  ],
+  "Laguna::Siniloan": [
+    14.4215284,
+    121.444412
+  ],
+  "Laguna::Victoria": [
+    14.2270483,
+    121.3280871
+  ],
+  "Cavite::Alfonso": [
+    14.1380464,
+    120.8554205
+  ],
+  "Cavite::Amadeo": [
+    14.1698784,
+    120.9218278
+  ],
+  "Cavite::City of Bacoor": [
+    14.4311318,
+    120.9680621
+  ],
+  "Cavite::City of Carmona": [
+    14.3134594,
+    121.0574345
+  ],
+  "Cavite::City of Cavite": [
+    14.1262318,
+    120.9952916
+  ],
+  "Cavite::City of Dasmariñas": [
+    14.3270819,
+    120.9370871
+  ],
+  "Cavite::City of General Trias": [
+    14.409193,
+    120.8569122
+  ],
+  "Cavite::City of Imus": [
+    14.4288999,
+    120.936547
+  ],
+  "Cavite::City of Tagaytay": [
+    14.0992736,
+    120.9391858
+  ],
+  "Cavite::City of Trece Martires": [
+    14.2813209,
+    120.8698956
+  ],
+  "Cavite::Gen. Mariano Alvarez": [
+    14.2955187,
+    121.0070874
+  ],
+  "Cavite::General Emilio Aguinaldo": [
+    14.1843001,
+    120.7964348
+  ],
+  "Cavite::Indang": [
+    14.1958488,
+    120.8784852
+  ],
+  "Cavite::Kawit": [
+    14.4442694,
+    120.9035361
+  ],
+  "Cavite::Magallanes": [
+    14.1874692,
+    120.7573248
+  ],
+  "Cavite::Maragondon": [
+    14.274129,
+    120.7349233
+  ],
+  "Cavite::Mendez": [
+    14.1300751,
+    120.9051427
+  ],
+  "Cavite::Naic": [
+    14.3191837,
+    120.764254
+  ],
+  "Cavite::Noveleta": [
+    14.4278394,
+    120.8808454
+  ],
+  "Cavite::Rosario": [
+    14.4167151,
+    120.8552642
+  ],
+  "Cavite::Silang": [
+    14.2234004,
+    120.9742825
+  ],
+  "Cavite::Tanza": [
+    14.400675,
+    120.8572845
+  ],
+  "Cavite::Ternate": [
+    14.2861696,
+    120.716004
+  ]
+}

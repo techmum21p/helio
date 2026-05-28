@@ -12,7 +12,7 @@ import anthropic
 import config
 from graph.state import SolarLeadState
 
-client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
+client = anthropic.Anthropic(api_key=config.XIAOMI_API_KEY, base_url=config.XIAOMI_BASE_URL)
 
 
 REPORT_PROMPT = """You are writing a solar installation market intelligence report for a small business owner in the Philippines.
@@ -57,10 +57,10 @@ def generate_report_markdown(location: str, top_targets: list) -> str:
     try:
         response = client.messages.create(
             model=config.REPORT_MODEL,
-            max_tokens=2000,
+            max_tokens=4000,
             messages=[{"role": "user", "content": prompt}],
         )
-        return response.content[0].text
+        return next(b.text for b in response.content if hasattr(b, "text"))
     except Exception as e:
         logger.error(f"Report generation failed: {e}")
         return f"# Report Generation Failed\n\nError: {e}"

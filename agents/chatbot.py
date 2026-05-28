@@ -16,7 +16,7 @@ from chromadb.utils import embedding_functions
 import config
 from graph.state import SolarLeadState
 
-client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
+client = anthropic.Anthropic(api_key=config.XIAOMI_API_KEY, base_url=config.XIAOMI_BASE_URL)
 
 # ChromaDB setup
 _chroma_client = chromadb.PersistentClient(path=str(config.KB_INDEX))
@@ -63,9 +63,22 @@ def index_documents_from_kb():
 
 
 def update_kb_node(state: SolarLeadState) -> SolarLeadState:
-    """LangGraph node: triggered after report_gen. Updates the vector store."""
+    """LangGraph node: triggered after report_gen. Builds per-municipality docs then indexes."""
     logger.info("[Agent 5] Updating knowledge base...")
     try:
+        # Generate structured per-municipality docs (scores + barangays + web intel)
+        final_scores = state.get("final_scores") or {}
+        web_intel = state.get("web_intel") or {}
+        if final_scores:
+            from agents.kb_builder import save_municipality_docs
+            save_municipality_docs(
+                location=state["location"],
+                final_scores=final_scores,
+                web_intel=web_intel,
+                run_id=state["run_id"],
+            )
+
+        # Index everything (report + municipality docs)
         index_documents_from_kb()
         return {**state, "kb_updated": True}
     except Exception as e:
@@ -75,12 +88,30 @@ def update_kb_node(state: SolarLeadState) -> SolarLeadState:
 
 # ── RAG Retrieval ──────────────────────────────────────────────────────────────
 
-def retrieve_context(query: str, n_results: int = 5) -> str:
-    """Retrieve relevant chunks from ChromaDB for the user's query."""
+def retrieve_context(query: str, n_results: int = 10) -> str:
+    """
+    Retrieve relevant chunks from ChromaDB for the user's query.
+    Returns chunks with their source file noted so the LLM knows the provenance.
+    """
     try:
         results = _collection.query(query_texts=[query], n_results=n_results)
         docs = results.get("documents", [[]])[0]
-        return "\n\n---\n\n".join(docs) if docs else "No relevant information found in knowledge base."
+        metas = results.get("metadatas", [[]])[0]
+
+        if not docs:
+            return "No relevant information found in knowledge base."
+
+        sections = []
+        for doc, meta in zip(docs, metas):
+            source = meta.get("source", "")
+            label = ""
+            if "kb/intel" in source:
+                label = f"[Municipality Profile: {source.split('/')[-1].replace('.md','')}]\n"
+            elif "kb/reports" in source:
+                label = f"[Province Report: {source.split('/')[-1].replace('.md','')}]\n"
+            sections.append(f"{label}{doc}")
+
+        return "\n\n---\n\n".join(sections)
     except Exception as e:
         logger.warning(f"Retrieval failed: {e}")
         return ""
@@ -121,11 +152,11 @@ def chat(user_message: str, chat_history: list) -> tuple[str, list]:
     try:
         response = client.messages.create(
             model=config.CHATBOT_MODEL,
-            max_tokens=800,
+            max_tokens=2000,
             system=SYSTEM_PROMPT,
             messages=messages,
         )
-        assistant_reply = response.content[0].text
+        assistant_reply = next(b.text for b in response.content if hasattr(b, "text"))
 
         # Store clean question (not context-stuffed version) in history
         updated_history = chat_history + [

@@ -34,8 +34,8 @@ for d in [DATA_RAW, DATA_PROCESSED, KB_REPORTS, KB_INTEL, KB_INDEX, REPORTS_DIR,
 
 
 # Model config
-REPORT_MODEL = os.getenv("REPORT_MODEL", "mimo-v2.5-pro")
-CHATBOT_MODEL = os.getenv("CHATBOT_MODEL", "mimo-v2.5-pro")
+REPORT_MODEL = os.getenv("REPORT_MODEL", "mimo-v2.5")
+CHATBOT_MODEL = os.getenv("CHATBOT_MODEL", "mimo-v2.5")
 
 # Scoring weights (must sum to 1.0)
 WEIGHTS = {
