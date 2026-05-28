@@ -14,6 +14,7 @@ from streamlit_folium import st_folium
 from graph.pipeline import run_pipeline
 from agents.chatbot import chat, index_documents_from_kb
 from agents.session_store import save_session, load_session, list_sessions
+from agents.location_db import get_provinces, get_municipalities
 
 st.set_page_config(
     page_title="Solar Lead Intelligence",
@@ -36,14 +37,45 @@ with st.sidebar:
 
     st.markdown("---")
     st.subheader("Run Pipeline")
-    location_input = st.text_input("Province / Region", placeholder="e.g. Laguna")
+
+    provinces = get_provinces()
+    if not provinces:
+        st.warning("⚠️ Location DB not built. Run: `python scripts/build_location_db.py`")
+        location_str = None
+    else:
+        prov_options = {p["name"]: p["id"] for p in provinces}
+        selected_prov_name = st.selectbox(
+            "Province",
+            options=["— Select province —"] + list(prov_options.keys()),
+            label_visibility="visible",
+        )
+
+        selected_muni_name = None
+        if selected_prov_name != "— Select province —":
+            prov_id = prov_options[selected_prov_name]
+            munis = get_municipalities(prov_id)
+            muni_options = {m["name"]: m["id"] for m in munis}
+            raw_muni = st.selectbox(
+                "Municipality",
+                options=["— All municipalities —"] + list(muni_options.keys()),
+                label_visibility="visible",
+            )
+            if raw_muni != "— All municipalities —":
+                selected_muni_name = raw_muni
+
+        if selected_prov_name == "— Select province —":
+            location_str = None
+        elif selected_muni_name:
+            location_str = f"{selected_muni_name}, {selected_prov_name}"
+        else:
+            location_str = selected_prov_name
 
     if st.button("▶ Analyze", type="primary", use_container_width=True):
-        if not location_input.strip():
-            st.error("Enter a location first.")
+        if not location_str:
+            st.error("Select a province first.")
         else:
-            with st.spinner(f"Analyzing {location_input}... (this takes ~1-2 mins)"):
-                result = run_pipeline(location_input.strip())
+            with st.spinner(f"Analyzing {location_str}... (this takes ~1-2 mins)"):
+                result = run_pipeline(location_str)
                 st.session_state.pipeline_result = result
                 st.session_state.chat_history = []
                 save_session(result, [])
