@@ -6,7 +6,7 @@ import config
 
 
 def _slug(location: str) -> str:
-    return location.lower().strip().replace(" ", "_")
+    return location.lower().strip().replace(",", "").replace(" ", "_")
 
 
 def save_session(pipeline_result: dict, chat_history: list) -> None:

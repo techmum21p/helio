@@ -22,6 +22,13 @@ def test_save_slugifies_location(tmp_path):
     assert (tmp_path / "metro_manila_def67890.json").exists()
 
 
+def test_save_strips_commas_from_slug(tmp_path):
+    from agents.session_store import save_session
+    pr = {"location": "Biñan, Laguna", "run_id": "xyz99999"}
+    save_session(pr, [])
+    assert (tmp_path / "biñan_laguna_xyz99999.json").exists()
+
+
 def test_load_returns_pipeline_result_and_history(tmp_path):
     from agents.session_store import save_session, load_session
     pr = {"location": "Laguna", "run_id": "abc12345", "top_targets": [{"municipality": "Biñan"}]}
