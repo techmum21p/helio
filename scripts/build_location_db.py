@@ -2,7 +2,8 @@
 """
 One-time script to populate data/ph_locations.db from the barangay package.
 Run once: python scripts/build_location_db.py
-Idempotent — skips if municipalities table already has rows.
+Safe to run multiple times — skips if already built.
+To rebuild from scratch: delete data/ph_locations.db and re-run.
 """
 
 import sqlite3
@@ -41,6 +42,7 @@ CREATE INDEX IF NOT EXISTS idx_barangays_muni      ON barangays(municipality_id)
 def build(db_path: Path) -> None:
     db_path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(str(db_path))
+    conn.execute("PRAGMA foreign_keys = ON")
     conn.executescript(SCHEMA)
 
     count = conn.execute("SELECT COUNT(*) FROM municipalities").fetchone()[0]
@@ -49,7 +51,12 @@ def build(db_path: Path) -> None:
         conn.close()
         return
 
-    import barangay as br
+    try:
+        import barangay as br
+    except ImportError:
+        print("ERROR: barangay package not installed. Run: pip install barangay>=2026.1.13.1", file=sys.stderr)
+        conn.close()
+        sys.exit(1)
     data = br.BARANGAY
 
     region_count = prov_count = muni_count = brgy_count = 0
