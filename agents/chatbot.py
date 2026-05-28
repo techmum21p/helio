@@ -152,7 +152,7 @@ def chat(user_message: str, chat_history: list) -> tuple[str, list]:
     try:
         response = client.messages.create(
             model=config.CHATBOT_MODEL,
-            max_tokens=2000,
+            max_tokens=8000,
             system=SYSTEM_PROMPT,
             messages=messages,
         )

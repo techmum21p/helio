@@ -60,22 +60,22 @@ with st.sidebar:
             options=["— Select province —"] + list(prov_by_name.keys()),
         )
 
-        selected_muni_name = None
+        selected_munis: list[str] = []
         if selected_prov_name != "— Select province —":
             prov_id = prov_by_name[selected_prov_name]
             munis = _cached_municipalities(prov_id)
-            muni_options = {m["name"]: m["id"] for m in munis}
-            raw_muni = st.selectbox(
-                "Municipality",
-                options=["— All municipalities —"] + list(muni_options.keys()),
+            muni_names = [m["name"] for m in munis]
+            selected_munis = st.multiselect(
+                "Municipality (leave blank for all)",
+                options=muni_names,
             )
-            if raw_muni != "— All municipalities —":
-                selected_muni_name = raw_muni
 
         if selected_prov_name == "— Select province —":
             location_str = None
-        elif selected_muni_name:
-            location_str = f"{selected_muni_name}, {selected_prov_name}"
+        elif len(selected_munis) == 1:
+            location_str = f"{selected_munis[0]}, {selected_prov_name}"
+        elif len(selected_munis) > 1:
+            location_str = f"{'|'.join(selected_munis)}, {selected_prov_name}"
         else:
             location_str = selected_prov_name
 
@@ -83,7 +83,8 @@ with st.sidebar:
         if not location_str:
             st.error("Select a province first.")
         else:
-            with st.spinner(f"Analyzing {location_str}... (this takes ~1-2 mins)"):
+            display_loc = location_str.replace("|", ", ")
+            with st.spinner(f"Analyzing {display_loc}... (this takes ~1-2 mins)"):
                 result = run_pipeline(location_str)
                 st.session_state.pipeline_result = result
                 st.session_state.chat_history = []

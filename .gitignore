@@ -2,4 +2,17 @@
 /.env
 /.venv_helios
 
+# Generated runtime artifacts
 .superpowers/
+data/helio.db
+data/helio.db-wal
+data/helio.db-shm
+data/processed/
+sessions/
+reports/
+kb/reports/
+kb/intel/
+kb/index/
+__pycache__/
+**/__pycache__/
+*.pyc
