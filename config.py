@@ -26,10 +26,12 @@ KB_INTEL = KB_DIR / "intel"
 KB_INDEX = KB_DIR / "index"
 REPORTS_DIR = ROOT_DIR / "reports"
 SESSIONS_DIR = ROOT_DIR / "sessions"
-LOCATION_DB = ROOT_DIR / "data" / "ph_locations.db"
+LOCATION_DB = ROOT_DIR / "data" / "ph_locations.db"   # source — not retired yet
+HELIO_DB    = ROOT_DIR / "data" / "helio.db"           # consolidated store (v2)
 
 # Create dirs if missing
-for d in [DATA_RAW, DATA_PROCESSED, KB_REPORTS, KB_INTEL, KB_INDEX, REPORTS_DIR, SESSIONS_DIR]:
+for d in [DATA_RAW, DATA_PROCESSED, KB_REPORTS, KB_INTEL, KB_INDEX,
+          REPORTS_DIR, SESSIONS_DIR, HELIO_DB.parent]:
     d.mkdir(parents=True, exist_ok=True)
 
 
@@ -37,11 +39,11 @@ for d in [DATA_RAW, DATA_PROCESSED, KB_REPORTS, KB_INTEL, KB_INDEX, REPORTS_DIR,
 REPORT_MODEL = os.getenv("REPORT_MODEL", "mimo-v2.5")
 CHATBOT_MODEL = os.getenv("CHATBOT_MODEL", "mimo-v2.5")
 
-# Scoring weights (must sum to 1.0)
+# Scoring weights (must sum to 1.0) — v2 values
 WEIGHTS = {
-    "solar": 0.40,
-    "income": 0.35,
-    "population": 0.25,
+    "solar":       0.35,
+    "income":      0.45,
+    "pop_density": 0.20,
 }
 
 # Pipeline config
