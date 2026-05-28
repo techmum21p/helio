@@ -13,6 +13,7 @@ from streamlit_folium import st_folium
 
 from graph.pipeline import run_pipeline
 from agents.chatbot import chat, index_documents_from_kb
+from agents.session_store import save_session, load_session, list_sessions
 
 st.set_page_config(
     page_title="Solar Lead Intelligence",
@@ -45,6 +46,7 @@ with st.sidebar:
                 result = run_pipeline(location_input.strip())
                 st.session_state.pipeline_result = result
                 st.session_state.chat_history = []
+                save_session(result, [])
             if result.get("errors"):
                 st.warning(f"Completed with {len(result['errors'])} warning(s).")
             else:
@@ -57,6 +59,24 @@ with st.sidebar:
         if top:
             st.markdown(f"🥇 Top target: **{top[0]['municipality']}**")
             st.markdown(f"Score: `{top[0]['final_score']:.3f}` | Tier: `{top[0]['tier']}`")
+
+    st.markdown("---")
+    with st.expander("📂 Load Past Session"):
+        sessions = list_sessions()
+        if not sessions:
+            st.caption("No saved sessions yet.")
+        else:
+            options = {s["label"]: s for s in sessions}
+            chosen_label = st.selectbox(
+                "Select session",
+                list(options.keys()),
+                label_visibility="collapsed",
+            )
+            if st.button("Load", use_container_width=True):
+                loaded_pr, loaded_history = load_session(options[chosen_label]["path"])
+                st.session_state.pipeline_result = loaded_pr
+                st.session_state.chat_history = loaded_history
+                st.rerun()
 
 
 # ── Page: Map & Scores ─────────────────────────────────────────────────────────
@@ -186,3 +206,5 @@ elif page == "💬 Chatbot":
                 reply, updated_history = chat(user_input, st.session_state.chat_history)
             st.write(reply)
             st.session_state.chat_history = updated_history
+            if st.session_state.pipeline_result:
+                save_session(st.session_state.pipeline_result, updated_history)
