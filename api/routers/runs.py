@@ -2,7 +2,7 @@ import asyncio
 import json
 import secrets
 import string
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 from fastapi.responses import StreamingResponse
@@ -24,7 +24,7 @@ def _persist_run_results(run_id: str, result: dict) -> None:
         status = "failed" if error and not result.get("top_targets") else "done"
         conn.execute(
             "UPDATE runs SET status=?, completed_at=?, error=? WHERE id=?",
-            (status, datetime.utcnow().isoformat(), error, run_id),
+            (status, datetime.now(timezone.utc).isoformat(), error, run_id),
         )
         for t in result.get("top_targets", []):
             muni = conn.execute(
@@ -66,7 +66,7 @@ def _run_pipeline_bg(run_id: str, location: str) -> None:
         with get_db() as conn:
             conn.execute(
                 "UPDATE runs SET status='failed', error=?, completed_at=? WHERE id=?",
-                (str(exc), datetime.utcnow().isoformat(), run_id),
+                (str(exc), datetime.now(timezone.utc).isoformat(), run_id),
             )
 
 
