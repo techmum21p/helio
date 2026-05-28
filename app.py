@@ -16,6 +16,17 @@ from agents.chatbot import chat, index_documents_from_kb
 from agents.session_store import save_session, load_session, list_sessions
 from agents.location_db import get_provinces, get_municipalities
 
+
+@st.cache_data(ttl=3600)
+def _cached_provinces() -> list[dict]:
+    return get_provinces()
+
+
+@st.cache_data(ttl=3600)
+def _cached_municipalities(province_id: int) -> list[dict]:
+    return get_municipalities(province_id)
+
+
 st.set_page_config(
     page_title="Solar Lead Intelligence",
     page_icon="☀️",
@@ -38,27 +49,25 @@ with st.sidebar:
     st.markdown("---")
     st.subheader("Run Pipeline")
 
-    provinces = get_provinces()
+    provinces = _cached_provinces()
     if not provinces:
         st.warning("⚠️ Location DB not built. Run: `python scripts/build_location_db.py`")
         location_str = None
     else:
-        prov_options = {p["name"]: p["id"] for p in provinces}
+        prov_by_name = {p["name"]: p["id"] for p in provinces}
         selected_prov_name = st.selectbox(
             "Province",
-            options=["— Select province —"] + list(prov_options.keys()),
-            label_visibility="visible",
+            options=["— Select province —"] + list(prov_by_name.keys()),
         )
 
         selected_muni_name = None
         if selected_prov_name != "— Select province —":
-            prov_id = prov_options[selected_prov_name]
-            munis = get_municipalities(prov_id)
+            prov_id = prov_by_name[selected_prov_name]
+            munis = _cached_municipalities(prov_id)
             muni_options = {m["name"]: m["id"] for m in munis}
             raw_muni = st.selectbox(
                 "Municipality",
                 options=["— All municipalities —"] + list(muni_options.keys()),
-                label_visibility="visible",
             )
             if raw_muni != "— All municipalities —":
                 selected_muni_name = raw_muni
