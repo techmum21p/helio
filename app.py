@@ -73,10 +73,14 @@ with st.sidebar:
                 label_visibility="collapsed",
             )
             if st.button("Load", use_container_width=True):
-                loaded_pr, loaded_history = load_session(options[chosen_label]["path"])
-                st.session_state.pipeline_result = loaded_pr
-                st.session_state.chat_history = loaded_history
-                st.rerun()
+                try:
+                    loaded_pr, loaded_history = load_session(options[chosen_label]["path"])
+                    st.session_state.pipeline_result = loaded_pr
+                    st.session_state.chat_history = loaded_history
+                    st.toast(f"Loaded: {chosen_label}", icon="📂")
+                    st.rerun()
+                except Exception as exc:
+                    st.error(f"Could not load session: {exc}")
 
 
 # ── Page: Map & Scores ─────────────────────────────────────────────────────────
