@@ -1,5 +1,6 @@
 import sqlite3
 from contextlib import contextmanager
+from loguru import logger
 import config
 
 DB_PATH = config.HELIO_DB
@@ -23,7 +24,7 @@ def get_db():
 
 def create_tables() -> None:
     with get_db() as conn:
-        conn.executescript("""
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS municipalities (
                 id          INTEGER PRIMARY KEY,
                 name        TEXT    NOT NULL,
@@ -34,8 +35,9 @@ def create_tables() -> None:
                 area_km2    REAL,
                 population  INTEGER,
                 income_class TEXT
-            );
-
+            )
+        """)
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS geo_scores (
                 id                INTEGER PRIMARY KEY AUTOINCREMENT,
                 municipality_id   INTEGER NOT NULL UNIQUE REFERENCES municipalities(id),
@@ -46,10 +48,12 @@ def create_tables() -> None:
                 pop_density_norm  REAL,
                 geo_score         REAL,
                 computed_at       DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
-            CREATE INDEX IF NOT EXISTS idx_geo_score
-                ON geo_scores(geo_score DESC);
-
+            )
+        """)
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_geo_score ON geo_scores(geo_score DESC)"
+        )
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS runs (
                 id           TEXT PRIMARY KEY,
                 location     TEXT NOT NULL,
@@ -58,8 +62,9 @@ def create_tables() -> None:
                 created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
                 completed_at DATETIME,
                 error        TEXT
-            );
-
+            )
+        """)
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS run_results (
                 id              INTEGER PRIMARY KEY AUTOINCREMENT,
                 run_id          TEXT    NOT NULL REFERENCES runs(id),
@@ -71,10 +76,12 @@ def create_tables() -> None:
                 assessment      TEXT,
                 opportunities   TEXT,
                 risks           TEXT
-            );
-            CREATE INDEX IF NOT EXISTS idx_run_results_score
-                ON run_results(run_id, final_score DESC);
-
+            )
+        """)
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_run_results_score ON run_results(run_id, final_score DESC)"
+        )
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS web_intel_cache (
                 id              INTEGER PRIMARY KEY AUTOINCREMENT,
                 municipality_id INTEGER NOT NULL UNIQUE REFERENCES municipalities(id),
@@ -84,18 +91,21 @@ def create_tables() -> None:
                 tavily_snippets TEXT,
                 fetched_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
                 expires_at      DATETIME
-            );
-            CREATE INDEX IF NOT EXISTS idx_web_intel_expires
-                ON web_intel_cache(expires_at);
-
+            )
+        """)
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_web_intel_expires ON web_intel_cache(expires_at)"
+        )
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS chat_messages (
                 id         INTEGER PRIMARY KEY AUTOINCREMENT,
                 run_id     TEXT NOT NULL REFERENCES runs(id),
                 role       TEXT NOT NULL,
                 content    TEXT NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
-
+            )
+        """)
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS reports (
                 id           INTEGER PRIMARY KEY AUTOINCREMENT,
                 run_id       TEXT NOT NULL REFERENCES runs(id),
@@ -105,13 +115,14 @@ def create_tables() -> None:
                 markdown     TEXT NOT NULL,
                 file_path    TEXT,
                 created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
+            )
         """)
 
 
 def seed_municipalities_from_location_db() -> int:
     """Copy 1,622 municipalities from ph_locations.db into helio.db. Returns count."""
     if not config.LOCATION_DB.exists():
+        logger.warning("LOCATION_DB not found at {}; skipping municipality seed", config.LOCATION_DB)
         return 0
 
     src = sqlite3.connect(str(config.LOCATION_DB))
