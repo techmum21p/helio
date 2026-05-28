@@ -23,7 +23,7 @@ def save_session(pipeline_result: dict, chat_history: list) -> None:
 
 def load_session(filepath) -> tuple[dict, list]:
     data = json.loads(Path(filepath).read_text(encoding="utf-8"))
-    return data["pipeline_result"], data["chat_history"]
+    return data.get("pipeline_result", {}), data.get("chat_history", [])
 
 
 def list_sessions() -> list[dict]:
@@ -43,11 +43,12 @@ def list_sessions() -> list[dict]:
             except Exception:
                 date_label = saved_at[:10]
             location = pr.get("location", p.stem)
+            run_id = pr.get("run_id", "")
             sessions.append({
                 "path": str(p),
-                "label": f"{location} — {date_label}",
+                "label": f"{location} — {date_label} [{run_id[:6]}]",
                 "location": location,
-                "run_id": pr.get("run_id", ""),
+                "run_id": run_id,
                 "saved_at": saved_at,
             })
         except Exception:

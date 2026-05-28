@@ -76,6 +76,18 @@ def test_list_sessions_label_format(tmp_path):
     label = sessions[0]["label"]
     assert label.startswith("Laguna")
     assert "—" in label
+    assert "abc123" in label  # run_id disambiguator
+
+
+def test_list_sessions_labels_unique_same_day(tmp_path):
+    from agents.session_store import save_session, list_sessions
+    pr1 = {"location": "Laguna", "run_id": "aaa11111"}
+    pr2 = {"location": "Laguna", "run_id": "bbb22222"}
+    save_session(pr1, [])
+    save_session(pr2, [])
+    sessions = list_sessions()
+    labels = [s["label"] for s in sessions]
+    assert len(set(labels)) == 2  # no collision
 
 
 def test_list_sessions_sorted_newest_first(tmp_path):
