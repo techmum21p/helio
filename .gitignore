@@ -9,7 +9,7 @@ data/helio.db-wal
 data/helio.db-shm
 data/processed/
 sessions/
-reports/
+/reports/
 kb/reports/
 kb/intel/
 kb/index/
