@@ -1,13 +1,25 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useSWR from "swr";
 import type { Run } from "@/lib/types";
 import { getRuns } from "@/lib/api";
 import ChatPanel from "@/components/chat-panel";
 
 export default function ChatPage() {
-  const [contextRunId, setContextRunId] = useState<string | null>(null);
   const { data: runs = [] } = useSWR<Run[]>("runs", () => getRuns(50));
+  const [contextRunId, setContextRunId] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false);
+
+  // Auto-select the most recent completed run on first load
+  useEffect(() => {
+    if (!initialized && runs.length > 0) {
+      const doneRun = runs.find((r) => r.status === "done" && !r.location.startsWith("admin:"));
+      if (doneRun) setContextRunId(doneRun.id);
+      setInitialized(true);
+    }
+  }, [runs, initialized]);
+
+  const selectedRun = runs.find((r) => r.id === contextRunId) ?? null;
 
   return (
     <div
@@ -19,8 +31,8 @@ export default function ChatPage() {
         <ChatPanel
           runId={contextRunId}
           placeholder={
-            contextRunId
-              ? "Ask about this run's municipalities…"
+            selectedRun
+              ? `Ask about ${selectedRun.location}…`
               : "Ask about any solar opportunity across all analyzed locations…"
           }
         />
@@ -42,20 +54,25 @@ export default function ChatPage() {
           Global KB
           <p className="text-xs text-stone-400 mt-0.5">All analyzed locations</p>
         </button>
-        {runs.map((run) => (
-          <button
-            key={run.id}
-            className={`w-full text-left px-3 py-3 border-b border-stone-200 transition-colors hover:bg-stone-100 ${
-              contextRunId === run.id ? "bg-amber-50 border-l-2 border-amber-500" : ""
-            }`}
-            onClick={() => setContextRunId(run.id)}
-          >
-            <p className="text-xs font-semibold text-stone-700 line-clamp-2">{run.location}</p>
-            <p className="text-xs text-stone-400 mt-0.5">
-              {new Date(run.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric" })}
-            </p>
-          </button>
-        ))}
+        {runs
+          .filter((r) => r.status === "done" && !r.location.startsWith("admin:"))
+          .map((run) => (
+            <button
+              key={run.id}
+              className={`w-full text-left px-3 py-3 border-b border-stone-200 transition-colors hover:bg-stone-100 ${
+                contextRunId === run.id ? "bg-amber-50 border-l-2 border-amber-500" : ""
+              }`}
+              onClick={() => setContextRunId(run.id)}
+            >
+              <p className="text-xs font-semibold text-stone-700 line-clamp-2">{run.location}</p>
+              <p className="text-xs text-stone-400 mt-0.5">
+                {new Date(run.created_at).toLocaleDateString("en-PH", {
+                  month: "short",
+                  day: "numeric",
+                })}
+              </p>
+            </button>
+          ))}
       </aside>
     </div>
   );
