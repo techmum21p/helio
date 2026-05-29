@@ -8,10 +8,8 @@ import SidebarPipelineCard from "./sidebar-pipeline-card";
 
 const NAV_LINKS = [
   { href: "/map",     icon: "🗺",  label: "Map & Scores" },
-  { href: "/explore", icon: "🔍",  label: "Explore"      },
   { href: "/reports", icon: "📄",  label: "Reports"      },
   { href: "/chat",    icon: "💬",  label: "Chat"         },
-  { href: "/admin",   icon: "⚙️",  label: "Admin"        },
 ];
 
 interface Props {
