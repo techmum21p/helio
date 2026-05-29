@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 from fastapi.responses import StreamingResponse
+from loguru import logger
 
 from api.db import get_db
 from api.models import RunCreateIn, RunOut, RunDetailOut
@@ -49,17 +50,20 @@ def _persist_run_results(run_id: str, result: dict) -> None:
                 geo_data = json.loads(result["geo_geojson"])
                 for feature in geo_data.get("features", []):
                     props = feature.get("properties", {})
-                    geom  = feature.get("geometry", {})
+                    geom = feature.get("geometry") or {}
                     if geom.get("type") != "Point":
                         continue
-                    lon, lat = geom["coordinates"]
+                    coords = geom.get("coordinates", [])
+                    if len(coords) < 2:
+                        continue
+                    lon, lat = coords[0], coords[1]
                     conn.execute(
                         """UPDATE municipalities SET lat=?, lon=?
                            WHERE name=? AND province=? AND lat IS NULL""",
                         (lat, lon, props.get("name", ""), props.get("province", "")),
                     )
-            except Exception:
-                pass  # coord backfill is best-effort; never fail a run over it
+            except Exception as e:
+                logger.warning(f"[persist] coord backfill failed: {e}")
 
         if result.get("report_markdown"):
             loc  = (result.get("location", "unknown")
