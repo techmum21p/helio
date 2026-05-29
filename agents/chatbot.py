@@ -66,7 +66,7 @@ def index_documents_from_kb() -> None:
     # ── Reports from DB ────────────────────────────────────────────────────
     for report in list_reports():
         doc_id = report["slug"]
-        if doc_id in existing_ids:
+        if f"{doc_id}_chunk_0" in existing_ids:
             continue
         text   = report.get("markdown", "")
         chunks = [p.strip() for p in text.split("\n\n") if len(p.strip()) > 50]
@@ -88,7 +88,7 @@ def index_documents_from_kb() -> None:
     # ── Municipality intel files from kb/intel/ (not in DB yet) ───────────
     for md_file in Path(config.KB_INTEL).glob("*.md"):
         doc_id = md_file.stem
-        if doc_id in existing_ids:
+        if f"{doc_id}_chunk_0" in existing_ids:
             continue
         text   = md_file.read_text(encoding="utf-8")
         chunks = [p.strip() for p in text.split("\n\n") if len(p.strip()) > 50]
@@ -150,8 +150,8 @@ def retrieve_context(query: str, n_results: int = 10) -> str:
             label = ""
             if "kb/intel" in source:
                 label = f"[Municipality Profile: {source.split('/')[-1].replace('.md','')}]\n"
-            elif "kb/reports" in source:
-                label = f"[Province Report: {source.split('/')[-1].replace('.md','')}]\n"
+            elif "kb/reports" in source or source.startswith("db:reports:"):
+                label = f"[Province Report: {source.split(':')[-1].replace('.md','')}]\n"
             sections.append(f"{label}{doc}")
 
         return "\n\n---\n\n".join(sections)
