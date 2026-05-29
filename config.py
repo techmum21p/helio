@@ -39,10 +39,21 @@ CHATBOT_MODEL = os.getenv("CHATBOT_MODEL", "mimo-v2.5")
 
 # Scoring weights (must sum to 1.0)
 WEIGHTS = {
-    "solar": 0.40,
-    "income": 0.35,
-    "population": 0.25,
+    "solar":      0.35,   # was 0.40
+    "income":     0.45,   # was 0.35
+    "population": 0.20,   # was 0.25; now applied to pop_density
 }
+
+# Final score blend weights
+FINAL_GEO_WEIGHT = 0.70   # was 0.80
+FINAL_WEB_WEIGHT = 0.30   # was 0.20
+
+# Ollama embedding
+OLLAMA_URL         = os.getenv("OLLAMA_URL", "http://localhost:11434")
+OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "qwen3-embedding")
+
+# Consolidated DB (helio.db replaces ph_locations.db for all structured data)
+HELIO_DB = ROOT_DIR / "data" / "helio.db"
 
 # Pipeline config
 TOP_N_TARGETS = int(os.getenv("TOP_N_TARGETS", 20))
