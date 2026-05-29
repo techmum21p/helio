@@ -11,6 +11,7 @@ import anthropic
 
 import config
 from graph.state import SolarLeadState
+from agents import db_store
 
 client = anthropic.Anthropic(api_key=config.XIAOMI_API_KEY, base_url=config.XIAOMI_BASE_URL)
 
@@ -93,14 +94,16 @@ def report_gen_agent(state: SolarLeadState) -> SolarLeadState:
     report_path = save_report(state["location"], markdown, state["run_id"])
 
     province = top_targets[0].get("province", state["location"]) if top_targets else state["location"]
-    from agents import db_store
-    db_store.save_report(
-        run_id=state["run_id"],
-        province=province,
-        municipality=None,
-        markdown=markdown,
-        file_path=report_path,
-    )
+    try:
+        db_store.save_report(
+            run_id=state["run_id"],
+            province=province,
+            municipality=None,
+            markdown=markdown,
+            file_path=report_path,
+        )
+    except Exception as e:
+        logger.error(f"[Agent 4] DB report save failed: {e}")
 
     return {
         **state,
