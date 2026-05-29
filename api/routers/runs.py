@@ -60,7 +60,7 @@ def _run_pipeline_bg(run_id: str, location: str) -> None:
         with get_db() as conn:
             conn.execute("UPDATE runs SET status='running' WHERE id=?", (run_id,))
         from graph.pipeline import run_pipeline
-        result = run_pipeline(location)
+        result = run_pipeline(location, run_id=run_id)
         _persist_run_results(run_id, result)
     except Exception as exc:
         with get_db() as conn:
@@ -118,23 +118,39 @@ def get_run(run_id: str) -> RunDetailOut:
 
 @router.get("/runs/{run_id}/stream")
 async def stream_run(run_id: str) -> StreamingResponse:
+    from api.events import get_events, clear_events
+
     async def _events():
+        emitted = 0
         while True:
+            # Flush any new events
+            events = get_events(run_id)
+            while emitted < len(events):
+                yield f"data: {json.dumps(events[emitted])}\n\n"
+                emitted += 1
+
             with get_db() as conn:
                 row = conn.execute(
                     "SELECT status, error FROM runs WHERE id=?", (run_id,)
                 ).fetchone()
+
             if not row:
                 yield 'data: {"error": "run not found"}\n\n'
                 return
+
             if row["status"] in ("done", "failed"):
-                payload = json.dumps(
-                    {"status": row["status"], "run_id": run_id, "error": row["error"]}
-                )
+                # Flush remaining events before terminal
+                events = get_events(run_id)
+                while emitted < len(events):
+                    yield f"data: {json.dumps(events[emitted])}\n\n"
+                    emitted += 1
+                step = "complete" if row["status"] == "done" else "failed"
+                payload = json.dumps({"step": step, "run_id": run_id, "error": row["error"]})
                 yield f"data: {payload}\n\n"
+                clear_events(run_id)
                 return
-            yield f'data: {{"status": "{row["status"]}"}}\n\n'
-            await asyncio.sleep(2)
+
+            await asyncio.sleep(0.5)
 
     return StreamingResponse(
         _events(),

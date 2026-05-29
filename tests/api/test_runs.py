@@ -54,3 +54,27 @@ def test_run_results_persisted(app_client):
     assert r.status_code == 200
     assert len(r.json()["results"]) == 1
     assert r.json()["report"] is not None
+
+
+from api.events import push_event, clear_events
+
+def test_stream_emits_step_events(app_client):
+    with patch("api.routers.runs._run_pipeline_bg"):
+        run_id = app_client.post("/runs", json={"location": "Laguna"}).json()["run_id"]
+
+    # Simulate events that the pipeline would have pushed
+    push_event(run_id, "geo_scoring", "running", 0)
+    push_event(run_id, "geo_scoring", "done", 4200)
+
+    # Mark run as done in DB
+    import api.db as db_module
+    with db_module.get_db() as conn:
+        conn.execute("UPDATE runs SET status='done' WHERE id=?", (run_id,))
+
+    with app_client.stream("GET", f"/runs/{run_id}/stream") as response:
+        chunks = b"".join(response.iter_bytes()).decode()
+
+    assert '"step": "geo_scoring"' in chunks
+    assert '"status": "done"' in chunks
+    assert '"step": "complete"' in chunks
+    clear_events(run_id)
