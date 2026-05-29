@@ -15,11 +15,13 @@ data/*.db-shm
 data/*.db-wal
 kb/index/
 
-# Next.js / frontend build artifacts
-frontend/.next/
-frontend/node_modules/
-frontend/.env.local
-.next/
+# Generated runtime outputs (reports, intel cache, sessions)
+kb/intel/
+reports/
+sessions/
+
+# Frontend (Next.js — not used, keeping files locally)
+frontend/
 
 # Misc
 *.log
