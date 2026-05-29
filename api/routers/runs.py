@@ -111,7 +111,10 @@ def get_run(run_id: str) -> RunDetailOut:
         ).fetchone()
     return RunDetailOut(
         **dict(run),
-        results=[dict(r) for r in results],
+        results=[{**dict(r),
+                  "opportunities": json.loads(dict(r).get("opportunities") or "[]"),
+                  "risks": json.loads(dict(r).get("risks") or "[]")}
+                 for r in results],
         report=dict(report) if report else None,
     )
 

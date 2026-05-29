@@ -95,7 +95,8 @@ export async function* streamChat(
   });
   if (!res.ok) throw new Error("Chat request failed");
 
-  const reader = res.body!.getReader();
+  if (!res.body) throw new Error("Response body is null — cannot stream chat");
+  const reader = res.body.getReader();
   const decoder = new TextDecoder();
 
   while (true) {

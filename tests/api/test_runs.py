@@ -54,6 +54,11 @@ def test_run_results_persisted(app_client):
     assert r.status_code == 200
     assert len(r.json()["results"]) == 1
     assert r.json()["report"] is not None
+    result = r.json()["results"][0]
+    assert isinstance(result["opportunities"], list), "opportunities must be a list, not a JSON string"
+    assert isinstance(result["risks"], list), "risks must be a list, not a JSON string"
+    assert result["opportunities"] == ["Good solar"]
+    assert result["risks"] == ["Competition"]
 
 
 from api.events import push_event, clear_events
