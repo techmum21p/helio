@@ -4,7 +4,7 @@ Replaces agents/session_store.py — all writes go to data/helio.db.
 """
 import json
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 from loguru import logger
 
 import config
@@ -25,10 +25,14 @@ def _migrate() -> None:
         logger.info("db_store: added web_score column to web_intel_cache")
     except Exception:
         pass  # column already exists
-    conn.close()
+    finally:
+        conn.close()
 
 
-_migrate()
+try:
+    _migrate()
+except Exception as e:
+    logger.warning(f"db_store._migrate skipped: {e}")
 
 
 def create_run(run_id: str, location: str, province: str) -> None:
@@ -50,7 +54,7 @@ def complete_run(run_id: str, top_targets: list) -> None:
     try:
         conn.execute(
             "UPDATE runs SET status='done', completed_at=? WHERE id=?",
-            (datetime.utcnow().isoformat(), run_id),
+            (datetime.now(timezone.utc).isoformat(), run_id),
         )
         for t in top_targets:
             muni_name = t.get("municipality", "")
@@ -95,7 +99,7 @@ def fail_run(run_id: str, error: str) -> None:
     try:
         conn.execute(
             "UPDATE runs SET status='failed', completed_at=?, error=? WHERE id=?",
-            (datetime.utcnow().isoformat(), error, run_id),
+            (datetime.now(timezone.utc).isoformat(), error, run_id),
         )
         conn.commit()
     except Exception as e:
