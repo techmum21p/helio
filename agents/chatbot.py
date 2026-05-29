@@ -134,6 +134,30 @@ Always be direct and practical — your user is a business owner, not an analyst
 """
 
 
+def chat_stream(user_message: str, chat_history: list):
+    """Generator yielding text chunks for streaming. Caller accumulates the full reply."""
+    index_documents_from_kb()
+    context = retrieve_context(user_message)
+
+    messages = chat_history.copy()
+    messages.append({
+        "role": "user",
+        "content": f"Context from knowledge base:\n{context}\n\nQuestion: {user_message}",
+    })
+
+    try:
+        with client.messages.stream(
+            model=config.CHATBOT_MODEL,
+            max_tokens=8000,
+            system=SYSTEM_PROMPT,
+            messages=messages,
+        ) as stream:
+            for text in stream.text_stream:
+                yield text
+    except Exception as e:
+        yield f"Sorry, I couldn't generate a response: {e}"
+
+
 def chat(user_message: str, chat_history: list) -> tuple[str, list]:
     """
     Single turn of the chatbot.
