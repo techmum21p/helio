@@ -1,6 +1,131 @@
-> Last updated: 2026-05-28 | Session 4
+> Last updated: 2026-05-29 | Session 5
 
 # Helio — Solar Lead Intelligence Platform Session Notes
+
+---
+
+## Session 5 — Helio v2: Next.js Frontend + Backend SSE/Streaming (2026-05-29)
+
+### Branch
+`feat-helio-v2` (off `main`, building on Plan 1 FastAPI backend from prior session)
+
+### What Was Built
+Full Next.js 14 App Router frontend (15 tasks) plus two FastAPI backend enhancements. All code reviewed via subagent-driven development (spec compliance + code quality review per task). 66/66 Python tests passing. `npm run build` clean.
+
+### Backend Enhancements
+
+#### In-Memory SSE Event Store (`api/events.py`)
+- Thread-safe `dict[str, list[dict]]` with `threading.Lock`
+- `push_event(run_id, step, status, elapsed_ms)`, `get_events(run_id)`, `clear_events(run_id)`
+- `get_events` returns `[dict(e) for e in ...]` (deep copy — callers can't mutate stored events)
+- Tests: `tests/api/test_events.py` (4 tests, autouse isolation fixture)
+
+#### Pipeline SSE Step Events (`graph/pipeline.py`)
+- `run_pipeline(location, run_id=None)` — added `run_id` param (optional, backward-compatible)
+- Switched from `pipeline.invoke()` → `pipeline.stream(initial_state, stream_mode="updates")`
+- Emits `push_event(run_id, step, "running", 0)` before stream starts
+- Per step: emits "done" for completed node + "running" for next node
+- `_STEPS = ["geo_scoring", "web_intel", "synthesis", "report_gen", "update_kb"]`
+- Lazy import: `from api.events import push_event` inside `run_pipeline()` (avoids circular import)
+
+#### Updated SSE Stream Endpoint (`api/routers/runs.py`)
+- `_run_pipeline_bg` now passes `run_id=run_id` to `run_pipeline()`
+- `/runs/{id}/stream`: event-flushing loop (0.5s sleep, was 2s) — yields step events as they arrive
+- Terminal event: `{"step": "complete"|"failed", "run_id": ..., "error": ...}` then calls `clear_events`
+
+#### Streaming Chat (`agents/chatbot.py` + `api/routers/chat.py`)
+- Added `chat_stream(user_message, chat_history)` generator to chatbot — uses `client.messages.stream()`, yields from `stream.text_stream`. Original `chat()` untouched.
+- `POST /chat` replaced with `StreamingResponse` SSE: yields `data: {chunk}\n\n` per token, `data: [DONE]\n\n` at end
+- Persistence (user + assistant to `chat_messages`) happens after stream exhausted, only if `run_id` set
+- Testable via `_stream_chatbot` wrapper (patchable without touching chatbot module)
+- `tests/api/test_chat.py` fully replaced — 5 tests using `app_client.stream()` + `_read_sse()` helper
+
+#### Bug Fix: `api/routers/runs.py`
+- `get_run` now parses `opportunities` and `risks` from JSON strings back to Python lists before returning
+- These were stored via `json.dumps(...)` in SQLite — frontend was receiving string instead of array
+
+### Frontend (`frontend/`)
+
+#### Scaffold
+- Next.js 14.2.35, App Router, TypeScript, Tailwind v3, ESLint
+- shadcn/ui v0.x (Radix UI based — shadcn@latest v4 would have broken Tailwind v3)
+- `react-leaflet@4` (v5 requires React 19; pinned for React 18 compat)
+- `swr`, `react-markdown`, `remark-gfm`, `leaflet`, `@types/leaflet`
+- `frontend/.env.local`: `NEXT_PUBLIC_API_URL=http://localhost:8000`
+- CORS already configured in `api/main.py` for `localhost:3000`
+
+#### Shared Types + API Client
+- `frontend/lib/types.ts` — all TS interfaces mirroring Pydantic models: Province, Municipality, Run, RunDetail, RunResult, Report, ChatMessage, AdminStats, StepEvent, Tier; `getTier(score)` function (A≥0.8, B≥0.65, C≥0.5, D<0.5)
+- `frontend/lib/api.ts` — typed fetch wrappers for all 11 endpoints; `openRunStream(runId)` + `openRefreshStream()` EventSource factories; `streamChat(message, runId)` async generator (parses `data: <token>` SSE lines, stops on `[DONE]`)
+
+#### Components (all in `frontend/components/`)
+- `nav.tsx` — `"use client"`, `usePathname()` active detection, amber ☀ HELIO logo, 5 links
+- `score-bar.tsx` — 3 horizontal bars: solar (blue-400), income (emerald-400), pop (violet-400); `showLabels` prop
+- `tier-badge.tsx` — colored pill for A/B/C/D; amber/emerald/blue/slate; null → "—"
+- `municipality-table.tsx` — sortable by 5 columns, 50/page pagination, expand-on-click with ScoreBar
+- `map-view.tsx` — react-leaflet dark tiles (CARTO), CircleMarker per municipality, score-colored dots, click → `onSelect(id)`; leaflet CSS + icon fix in useEffect; dynamic import required (`ssr: false`)
+- `run-progress.tsx` — SSE step tracker: waiting/running/done/failed states with spinner/checkmark/X icons, elapsed time display
+- `chat-panel.tsx` — streaming chat via `streamChat` async generator, `bufferRef` accumulation, ReactMarkdown responses (wrapped in `<div className="prose...">` due to react-markdown v10 removing className prop), cursor ▌ while streaming
+- `run-list.tsx` — sidebar list with STATUS_STYLES badge colors, exact pathname active detection, `basePath` prop (default `/reports`)
+- `stat-card.tsx` — label/value/sub card, null→"—", number→`toLocaleString()`
+
+#### Pages (all in `frontend/app/`)
+- `page.tsx` — `redirect("/explore")`
+- `explore/page.tsx` — province filter, text search, min-score slider, Show/Hide Map toggle (`h-64` MapView via dynamic import), MunicipalityTable; shared `selectedId` state links map clicks to row expand
+- `analyze/page.tsx` — province → municipality cascading SWR selects, multi-select checkboxes, builds `"Muni, Province"` or `"M1|M2, Province"` location strings, POSTs `/runs`
+- `analyze/[runId]/page.tsx` — RunProgress with SSE, auto-redirects to `/reports/{id}` after 1.5s on complete
+- `reports/page.tsx` — Server Component, redirects to latest run or shows empty state
+- `reports/[runId]/page.tsx` — CSS Grid `180px 1fr`; RunList sidebar / scrollable markdown / `h-72` ChatPanel pinned bottom; download .md button (blob URL)
+- `chat/page.tsx` — CSS Grid `1fr 220px`; ChatPanel + context switcher sidebar (Global KB + per-run buttons)
+- `admin/page.tsx` — 8 StatCards (30s SWR refresh), Refresh Geo Scores (RunProgress with synthetic runId), Re-index KB (spinner + message)
+
+#### `.gitignore` fix
+- Changed `reports/` → `/reports/` to prevent matching `frontend/app/reports/`
+
+### Design Decisions (session 5)
+- **Dark Intelligence** aesthetic: `slate-950` background, amber-400 accents throughout
+- **Explore layout**: full-width table, map toggle (not split panel)
+- **Map click**: scroll-to + expand row in table (not popup, not detail strip)
+- **Analyze progress**: vertical step tracker (CI-style), not horizontal bar or log view
+- **Reports layout**: three-panel (180px run list / center report / bottom-pinned chat)
+- **react-markdown v10**: className prop removed — wrap in `<div className="prose...">` instead
+- **`opportunities`/`risks` in SQLite**: stored as `json.dumps(list)` → must deserialize in `get_run()` before returning to frontend
+
+### Specs + Plans Written
+- `docs/superpowers/specs/2026-05-29-helio-v2-design.md` — visual design spec (brainstorm output)
+- `docs/superpowers/specs/2026-05-29-nextjs-frontend-design.md` — full frontend + backend spec
+- `docs/superpowers/plans/2026-05-29-nextjs-frontend.md` — 15-task implementation plan
+
+### Start the App
+```bash
+# Terminal 1
+source .venv_helios/bin/activate && uvicorn api.main:app --reload
+
+# Terminal 2
+cd frontend && npm run dev
+```
+
+#### Files changed (session 5)
+- `api/events.py` — **new**: in-memory SSE event store
+- `api/routers/runs.py` — SSE stream rewrite + `get_run` JSON parse fix + `_run_pipeline_bg` passes run_id
+- `api/routers/chat.py` — streaming SSE response
+- `agents/chatbot.py` — added `chat_stream()` generator
+- `graph/pipeline.py` — `run_id` param, `stream()` mode, step event emission
+- `tests/api/test_events.py` — **new**: 4 tests
+- `tests/api/test_chat.py` — replaced: 5 streaming tests
+- `tests/api/test_runs.py` — added stream step event test
+- `frontend/` — **new**: entire Next.js app (scaffold + 2 lib files + 9 components + 8 pages)
+- `docs/superpowers/specs/2026-05-29-helio-v2-design.md` — **new**
+- `docs/superpowers/specs/2026-05-29-nextjs-frontend-design.md` — **new**
+- `docs/superpowers/plans/2026-05-29-nextjs-frontend.md` — **new**
+- `.gitignore` — anchored `/reports/` (was `reports/`)
+
+### ⚠️ Remaining (next session)
+- `feat-helio-v2` not yet merged to `main`
+- Plan 2 still pending: `scripts/precompute_geo_scores.py` (scores all 1,622 municipalities into `helio.db`)
+- `/admin/refresh-scores` and `/admin/refresh-scores/stream` are stubs until Plan 2
+- Hybrid RAG (bm25s + ChromaDB + RRF) not yet implemented
+- Pipeline parallelization (geo_scoring ‖ web_intel) not yet implemented
 
 ---
 
