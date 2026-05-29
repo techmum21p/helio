@@ -17,21 +17,21 @@ export default function RunMapView({ results, center = [12.8797, 121.774] }: Pro
     delete (L.Icon.Default.prototype as { _getIconUrl?: unknown })._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: "/leaflet/marker-icon-2x.png",
-      iconUrl: "/leaflet/marker-icon.png",
-      shadowUrl: "/leaflet/marker-shadow.png",
+      iconUrl:        "/leaflet/marker-icon.png",
+      shadowUrl:      "/leaflet/marker-shadow.png",
     });
   }, []);
 
   const withCoords = results.filter((r) => r.lat !== null && r.lon !== null);
 
   return (
-    <MapContainer center={center} zoom={10} className="w-full h-full">
+    <MapContainer center={center} zoom={7} className="w-full h-full">
       <TileLayer
         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
       />
       {withCoords.map((r) => {
-        const color = scoreColor(r.final_score);
+        const color  = scoreColor(r.final_score);
         const radius = scoreRadius(r.final_score);
         return (
           <CircleMarker
