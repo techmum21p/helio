@@ -20,46 +20,89 @@ client = anthropic.Anthropic(api_key=config.XIAOMI_API_KEY, base_url=config.XIAO
 
 # ChromaDB setup
 _chroma_client = chromadb.PersistentClient(path=str(config.KB_INDEX))
-_embed_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-    model_name="all-MiniLM-L6-v2"
+_embed_fn = embedding_functions.OllamaEmbeddingFunction(
+    model_name=config.OLLAMA_EMBED_MODEL,
+    url=config.OLLAMA_URL,
 )
-_collection = _chroma_client.get_or_create_collection(
-    name="solar_lead_kb",
-    embedding_function=_embed_fn,
-)
+
+# Marker file records which embedding model built the current index.
+# If it differs from config, the collection is wiped and recreated.
+_EMBED_MARKER = config.KB_INDEX / ".embed_model"
+
+
+def _get_collection() -> chromadb.Collection:
+    """Return the ChromaDB collection, recreating it if the embedding model changed."""
+    stored = _EMBED_MARKER.read_text().strip() if _EMBED_MARKER.exists() else None
+    if stored != config.OLLAMA_EMBED_MODEL:
+        logger.info(
+            f"Embedding model changed ({stored!r} → {config.OLLAMA_EMBED_MODEL!r}). "
+            "Wiping and recreating ChromaDB collection..."
+        )
+        try:
+            _chroma_client.delete_collection("solar_lead_kb")
+        except Exception:
+            pass
+        _EMBED_MARKER.write_text(config.OLLAMA_EMBED_MODEL)
+    return _chroma_client.get_or_create_collection(
+        name="solar_lead_kb",
+        embedding_function=_embed_fn,
+    )
+
+
+_collection = _get_collection()
 
 
 # ── KB Management ──────────────────────────────────────────────────────────────
 
-def index_documents_from_kb():
+def index_documents_from_kb() -> None:
     """
-    Scan kb/reports/ and kb/intel/ for new markdown files
-    and add them to the ChromaDB collection.
-    Skips already-indexed files using filename as doc ID.
+    Index reports from the DB and municipality intel files from kb/intel/.
+    Skips already-indexed doc IDs — safe to call repeatedly.
     """
+    from agents.db_store import list_reports
+
     existing_ids = set(_collection.get()["ids"])
 
-    for kb_dir in [config.KB_REPORTS, config.KB_INTEL]:
-        for md_file in Path(kb_dir).glob("*.md"):
-            doc_id = md_file.stem
-            if doc_id in existing_ids:
-                continue
+    # ── Reports from DB ────────────────────────────────────────────────────
+    for report in list_reports():
+        doc_id = report["slug"]
+        if doc_id in existing_ids:
+            continue
+        text   = report.get("markdown", "")
+        chunks = [p.strip() for p in text.split("\n\n") if len(p.strip()) > 50]
+        if not chunks:
+            continue
+        chunk_ids  = [f"{doc_id}_chunk_{i}" for i in range(len(chunks))]
+        new_chunks = [(cid, c) for cid, c in zip(chunk_ids, chunks) if cid not in existing_ids]
+        if new_chunks:
+            _collection.add(
+                documents=[c for _, c in new_chunks],
+                ids=[cid for cid, _ in new_chunks],
+                metadatas=[{
+                    "source":   f"db:reports:{doc_id}",
+                    "province": report.get("province", ""),
+                } for _ in new_chunks],
+            )
+            logger.info(f"Indexed {len(new_chunks)} chunks from report {doc_id}")
 
-            text = md_file.read_text(encoding="utf-8")
-
-            # Chunk by paragraph
-            chunks = [p.strip() for p in text.split("\n\n") if len(p.strip()) > 50]
-            chunk_ids = [f"{doc_id}_chunk_{i}" for i in range(len(chunks))]
-            already = set(_collection.get()["ids"])
-            new_chunks = [(cid, chunk) for cid, chunk in zip(chunk_ids, chunks) if cid not in already]
-
-            if new_chunks:
-                _collection.add(
-                    documents=[c for _, c in new_chunks],
-                    ids=[cid for cid, _ in new_chunks],
-                    metadatas=[{"source": str(md_file)} for _ in new_chunks],
-                )
-                logger.info(f"Indexed {len(new_chunks)} chunks from {md_file.name}")
+    # ── Municipality intel files from kb/intel/ (not in DB yet) ───────────
+    for md_file in Path(config.KB_INTEL).glob("*.md"):
+        doc_id = md_file.stem
+        if doc_id in existing_ids:
+            continue
+        text   = md_file.read_text(encoding="utf-8")
+        chunks = [p.strip() for p in text.split("\n\n") if len(p.strip()) > 50]
+        if not chunks:
+            continue
+        chunk_ids  = [f"{doc_id}_chunk_{i}" for i in range(len(chunks))]
+        new_chunks = [(cid, c) for cid, c in zip(chunk_ids, chunks) if cid not in existing_ids]
+        if new_chunks:
+            _collection.add(
+                documents=[c for _, c in new_chunks],
+                ids=[cid for cid, _ in new_chunks],
+                metadatas=[{"source": str(md_file)} for _ in new_chunks],
+            )
+            logger.info(f"Indexed {len(new_chunks)} chunks from {md_file.name}")
 
 
 def update_kb_node(state: SolarLeadState) -> SolarLeadState:
@@ -134,19 +177,18 @@ Always be direct and practical — your user is a business owner, not an analyst
 """
 
 
-def chat(user_message: str, chat_history: list) -> tuple[str, list]:
+def chat(user_message: str, chat_history: list, run_id: str = "") -> tuple[str, list]:
     """
     Single turn of the chatbot.
     Returns (assistant_response, updated_chat_history).
+    Persists both turns to DB if run_id is provided.
     """
     index_documents_from_kb()
-
-    context = retrieve_context(user_message)
-
+    context  = retrieve_context(user_message)
     messages = chat_history.copy()
     messages.append({
-        "role": "user",
-        "content": f"Context from knowledge base:\n{context}\n\nQuestion: {user_message}"
+        "role":    "user",
+        "content": f"Context from knowledge base:\n{context}\n\nQuestion: {user_message}",
     })
 
     try:
@@ -158,12 +200,15 @@ def chat(user_message: str, chat_history: list) -> tuple[str, list]:
         )
         assistant_reply = next(b.text for b in response.content if hasattr(b, "text"))
 
-        # Store clean question (not context-stuffed version) in history
+        if run_id:
+            from agents.db_store import save_chat_message
+            save_chat_message(run_id, "user", user_message)
+            save_chat_message(run_id, "assistant", assistant_reply)
+
         updated_history = chat_history + [
-            {"role": "user", "content": user_message},
+            {"role": "user",      "content": user_message},
             {"role": "assistant", "content": assistant_reply},
         ]
-
         return assistant_reply, updated_history
 
     except Exception as e:
