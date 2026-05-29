@@ -11,9 +11,7 @@ const config: Config = {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      screens: { "2xl": "1400px" },
     },
     extend: {
       colors: {
@@ -56,9 +54,30 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            "--tw-prose-body": "#44403c",
+            "--tw-prose-headings": "#1c1917",
+            "--tw-prose-links": "#d97706",
+            "--tw-prose-bold": "#1c1917",
+            "--tw-prose-counters": "#78716c",
+            "--tw-prose-bullets": "#a8a29e",
+            "--tw-prose-hr": "#ede9e0",
+            "--tw-prose-quotes": "#44403c",
+            "--tw-prose-quote-borders": "#fcd34d",
+            "--tw-prose-captions": "#78716c",
+            "--tw-prose-code": "#1c1917",
+            "--tw-prose-pre-code": "#1c1917",
+            "--tw-prose-pre-bg": "#f3f1eb",
+            "--tw-prose-th-borders": "#ede9e0",
+            "--tw-prose-td-borders": "#ede9e0",
+          },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 };
 
 export default config;
