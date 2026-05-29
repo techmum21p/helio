@@ -1,17 +1,16 @@
 "use client";
 import { useEffect } from "react";
-import { MapContainer, TileLayer, CircleMarker, Tooltip, Popup } from "react-leaflet";
-import type { Municipality } from "@/lib/types";
+import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip } from "react-leaflet";
+import type { RunResult } from "@/lib/types";
 import { scoreColor, scoreRadius } from "@/lib/score-color";
 import "leaflet/dist/leaflet.css";
 
 interface Props {
-  municipalities: Municipality[];
-  selectedId: number | null;
-  onSelect: (id: number) => void;
+  results: RunResult[];
+  center?: [number, number];
 }
 
-export default function MapView({ municipalities, selectedId, onSelect }: Props) {
+export default function RunMapView({ results, center = [12.8797, 121.774] }: Props) {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const L = require("leaflet");
@@ -23,33 +22,28 @@ export default function MapView({ municipalities, selectedId, onSelect }: Props)
     });
   }, []);
 
-  const withCoords = municipalities.filter((m) => m.lat !== null && m.lon !== null);
+  const withCoords = results.filter((r) => r.lat !== null && r.lon !== null);
 
   return (
-    <MapContainer
-      center={[12.8797, 121.774]}
-      zoom={6}
-      className="w-full h-full"
-    >
+    <MapContainer center={center} zoom={10} className="w-full h-full">
       <TileLayer
         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
       />
-      {withCoords.map((m) => {
-        const color = selectedId === m.id ? "#d97706" : scoreColor(m.geo_score);
-        const radius = selectedId === m.id ? 10 : scoreRadius(m.geo_score);
+      {withCoords.map((r) => {
+        const color = scoreColor(r.final_score);
+        const radius = scoreRadius(r.final_score);
         return (
           <CircleMarker
-            key={m.id}
-            center={[m.lat!, m.lon!]}
+            key={r.municipality_id}
+            center={[r.lat!, r.lon!]}
             radius={radius}
             pathOptions={{ color, fillColor: color, fillOpacity: 0.75, weight: 1.5 }}
-            eventHandlers={{ click: () => onSelect(m.id) }}
           >
             <Popup>
-              <b>{m.name}</b><br />Score: {m.geo_score?.toFixed(3) ?? "—"}
+              <b>{r.municipality_name}</b><br />Score: {r.final_score.toFixed(3)}
             </Popup>
-            <Tooltip>{m.name}: {m.geo_score?.toFixed(3) ?? "—"}</Tooltip>
+            <Tooltip>{r.municipality_name}: {r.final_score.toFixed(3)}</Tooltip>
           </CircleMarker>
         );
       })}
