@@ -8,12 +8,13 @@
 
 ## 1. Goal
 
-Four tightly coupled improvements shipped together in one branch:
+Five tightly coupled improvements shipped together in one branch:
 
 1. **Fix geo scoring** — revised weights, proper 3-component normalization, `geo_scoring_agent` becomes a DB lookup
 2. **Migrate web intel cache** — replace JSON file with `web_intel_cache` table; compute and persist `web_score`
 3. **Update final score formula** — `0.70 × geo + 0.30 × web`
 4. **Persist sessions, reports, and chat** — DB-backed history panel in the Streamlit sidebar
+5. **Switch KB embedding to Ollama qwen3-embedding** — replace `sentence-transformers` with Ollama; DB as single KB source (no `kb/reports/` files needed for indexing)
 
 ---
 
@@ -21,18 +22,20 @@ Four tightly coupled improvements shipped together in one branch:
 
 | File | Change |
 |---|---|
-| `config.py` | Updated score weights |
+| `config.py` | Updated score weights; new Ollama embedding config |
 | `scripts/precompute_geo_scores.py` | Rewrite: proper 3-component normalization |
 | `agents/geo_scoring.py` | DB lookup first, on-the-fly fallback |
 | `agents/web_intel.py` | SQLite cache instead of JSON; compute + store `web_score` |
 | `agents/synthesis.py` | `compute_final_score()` uses new 70/30 weights |
 | `agents/report_gen.py` | Also writes to `reports` table |
-| `agents/chatbot.py` | Persists each chat turn to `chat_messages` table |
+| `agents/chatbot.py` | Ollama embedding; DB as KB source; persists chat turns |
 | `agents/db_store.py` | **NEW** — replaces `session_store.py`; owns all DB session/run/chat I/O |
 | `app.py` | Run lifecycle hooks; sidebar history panel; Admin page |
 | `data/helio.db` | `ALTER TABLE web_intel_cache ADD COLUMN web_score REAL` |
+| `kb/index/` | **Wiped and re-indexed** — incompatible with new embedding model |
 
-**Retired:** `agents/session_store.py` (stop writing new JSON sessions; old files are ignored)
+**Retired:** `agents/session_store.py` (stop writing new JSON sessions; old files are ignored)  
+**Retired:** `kb/reports/` as an indexing source — report markdown read directly from `reports` table
 
 ---
 
@@ -155,9 +158,44 @@ db_store.save_report(run_id, province, municipality=None, markdown=markdown, fil
 
 Files at `reports/` and `kb/reports/` continue to be written (KB RAG still needs them).
 
-### `chatbot.py` — `chat()`
+### `chatbot.py` — embedding model + KB source + chat persistence
 
-After each turn, call `db_store.save_chat_message(run_id, role, content)` for both user and assistant turns. `chat()` signature gains a `run_id: str = ""` parameter — if empty string, message is not persisted (safe for cases where no pipeline run has been started yet).
+**Embedding model swap:**
+```python
+# Before
+_embed_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name="all-MiniLM-L6-v2"
+)
+
+# After
+_embed_fn = embedding_functions.OllamaEmbeddingFunction(
+    model_name=config.OLLAMA_EMBED_MODEL,   # "qwen3-embedding"
+    url=config.OLLAMA_URL,                  # "http://localhost:11434"
+)
+```
+
+Because vector dimensions change, the `solar_lead_kb` collection is **deleted and recreated** on first startup with the new embedding function. A helper `_reset_collection()` handles this: it checks if the stored embedding function metadata matches; if not, deletes and recreates. This runs once automatically — subsequent startups are fast.
+
+**`index_documents_from_kb()` — DB source:**
+
+Replace filesystem scan with a DB query:
+```python
+# Before: scans kb/reports/ and kb/intel/ for .md files
+# After:
+rows = db_store.list_reports()   # SELECT id, slug, markdown, province, municipality FROM reports
+for row in rows:
+    doc_id = row["slug"]
+    if doc_id in existing_ids:
+        continue
+    chunks = [p.strip() for p in row["markdown"].split("\n\n") if len(p.strip()) > 50]
+    # ... add to collection as before
+```
+
+`kb/intel/` municipality profile files continue to be indexed from disk — they are written by `kb_builder.py` and are not yet stored in the DB. Only `kb/reports/` is retired as a source.
+
+**Chat persistence:**
+
+`chat()` signature gains `run_id: str = ""` — if empty string, message is not persisted (safe when no pipeline run has been started yet). After each turn, calls `db_store.save_chat_message(run_id, role, content)` for both sides.
 
 ---
 
@@ -175,6 +213,7 @@ def save_chat_message(run_id: str, role: str, content: str) -> None
 def load_chat_history(run_id: str) -> list[dict]              # [{role, content}, ...]
 def list_runs(limit: int = 20) -> list[dict]                  # for sidebar
 def load_run(run_id: str) -> dict | None                      # {run_id, location, top_targets, report_markdown, report_path}
+def list_reports() -> list[dict]                              # [{id, slug, province, municipality, markdown}] for KB indexing
 ```
 
 All functions open/close their own connection (same pattern as `location_db.py`). All errors are caught and logged — never raised.
@@ -241,6 +280,21 @@ WEIGHTS = {
 # Final score weights (new)
 FINAL_GEO_WEIGHT = 0.70   # was 0.80
 FINAL_WEB_WEIGHT = 0.30   # was 0.20
+
+# Ollama embedding (new)
+OLLAMA_URL        = os.getenv("OLLAMA_URL", "http://localhost:11434")
+OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "qwen3-embedding")
+```
+
+`.env` additions:
+```
+OLLAMA_URL=http://localhost:11434        # optional override
+OLLAMA_EMBED_MODEL=qwen3-embedding      # optional override
+```
+
+**Prerequisite:** Ollama must be running locally with the model pulled:
+```bash
+ollama pull qwen3-embedding
 ```
 
 ---
@@ -252,6 +306,9 @@ FINAL_WEB_WEIGHT = 0.30   # was 0.20
 | `agents/session_store.py` | `agents/db_store.py` |
 | `sessions/*.json` | `runs` + `chat_messages` + `reports` tables in `helio.db` |
 | `data/processed/web_intel_cache.json` | `web_intel_cache` table in `helio.db` |
+| `kb/reports/*.md` as indexing source | `reports` table queried directly by `index_documents_from_kb()` |
+| `chromadb` `SentenceTransformerEmbeddingFunction` | `OllamaEmbeddingFunction` with `qwen3-embedding` |
+| `kb/index/` existing vectors | Wiped on first startup — re-indexed from DB with new embedding model |
 
 Files are not deleted immediately — stop writing new ones; reads fall back gracefully.
 
