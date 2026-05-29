@@ -3,3 +3,24 @@
 /.venv_helios
 
 .superpowers/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Databases & vector stores
+data/*.db
+data/*.db-shm
+data/*.db-wal
+kb/index/
+
+# Next.js / frontend build artifacts
+frontend/.next/
+frontend/node_modules/
+frontend/.env.local
+.next/
+
+# Misc
+*.log
+.DS_Store

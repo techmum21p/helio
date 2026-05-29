@@ -60,22 +60,23 @@ with st.sidebar:
             options=["— Select province —"] + list(prov_by_name.keys()),
         )
 
-        selected_muni_name = None
+        selected_muni_names: list[str] = []
         if selected_prov_name != "— Select province —":
             prov_id = prov_by_name[selected_prov_name]
             munis = _cached_municipalities(prov_id)
             muni_options = {m["name"]: m["id"] for m in munis}
-            raw_muni = st.selectbox(
-                "Municipality",
-                options=["— All municipalities —"] + list(muni_options.keys()),
+            selected_muni_names = st.multiselect(
+                "Municipalities (leave blank to analyze all)",
+                options=list(muni_options.keys()),
             )
-            if raw_muni != "— All municipalities —":
-                selected_muni_name = raw_muni
 
         if selected_prov_name == "— Select province —":
             location_str = None
-        elif selected_muni_name:
-            location_str = f"{selected_muni_name}, {selected_prov_name}"
+        elif len(selected_muni_names) == 1:
+            location_str = f"{selected_muni_names[0]}, {selected_prov_name}"
+        elif len(selected_muni_names) > 1:
+            towns = " | ".join(selected_muni_names)
+            location_str = f"{towns}, {selected_prov_name}"
         else:
             location_str = selected_prov_name
 

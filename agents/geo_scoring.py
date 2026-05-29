@@ -426,9 +426,16 @@ def geo_scoring_agent(state: SolarLeadState) -> SolarLeadState:
         location = state["location"]
         if location.count(",") == 1:
             parts = location.rsplit(",", 1)
-            town, province = parts[0].strip(), parts[1].strip()
-            logger.info(f"[Agent 1] Single-municipality mode: {town}, {province}")
-            units = load_single_municipality(town, province)
+            town_part, province = parts[0].strip(), parts[1].strip()
+            if " | " in town_part:
+                towns = [t.strip() for t in town_part.split(" | ")]
+                logger.info(f"[Agent 1] Multi-municipality mode: {towns} in {province}")
+                units = []
+                for town in towns:
+                    units.extend(load_single_municipality(town, province))
+            else:
+                logger.info(f"[Agent 1] Single-municipality mode: {town_part}, {province}")
+                units = load_single_municipality(town_part, province)
         else:
             units = load_municipalities(location)
 
