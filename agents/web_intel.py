@@ -6,6 +6,7 @@ Runs after Agent 1 (sequential) so it knows the exact municipality list.
 """
 
 import json
+import sqlite3 as _sqlite3
 import time
 from datetime import datetime, timezone, timedelta
 
@@ -21,59 +22,81 @@ tavily = TavilyClient(api_key=config.TAVILY_API_KEY) if config.TAVILY_API_KEY el
 
 _TAVILY_DELAY = 0.4  # seconds between requests — keeps dev key under rate limit
 
-# ── Persistent web intel cache ─────────────────────────────────────────────────
-_CACHE_FILE = config.DATA_PROCESSED / "web_intel_cache.json"
-_CACHE_TTL_DAYS = config.WEB_INTEL_CACHE_TTL_DAYS
-_cache: dict | None = None  # loaded lazily on first access
+# ── SQLite web intel cache ─────────────────────────────────────────────────────
+
+def _compute_web_score(intel: dict) -> float:
+    """Compute web_score from raw intel signals. Range: 0–1."""
+    biz_density   = min(intel.get("business_count", 0) / 20, 1.0)
+    price_signal  = min(intel.get("avg_price_level", 0) / 4, 1.0)
+    rating_raw    = intel.get("avg_rating", 0)
+    rating_signal = max((rating_raw - 1.0) / 4.0, 0) if rating_raw else 0
+    anchor_signal = min(intel.get("commercial_anchors", 0) / 5, 1.0)
+    return round(
+        0.35 * biz_density
+        + 0.25 * price_signal
+        + 0.25 * rating_signal
+        + 0.15 * anchor_signal,
+        4,
+    )
 
 
-def _load_cache() -> dict:
-    global _cache
-    if _cache is not None:
-        return _cache
-    if _CACHE_FILE.exists():
-        try:
-            _cache = json.loads(_CACHE_FILE.read_text(encoding="utf-8"))
-            logger.debug(f"Web intel cache loaded: {len(_cache)} entries")
-        except Exception:
-            _cache = {}
-    else:
-        _cache = {}
-    return _cache
-
-
-def _save_cache() -> None:
-    _CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    _CACHE_FILE.write_text(json.dumps(_cache, indent=2, ensure_ascii=False), encoding="utf-8")
-
-
-def _cache_key(municipality: str, province: str) -> str:
-    return f"{province}::{municipality}"
-
-
-def _is_fresh(entry: dict) -> bool:
+def _get_db_cache(municipality: str, province: str) -> dict | None:
+    """Return cached intel dict if fresh, else None."""
+    from agents.db_store import get_municipality_id
+    muni_id = get_municipality_id(municipality, province)
+    if muni_id is None:
+        return None
+    conn = _sqlite3.connect(str(config.HELIO_DB))
+    conn.row_factory = _sqlite3.Row
     try:
-        cached_at = datetime.fromisoformat(entry["cached_at"])
-        return datetime.now(timezone.utc) - cached_at < timedelta(days=_CACHE_TTL_DAYS)
-    except Exception:
-        return False
+        row = conn.execute(
+            """SELECT places_data, web_score FROM web_intel_cache
+               WHERE municipality_id=? AND expires_at > datetime('now')""",
+            (muni_id,),
+        ).fetchone()
+        if row and row["places_data"]:
+            result = json.loads(row["places_data"])
+            result["web_score"] = row["web_score"]
+            return result
+        return None
+    except Exception as e:
+        logger.warning(f"web_intel._get_db_cache failed: {e}")
+        return None
+    finally:
+        conn.close()
 
 
-def get_cached_intel(municipality: str, province: str) -> dict | None:
-    cache = _load_cache()
-    entry = cache.get(_cache_key(municipality, province))
-    if entry and _is_fresh(entry):
-        return entry["data"]
-    return None
-
-
-def set_cached_intel(municipality: str, province: str, data: dict) -> None:
-    cache = _load_cache()
-    cache[_cache_key(municipality, province)] = {
-        "data": data,
-        "cached_at": datetime.now(timezone.utc).isoformat(),
-    }
-    _save_cache()
+def _set_db_cache(municipality: str, province: str, intel: dict, web_score: float) -> None:
+    """Write intel + web_score to web_intel_cache table."""
+    from agents.db_store import get_municipality_id
+    muni_id = get_municipality_id(municipality, province)
+    if muni_id is None:
+        logger.warning(f"web_intel: no municipality_id for {municipality}, {province} — skipping DB cache")
+        return
+    now     = datetime.now(timezone.utc)
+    expires = now + timedelta(days=config.WEB_INTEL_CACHE_TTL_DAYS)
+    conn = _sqlite3.connect(str(config.HELIO_DB))
+    try:
+        conn.execute(
+            """INSERT OR REPLACE INTO web_intel_cache
+               (municipality_id, business_count, avg_price_level, places_data,
+                web_score, fetched_at, expires_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            (
+                muni_id,
+                intel.get("business_count", 0),
+                intel.get("avg_price_level", 0),
+                json.dumps(intel),
+                web_score,
+                now.isoformat(),
+                expires.isoformat(),
+            ),
+        )
+        conn.commit()
+    except Exception as e:
+        logger.warning(f"web_intel._set_db_cache failed: {e}")
+    finally:
+        conn.close()
 
 
 def search_web(query: str) -> str:
@@ -167,41 +190,41 @@ def get_places_signal(municipality: str, province: str = "", lat: float | None =
 def gather_intel_for_municipality(municipality: str, geo: dict | None = None) -> dict:
     """
     Gather all web signals for a single municipality.
-    Results are cached to disk for _CACHE_TTL_DAYS days — re-runs skip all API calls.
-    geo dict (from Agent 1) provides province + real coordinates for Places location bias.
+    Results are cached in web_intel_cache table (SQLite) for WEB_INTEL_CACHE_TTL_DAYS days.
     """
     province = (geo or {}).get("province", "")
 
-    cached = get_cached_intel(municipality, province)
+    cached = _get_db_cache(municipality, province)
     if cached:
-        logger.info(f"  [Web Intel] Cache hit: {municipality} ({province})")
+        logger.info(f"  [Web Intel] DB cache hit: {municipality} ({province})")
         return cached
 
     logger.info(f"  [Web Intel] Fetching: {municipality} ({province})")
-
     lat = (geo or {}).get("lat")
     lon = (geo or {}).get("lon")
     search_name = f"{municipality}, {province}" if province else municipality
 
-    news = search_web(f"economic development {search_name} Philippines 2024 2025")
+    news            = search_web(f"economic development {search_name} Philippines 2024 2025")
     property_signal = search_web(f"house prices real estate {search_name} Philippines Lamudi PropertyPro")
-    commerce = search_web(f"business establishments commercial activity {search_name} Philippines")
-    solar_news = search_web(f"solar panel installation {search_name} Philippines")
-    places = get_places_signal(municipality, province=province, lat=lat, lon=lon)
+    commerce        = search_web(f"business establishments commercial activity {search_name} Philippines")
+    solar_news      = search_web(f"solar panel installation {search_name} Philippines")
+    places          = get_places_signal(municipality, province=province, lat=lat, lon=lon)
 
     result = {
-        "news_snippet": news[:500],
-        "property_snippet": property_signal[:500],
-        "commerce_snippet": commerce[:500],
-        "solar_news_snippet": solar_news[:300],
-        "business_count": places["business_count"],
-        "avg_price_level": places["avg_price_level"],
-        "avg_rating": places["avg_rating"],
-        "total_reviews": places["total_reviews"],
-        "commercial_anchors": places["commercial_anchors"],
+        "news_snippet":        news[:500],
+        "property_snippet":    property_signal[:500],
+        "commerce_snippet":    commerce[:500],
+        "solar_news_snippet":  solar_news[:300],
+        "business_count":      places["business_count"],
+        "avg_price_level":     places["avg_price_level"],
+        "avg_rating":          places.get("avg_rating", 0),
+        "total_reviews":       places.get("total_reviews", 0),
+        "commercial_anchors":  places.get("commercial_anchors", 0),
     }
 
-    set_cached_intel(municipality, province, result)
+    web_score = _compute_web_score(result)
+    _set_db_cache(municipality, province, result, web_score)
+    result["web_score"] = web_score
     return result
 
 
