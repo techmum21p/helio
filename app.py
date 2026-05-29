@@ -316,8 +316,10 @@ elif page == "⚙️ Admin":
                     _precompute_state["done"]  = done
                     _precompute_state["total"] = total
 
-                precompute_geo_scores(progress_callback=_cb)
-                _precompute_state["running"] = False
+                try:
+                    precompute_geo_scores(progress_callback=_cb)
+                finally:
+                    _precompute_state["running"] = False
 
             threading.Thread(target=_run_precompute, daemon=True).start()
             st.rerun()

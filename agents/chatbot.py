@@ -61,7 +61,8 @@ def index_documents_from_kb() -> None:
     """
     from agents.db_store import list_reports
 
-    existing_ids = set(_collection.get()["ids"])
+    collection = _get_collection()              # always get fresh/current collection
+    existing_ids = set(collection.get()["ids"])
 
     # ── Reports from DB ────────────────────────────────────────────────────
     for report in list_reports():
@@ -75,7 +76,7 @@ def index_documents_from_kb() -> None:
         chunk_ids  = [f"{doc_id}_chunk_{i}" for i in range(len(chunks))]
         new_chunks = [(cid, c) for cid, c in zip(chunk_ids, chunks) if cid not in existing_ids]
         if new_chunks:
-            _collection.add(
+            collection.add(
                 documents=[c for _, c in new_chunks],
                 ids=[cid for cid, _ in new_chunks],
                 metadatas=[{
@@ -97,7 +98,7 @@ def index_documents_from_kb() -> None:
         chunk_ids  = [f"{doc_id}_chunk_{i}" for i in range(len(chunks))]
         new_chunks = [(cid, c) for cid, c in zip(chunk_ids, chunks) if cid not in existing_ids]
         if new_chunks:
-            _collection.add(
+            collection.add(
                 documents=[c for _, c in new_chunks],
                 ids=[cid for cid, _ in new_chunks],
                 metadatas=[{"source": str(md_file)} for _ in new_chunks],
@@ -137,7 +138,7 @@ def retrieve_context(query: str, n_results: int = 10) -> str:
     Returns chunks with their source file noted so the LLM knows the provenance.
     """
     try:
-        results = _collection.query(query_texts=[query], n_results=n_results)
+        results = _get_collection().query(query_texts=[query], n_results=n_results)
         docs = results.get("documents", [[]])[0]
         metas = results.get("metadatas", [[]])[0]
 

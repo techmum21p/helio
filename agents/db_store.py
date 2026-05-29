@@ -16,6 +16,93 @@ def _get_conn() -> sqlite3.Connection:
     return conn
 
 
+def _create_schema() -> None:
+    """Create all tables if they don't exist (idempotent)."""
+    schema = """
+    CREATE TABLE IF NOT EXISTS municipalities (
+        id           INTEGER PRIMARY KEY,
+        name         TEXT    NOT NULL,
+        province     TEXT    NOT NULL,
+        region       TEXT    NOT NULL,
+        lat          REAL,
+        lon          REAL,
+        area_km2     REAL,
+        population   INTEGER,
+        income_class TEXT
+    );
+    CREATE TABLE IF NOT EXISTS geo_scores (
+        id                INTEGER PRIMARY KEY AUTOINCREMENT,
+        municipality_id   INTEGER NOT NULL UNIQUE REFERENCES municipalities(id),
+        solar_irradiance  REAL,
+        solar_norm        REAL,
+        income_score      REAL,
+        pop_density       REAL,
+        pop_density_norm  REAL,
+        geo_score         REAL,
+        computed_at       DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE INDEX IF NOT EXISTS idx_geo_score ON geo_scores(geo_score DESC);
+    CREATE TABLE IF NOT EXISTS runs (
+        id           TEXT PRIMARY KEY,
+        location     TEXT NOT NULL,
+        province     TEXT,
+        status       TEXT NOT NULL DEFAULT 'pending',
+        created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+        completed_at DATETIME,
+        error        TEXT
+    );
+    CREATE TABLE IF NOT EXISTS run_results (
+        id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        run_id          TEXT    NOT NULL REFERENCES runs(id),
+        municipality_id INTEGER REFERENCES municipalities(id),
+        geo_score       REAL,
+        web_score       REAL,
+        final_score     REAL,
+        tier            TEXT,
+        assessment      TEXT,
+        opportunities   TEXT,
+        risks           TEXT
+    );
+    CREATE INDEX IF NOT EXISTS idx_run_results_score ON run_results(run_id, final_score DESC);
+    CREATE TABLE IF NOT EXISTS web_intel_cache (
+        id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        municipality_id INTEGER NOT NULL UNIQUE REFERENCES municipalities(id),
+        business_count  INTEGER,
+        avg_price_level REAL,
+        places_data     TEXT,
+        tavily_snippets TEXT,
+        fetched_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+        expires_at      DATETIME
+    );
+    CREATE INDEX IF NOT EXISTS idx_web_intel_expires ON web_intel_cache(expires_at);
+    CREATE TABLE IF NOT EXISTS chat_messages (
+        id         INTEGER PRIMARY KEY AUTOINCREMENT,
+        run_id     TEXT NOT NULL REFERENCES runs(id),
+        role       TEXT NOT NULL,
+        content    TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE TABLE IF NOT EXISTS reports (
+        id           INTEGER PRIMARY KEY AUTOINCREMENT,
+        run_id       TEXT NOT NULL REFERENCES runs(id),
+        province     TEXT,
+        municipality TEXT,
+        slug         TEXT NOT NULL UNIQUE,
+        markdown     TEXT NOT NULL,
+        file_path    TEXT,
+        created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+    """
+    conn = _get_conn()
+    try:
+        conn.executescript(schema)
+        conn.commit()
+    except Exception as e:
+        logger.warning(f"db_store._create_schema failed: {e}")
+    finally:
+        conn.close()
+
+
 def _migrate() -> None:
     """Add missing columns to tables if not present (idempotent)."""
     conn = _get_conn()
@@ -30,9 +117,10 @@ def _migrate() -> None:
 
 
 try:
+    _create_schema()
     _migrate()
 except Exception as e:
-    logger.warning(f"db_store._migrate skipped: {e}")
+    logger.warning(f"db_store initialization failed: {e}")
 
 
 def create_run(run_id: str, location: str, province: str) -> None:
