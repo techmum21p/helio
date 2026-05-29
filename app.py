@@ -103,7 +103,7 @@ with st.sidebar:
             with st.spinner(f"Analyzing {location_str}... (this takes ~1-2 mins)"):
                 try:
                     result = run_pipeline(location_str, run_id=run_id)
-                    db_store.complete_run(run_id, result.get("top_targets", []))
+                    db_store.complete_run(run_id, result.get("top_targets") or [])
                     st.session_state.pipeline_result = result
                     st.session_state.chat_history = []
                     if result.get("errors"):
@@ -153,6 +153,8 @@ with st.sidebar:
                     st.session_state.current_run_id  = run["id"]
                     st.toast(f"Loaded: {run['location']}", icon="📂")
                     st.rerun()
+                else:
+                    st.error(f"Could not load run {run['id'][:8]}…")
 
 
 # ── Page: Map & Scores ─────────────────────────────────────────────────────────
