@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import useSWR from "swr";
 import dynamic from "next/dynamic";
@@ -37,6 +38,7 @@ export default function MapScoresPage() {
     runId ? `run/${runId}` : null,
     () => getRun(runId)
   );
+  const [expandedId, setExpandedId] = useState<number | null>(null);
 
   if (isLoading) {
     return <div className="flex items-center justify-center flex-1 text-stone-400 text-sm">Loading…</div>;
@@ -51,6 +53,15 @@ export default function MapScoresPage() {
   const avgSolar = results.length
     ? (results.reduce((s, r) => s + (r.geo_score ?? 0), 0) / results.length).toFixed(3)
     : "—";
+
+  // Derive map center from result coordinates
+  const withCoords = results.filter((r) => r.lat != null && r.lon != null);
+  const mapCenter: [number, number] = withCoords.length > 0
+    ? [
+        withCoords.reduce((s, r) => s + r.lat!, 0) / withCoords.length,
+        withCoords.reduce((s, r) => s + r.lon!, 0) / withCoords.length,
+      ]
+    : [12.8797, 121.774];
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -79,11 +90,11 @@ export default function MapScoresPage() {
       </div>
 
       {/* Map + targets */}
-      <div className="flex-1 grid overflow-hidden" style={{ gridTemplateColumns: "1fr 240px" }}>
+      <div className="flex-1 grid overflow-hidden" style={{ gridTemplateColumns: "1fr 260px" }}>
         {/* Map */}
         <div className="overflow-hidden">
           {results.length > 0 ? (
-            <RunMapView results={results} />
+            <RunMapView results={results} center={mapCenter} />
           ) : (
             <div className="flex items-center justify-center h-full text-stone-400 text-sm">
               No map data available.
@@ -91,29 +102,74 @@ export default function MapScoresPage() {
           )}
         </div>
 
-        {/* Top targets list */}
+        {/* Top targets list — expandable cards */}
         <div className="border-l border-stone-200 overflow-y-auto bg-stone-50 flex flex-col">
           <div className="px-3 py-2.5 border-b border-stone-200 shrink-0">
-            <p className="text-[10px] font-bold tracking-widest uppercase text-stone-400">Top Targets</p>
+            <p className="text-[10px] font-bold tracking-widest uppercase text-stone-400">
+              Top Targets — click to expand
+            </p>
           </div>
           <div className="flex flex-col gap-1.5 p-2.5">
-            {results.slice(0, 15).map((r) => (
-              <div key={r.municipality_id} className="bg-white border border-stone-200 rounded-lg px-3 py-2 shadow-sm">
-                <div className="flex items-center gap-1.5">
-                  <span className="flex-1 text-xs font-semibold text-stone-900 truncate">{r.municipality_name}</span>
-                  <TierBadge tier={r.tier} />
-                  <span className="text-xs font-bold text-amber-600 tabular-nums shrink-0">
-                    {r.final_score.toFixed(3)}
-                  </span>
+            {results.slice(0, 15).map((r) => {
+              const expanded = expandedId === r.municipality_id;
+              return (
+                <div
+                  key={r.municipality_id}
+                  className={`border rounded-lg px-3 py-2 shadow-sm cursor-pointer transition-colors ${
+                    expanded
+                      ? "bg-amber-50 border-amber-300"
+                      : "bg-white border-stone-200 hover:border-amber-200"
+                  }`}
+                  onClick={() => setExpandedId(expanded ? null : r.municipality_id)}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span className="flex-1 text-xs font-semibold text-stone-900 truncate">
+                      {r.municipality_name}
+                    </span>
+                    <TierBadge tier={r.tier} />
+                    <span className="text-xs font-bold text-amber-600 tabular-nums shrink-0">
+                      {r.final_score.toFixed(3)}
+                    </span>
+                  </div>
+                  <ScoreBar score={r.final_score} />
+
+                  {expanded && (
+                    <div className="mt-2.5 pt-2.5 border-t border-amber-200 space-y-2">
+                      {r.assessment && (
+                        <div>
+                          <p className="text-[9px] font-bold text-stone-400 uppercase tracking-widest mb-0.5">
+                            Assessment
+                          </p>
+                          <p className="text-[11px] text-stone-600 leading-relaxed">
+                            {r.assessment}
+                          </p>
+                        </div>
+                      )}
+                      {r.opportunities?.length > 0 && (
+                        <div>
+                          <p className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest mb-0.5">
+                            Opportunity
+                          </p>
+                          <p className="text-[11px] text-stone-600 leading-relaxed">
+                            {r.opportunities[0]}
+                          </p>
+                        </div>
+                      )}
+                      {r.risks?.length > 0 && (
+                        <div>
+                          <p className="text-[9px] font-bold text-red-500 uppercase tracking-widest mb-0.5">
+                            Risk
+                          </p>
+                          <p className="text-[11px] text-stone-600 leading-relaxed">
+                            {r.risks[0]}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <ScoreBar score={r.final_score} />
-                {r.assessment && (
-                  <p className="text-[10px] text-stone-500 mt-1.5 line-clamp-2 leading-relaxed">
-                    {r.assessment}
-                  </p>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
