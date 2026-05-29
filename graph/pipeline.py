@@ -29,12 +29,12 @@ def build_pipeline() -> StateGraph:
     return graph.compile()
 
 
-def run_pipeline(location: str) -> SolarLeadState:
+def run_pipeline(location: str, run_id: str | None = None) -> SolarLeadState:
     pipeline = build_pipeline()
 
     initial_state: SolarLeadState = {
         "location": location,
-        "run_id": str(uuid.uuid4())[:8],
+        "run_id": run_id or str(uuid.uuid4())[:8],
         "geo_scores": None,
         "geo_geojson": None,
         "web_intel": None,

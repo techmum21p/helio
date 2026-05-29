@@ -92,6 +92,16 @@ def report_gen_agent(state: SolarLeadState) -> SolarLeadState:
     markdown = generate_report_markdown(state["location"], top_targets)
     report_path = save_report(state["location"], markdown, state["run_id"])
 
+    province = top_targets[0].get("province", state["location"]) if top_targets else state["location"]
+    from agents import db_store
+    db_store.save_report(
+        run_id=state["run_id"],
+        province=province,
+        municipality=None,
+        markdown=markdown,
+        file_path=report_path,
+    )
+
     return {
         **state,
         "report_markdown": markdown,
