@@ -20,8 +20,9 @@ client = anthropic.Anthropic(api_key=config.XIAOMI_API_KEY, base_url=config.XIAO
 
 # ChromaDB setup
 _chroma_client = chromadb.PersistentClient(path=str(config.KB_INDEX))
-_embed_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-    model_name="all-MiniLM-L6-v2"
+_embed_fn = embedding_functions.OllamaEmbeddingFunction(
+    model_name="qwen3-embedding:0.6b",
+    url="http://localhost:11434",
 )
 _collection = _chroma_client.get_or_create_collection(
     name="solar_lead_kb",

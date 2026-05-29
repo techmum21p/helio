@@ -1,6 +1,190 @@
-> Last updated: 2026-05-29 | Session 5
+> Last updated: 2026-05-29 | Session 7
 
 # Helio — Solar Lead Intelligence Platform Session Notes
+
+---
+
+## Session 7 — Next.js App Bug Fixes: Map Coords, Expandable Cards, Reports, Nav Consolidation (2026-05-29)
+
+### Branch
+`feat-helio-v2` (continuing from session 6)
+
+### What Was Fixed
+User reported 7 issues with the new Next.js app compared to the Streamlit version. Brainstormed, wrote spec + plan, executed via 6-task subagent-driven development with spec/quality reviews per task.
+
+### Bug 1 — Towns not showing on map (CRITICAL)
+- **Root cause**: All 1,622 municipalities had `lat=NULL, lon=NULL` in `data/helio.db`. The municipalities table is seeded from `ph_locations.db` which never had coords. The pipeline computed coords in `geo_scoring.py` via `_municipality_coord(name, province)` and stored them in `geo_geojson` — but `_persist_run_results` in `api/routers/runs.py` never saved them to the DB.
+- **Fix 1**: Modified `_persist_run_results` to parse `result["geo_geojson"]` after saving run results, and `UPDATE municipalities SET lat=?, lon=? WHERE name=? AND province=? AND lat IS NULL`. Wrapped in `try/except` with `logger.warning` (best-effort, never fails a run). Also hardened geometry parsing: `geom = feature.get("geometry") or {}`, `coords = geom.get("coordinates", [])` with `len < 2` guard.
+- **Fix 2**: Created `scripts/backfill_coords.py` — one-time migration that imports `_municipality_coord` from `agents/geo_scoring` and backfills all `lat IS NULL` rows. Run once: `python scripts/backfill_coords.py` → `Backfilled 1622 municipalities.`
+
+### Bug 2 — Can't open town analysis in sidebar
+- **Root cause**: Right-sidebar town cards in `app/map/[runId]/page.tsx` showed a clipped assessment snippet but clicking did nothing.
+- **Fix**: Added `useState<number | null>(null)` for `expandedId`. Cards are now click-to-expand (amber-50 bg, amber-300 border when open). Expanded section shows: **Assessment** (full text), **Opportunity** (emerald-600 label, `r.opportunities[0]`), **Risk** (red-500 label, `r.risks[0]`). Sidebar width increased 240px → 260px. Header label updated to "Top Targets — click to expand".
+
+### Bug 3 — Reports page empty
+- **Root cause**: `app/reports/page.tsx` was hardcoded to show "No reports yet." with no API call at all.
+- **Fix**: Replaced with `useSWR("runs", getRuns(50))`, filters `status === "done"` and `!location.startsWith("admin:")`, renders clickable `<Link href="/reports/${run.id}">` cards with location name, formatted date, "✓ Done" badge. SWR key unified to `"runs"` (was mistakenly `"runs-reports"` initially, fixed in cleanup commit).
+
+### Bug 4 — Nav had 5 pages (Explore + Admin cluttered)
+- **Fix**: `NAV_LINKS` in `components/sidebar.tsx` reduced to 3: Map & Scores (`/map`), Reports (`/reports`), Chat (`/chat`). Explore and Admin still exist at their URLs but are hidden from nav.
+
+### Bug 5 — Map zoom too close
+- **Fix**: `components/run-map-view.tsx` changed `zoom={10}` → `zoom={7}`. Map center now computed from run results average lat/lon (passed as `center` prop from `app/map/[runId]/page.tsx`).
+
+### Bug 6 — Chat defaulted to Global KB
+- **Fix**: `app/chat/page.tsx` now uses `useEffect` with `initialized` flag to auto-select the most recent completed run on first mount. Admin runs (`location.startsWith("admin:")`) filtered from context switcher list. Placeholder text shows selected run's location.
+
+### Type Fixes (cleanup commit)
+- `frontend/lib/types.ts`: `RunResult.municipality_id: number | null` (was non-nullable but DB column is nullable); `RunResult.assessment: string | null`
+- `app/map/[runId]/page.tsx`: card `key` → `r.municipality_id ?? r.municipality_name`; expand comparator guards null municipality_id
+
+### Commits (8 total on feat-helio-v2 this session)
+- `2eda1d2` fix: backfill municipalities lat/lon — map markers were all NULL
+- `c271a52` fix: harden geo_geojson coord backfill against null geometry and bad coordinates
+- `38c9fd2` feat: collapse nav to 3 pages (Map, Reports, Chat)
+- `fac0037` fix: reports index now lists past runs instead of hardcoded empty state
+- `3ee0f14` feat: expandable town cards on Map & Scores page
+- `3365f38` fix: map zoom 7 + center on run results
+- `6f55c42` fix: chat defaults to most recent run context, hides admin runs
+- `f45d2ae` fix: nullable RunResult fields, card key fallback, unify SWR key
+
+### Spec + Plan Written
+- `docs/superpowers/specs/2026-05-29-helio-frontend-fixes-design.md`
+- `docs/superpowers/plans/2026-05-29-helio-frontend-fixes.md`
+
+### Start the App
+```bash
+# Terminal 1
+source .venv_helios/bin/activate && uvicorn api.main:app --reload
+
+# Terminal 2
+cd frontend && npm run dev
+# Open http://localhost:3000
+```
+
+#### Files changed (session 7)
+- `api/routers/runs.py` — `_persist_run_results` now saves lat/lon from geo_geojson; hardened coord parsing
+- `scripts/backfill_coords.py` — **new**: one-time migration to populate lat/lon for all 1,622 municipalities
+- `frontend/components/sidebar.tsx` — NAV_LINKS reduced to 3 (removed Explore, Admin)
+- `frontend/app/reports/page.tsx` — replaced hardcoded empty state with live run list (useSWR)
+- `frontend/app/map/[runId]/page.tsx` — expandable town cards (assessment/opportunity/risk), map center computed from results
+- `frontend/components/run-map-view.tsx` — zoom 10→7
+- `frontend/app/chat/page.tsx` — auto-select most recent run context on mount; admin run filter
+- `frontend/lib/types.ts` — `municipality_id: number | null`, `assessment: string | null` in RunResult
+- `docs/superpowers/specs/2026-05-29-helio-frontend-fixes-design.md` — **new**
+- `docs/superpowers/plans/2026-05-29-helio-frontend-fixes.md` — **new**
+
+### ⚠️ Still pending
+- `feat-helio-v2` not yet merged to `main`
+- Plan 2 still pending: `scripts/precompute_geo_scores.py` (scores all 1,622 municipalities)
+- `/admin/refresh-scores` and `/admin/refresh-scores/stream` are stubs until Plan 2
+- Hybrid RAG (bm25s + ChromaDB + RRF) not yet implemented
+
+---
+
+## Session 6 — Frontend UI Redesign: Warm Stone Sidebar App (2026-05-29)
+
+### Branch
+`feat-helio-v2` (continuing from session 5)
+
+### What Was Built
+Full UI redesign of the Next.js frontend — replaced the dark top-nav (`slate-950`) with a warm stone collapsible sidebar. Design was brainstormed interactively with a visual companion (browser mockups). Implemented via 14 subagent tasks with spec + quality review per task.
+
+### Design Decisions
+- **Palette**: Warm Stone — cream base `#faf9f6`, stone text `#1c1917`, amber accent `#d97706`. Replaces the dark `slate-950` / `amber-400` dark theme.
+- **Layout**: Persistent collapsible sidebar (228px expanded → 56px icon-only). State persisted to `localStorage` key `helio-sidebar-collapsed`.
+- **Pipeline controls in sidebar**: Province dropdown → municipality multiselect → Analyze button always visible (like Streamlit). Moved from the dedicated `/analyze` page which was deleted.
+- **Map style**: Switched to CartoDB Positron (light) tile layer. Kept Streamlit-matching color/radius: green `#2ecc71` ≥0.65, orange `#f39c12` ≥0.35, red `#e74c3c` <0.35; radius = `6 + score × 14`.
+- **Map & Scores page**: New `/map/[runId]` landing after a run completes. Shows stat cards + `RunMapView` (pipeline results) + top-15 targets list. Previous flow redirected to `/reports`; now redirects to `/map`.
+- **Prose**: Added `@tailwindcss/typography` with warm stone CSS variable overrides. Reports use `prose max-w-none` (no `prose-invert`).
+
+### New Components
+- `components/app-shell.tsx` — client component managing `collapsed` state with localStorage persistence
+- `components/sidebar.tsx` — nav links (5 items), collapse toggle, last-run badge (amber-50), pipeline card at bottom
+- `components/sidebar-pipeline-card.tsx` — province `<select>` (SWR), municipality checklist (scrollable, checkboxes, shows geo_score), selected count badge, ▶ Analyze → `createRun` → `/analyze/${run_id}`
+- `components/run-map-view.tsx` — react-leaflet map for `RunResult[]`, Positron tile, uses `final_score` for color/radius
+- `lib/score-color.ts` — `scoreColor(score)` + `scoreRadius(score)` shared utilities (Streamlit-matching)
+
+### Modified Components
+- `components/map-view.tsx` — switched to Positron tile, uses `scoreColor`/`scoreRadius` from shared utility, added `<Popup>`
+- `components/run-progress.tsx` — stone-300/amber-600/stone-700 warm stone palette
+- `components/tier-badge.tsx` — amber/emerald/blue/stone solid badges (replaced opacity shims)
+- `components/stat-card.tsx` — `bg-white border-stone-200 shadow-sm`
+- `components/score-bar.tsx` — amber gradient, stone-100 track (preserved 3-bar API for municipality-table)
+- `components/run-list.tsx` — amber-50 active, stone dividers
+- `components/municipality-table.tsx` — hover:bg-amber-50, stone borders
+- `components/chat-panel.tsx` — user bubble `bg-amber-600 text-white`; assistant `bg-stone-100`; `prose prose-sm` (no invert)
+
+### New Pages
+- `app/map/page.tsx` — server component, redirects to `/map/${latestRunId}` or shows empty state
+- `app/map/[runId]/page.tsx` — client component: 4 stat cards (Top Score/Tier/Count/Avg), RunMapView (ssr:false), top-15 targets list (local TierBadge for HIGH/MEDIUM/LOW strings)
+
+### Modified Pages
+- `app/layout.tsx` — removed `className="dark"` from `<html>`, replaced `<Nav>` with `<AppShell>`
+- `app/globals.css` — warm stone HSL CSS variables replacing dark slate tokens
+- `app/analyze/[runId]/page.tsx` — on complete now redirects to `/map/${id}` (was `/reports/${id}`), 1200ms delay (was 1500ms)
+- `app/explore/page.tsx` — `h-full` (was `h-[calc(100vh-56px)]`), warm stone inputs/filter bar
+- `app/reports/page.tsx` — static empty state linking to `/map` (removed server-side getRuns redirect)
+- `app/reports/[runId]/page.tsx` — `h-full`, warm prose, stone download button
+- `app/chat/page.tsx` — `h-full`, amber active context item, stone aside
+- `app/admin/page.tsx` — amber-600 primary buttons, white/stone card containers
+
+### Deleted Files
+- `components/nav.tsx` — replaced by sidebar
+- `app/analyze/page.tsx` — province/muni selector moved into `SidebarPipelineCard`
+
+### API Fix
+- `api/routers/runs.py` — run results query now selects `m.lat, m.lon` from municipalities JOIN (was missing; required for `RunMapView` to position markers)
+- `frontend/lib/types.ts` — `RunResult` now has `lat: number | null`, `lon: number | null`
+
+### Dependency Added
+- `@tailwindcss/typography ^0.5.19` — registered in `tailwind.config.ts` with warm stone prose variable overrides
+
+### Specs + Plans Written
+- `docs/superpowers/specs/2026-05-29-frontend-redesign.md` — full redesign spec (brainstorm output)
+- `docs/superpowers/plans/2026-05-29-frontend-redesign.md` — 14-task implementation plan
+
+### Start the App
+```bash
+# Terminal 1
+source .venv_helios/bin/activate && uvicorn api.main:app --reload
+
+# Terminal 2
+cd frontend && npm run dev
+# Open http://localhost:3000
+```
+
+#### Files changed (session 6)
+- `api/routers/runs.py` — added `m.lat, m.lon` to run results query
+- `frontend/lib/types.ts` — `RunResult` gains `lat`/`lon` fields
+- `frontend/tailwind.config.ts` — `@tailwindcss/typography` plugin + warm stone prose config
+- `frontend/app/globals.css` — full warm stone token replacement
+- `frontend/app/layout.tsx` — AppShell replaces Nav, removed dark class
+- `frontend/app/map/page.tsx` — **new**: redirect to latest run or empty state
+- `frontend/app/map/[runId]/page.tsx` — **new**: Map & Scores page
+- `frontend/app/analyze/[runId]/page.tsx` — redirect to /map, warm stone restyle
+- `frontend/app/explore/page.tsx` — warm stone restyle, h-full
+- `frontend/app/reports/page.tsx` — static empty state
+- `frontend/app/reports/[runId]/page.tsx` — warm stone, prose fix, h-full
+- `frontend/app/chat/page.tsx` — warm stone restyle, h-full
+- `frontend/app/admin/page.tsx` — warm stone restyle
+- `frontend/components/app-shell.tsx` — **new**
+- `frontend/components/sidebar.tsx` — **new**
+- `frontend/components/sidebar-pipeline-card.tsx` — **new**
+- `frontend/components/run-map-view.tsx` — **new**
+- `frontend/lib/score-color.ts` — **new**
+- `frontend/components/map-view.tsx` — Positron tile + shared score-color
+- `frontend/components/run-progress.tsx` — warm stone
+- `frontend/components/tier-badge.tsx` — warm stone
+- `frontend/components/stat-card.tsx` — warm stone
+- `frontend/components/score-bar.tsx` — warm stone amber gradient
+- `frontend/components/run-list.tsx` — warm stone
+- `frontend/components/municipality-table.tsx` — warm stone
+- `frontend/components/chat-panel.tsx` — warm stone
+- `frontend/components/nav.tsx` — **deleted**
+- `frontend/app/analyze/page.tsx` — **deleted**
+- `docs/superpowers/specs/2026-05-29-frontend-redesign.md` — **new**
+- `docs/superpowers/plans/2026-05-29-frontend-redesign.md` — **new**
 
 ---
 
