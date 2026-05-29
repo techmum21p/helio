@@ -42,6 +42,25 @@ def _persist_run_results(run_id: str, result: dict) -> None:
                  json.dumps(t.get("opportunities", [])),
                  json.dumps(t.get("risks", []))),
             )
+
+        # Backfill lat/lon into municipalities from geo_geojson
+        if result.get("geo_geojson"):
+            try:
+                geo_data = json.loads(result["geo_geojson"])
+                for feature in geo_data.get("features", []):
+                    props = feature.get("properties", {})
+                    geom  = feature.get("geometry", {})
+                    if geom.get("type") != "Point":
+                        continue
+                    lon, lat = geom["coordinates"]
+                    conn.execute(
+                        """UPDATE municipalities SET lat=?, lon=?
+                           WHERE name=? AND province=? AND lat IS NULL""",
+                        (lat, lon, props.get("name", ""), props.get("province", "")),
+                    )
+            except Exception:
+                pass  # coord backfill is best-effort; never fail a run over it
+
         if result.get("report_markdown"):
             loc  = (result.get("location", "unknown")
                     .lower().replace(", ", "_").replace(" ", "-").replace("|", "_"))
