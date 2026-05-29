@@ -153,7 +153,7 @@ def get_places_signal(municipality: str, province: str = "", lat: float | None =
     Uses real municipality coordinates for location bias when available.
     """
     if not config.GOOGLE_PLACES_API_KEY:
-        return {"business_count": 0, "avg_price_level": 0, "avg_rating": 0, "commercial_anchors": 0}
+        return {"business_count": 0, "avg_price_level": 0, "avg_rating": 0, "total_reviews": 0, "commercial_anchors": 0}
 
     location_str = f"{municipality}, {province}, Philippines" if province else f"{municipality}, Philippines"
 
@@ -215,8 +215,8 @@ def gather_intel_for_municipality(municipality: str, geo: dict | None = None) ->
         "property_snippet":    property_signal[:500],
         "commerce_snippet":    commerce[:500],
         "solar_news_snippet":  solar_news[:300],
-        "business_count":      places["business_count"],
-        "avg_price_level":     places["avg_price_level"],
+        "business_count":      places.get("business_count", 0),
+        "avg_price_level":     places.get("avg_price_level", 0),
         "avg_rating":          places.get("avg_rating", 0),
         "total_reviews":       places.get("total_reviews", 0),
         "commercial_anchors":  places.get("commercial_anchors", 0),
