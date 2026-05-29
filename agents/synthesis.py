@@ -114,9 +114,12 @@ def synthesize_municipality(
         }
 
 
-def compute_final_score(geo: dict, intel: dict) -> float:
+def compute_final_score(geo: dict, intel: dict) -> tuple[float, float]:
     """
-    Final score = 0.80 × geo_score + 0.20 × web_score
+    Returns (final_score, web_score).
+    Uses intel["web_score"] if pre-computed (DB cache hit), else computes inline.
+
+    Final score = 0.70 × geo_score + 0.30 × web_score
 
     web_score combines four Places + Tavily signals (each 0-1):
       - business_density  : commercial activity (count, capped at 20)
@@ -126,20 +129,24 @@ def compute_final_score(geo: dict, intel: dict) -> float:
     """
     geo_score = geo.get("geo_score", 0)
 
-    biz_density   = min(intel.get("business_count", 0) / 20, 1.0)
-    price_signal  = min(intel.get("avg_price_level", 0) / 4, 1.0)
-    rating_raw    = intel.get("avg_rating", 0)
-    rating_signal = max((rating_raw - 1.0) / 4.0, 0) if rating_raw else 0  # normalize 1-5 → 0-1
-    anchor_signal = min(intel.get("commercial_anchors", 0) / 5, 1.0)       # cap at 5 anchors
+    if "web_score" in intel and intel["web_score"] is not None:
+        web_score = intel["web_score"]
+    else:
+        biz_density   = min(intel.get("business_count", 0) / 20, 1.0)
+        price_signal  = min(intel.get("avg_price_level", 0) / 4, 1.0)
+        rating_raw    = intel.get("avg_rating", 0)
+        rating_signal = max((rating_raw - 1.0) / 4.0, 0) if rating_raw else 0  # normalize 1-5 → 0-1
+        anchor_signal = min(intel.get("commercial_anchors", 0) / 5, 1.0)       # cap at 5 anchors
 
-    web_score = (
-        0.35 * biz_density
-        + 0.25 * price_signal
-        + 0.25 * rating_signal
-        + 0.15 * anchor_signal
-    )
+        web_score = (
+            0.35 * biz_density
+            + 0.25 * price_signal
+            + 0.25 * rating_signal
+            + 0.15 * anchor_signal
+        )
 
-    return round(0.80 * geo_score + 0.20 * web_score, 4)
+    final = round(config.FINAL_GEO_WEIGHT * geo_score + config.FINAL_WEB_WEIGHT * web_score, 4)
+    return final, round(web_score, 4)
 
 
 def synthesis_agent(state: SolarLeadState) -> SolarLeadState:
@@ -153,11 +160,12 @@ def synthesis_agent(state: SolarLeadState) -> SolarLeadState:
         geo = geo_scores[municipality]
         intel = web_intel.get(municipality, {})
 
-        final_score = compute_final_score(geo, intel)
+        final_score, web_score = compute_final_score(geo, intel)
         narrative = synthesize_municipality(municipality, geo, intel)
 
         final_scores[municipality] = {
             "geo_score": geo.get("geo_score", 0),
+            "web_score": web_score,
             "final_score": final_score,
             "solar_kwh_estimate": round(geo.get("solar_raw", 5.0) * 365 * 0.8, 0),
             "tier": narrative["confidence"],
