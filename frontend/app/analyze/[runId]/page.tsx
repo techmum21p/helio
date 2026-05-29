@@ -7,7 +7,7 @@ export default function AnalyzeRunPage() {
   const router = useRouter();
 
   function handleComplete(id: string) {
-    setTimeout(() => router.push(`/reports/${id}`), 1500);
+    setTimeout(() => router.push(`/map/${id}`), 1200);
   }
 
   function handleFailed(error: string | null) {
@@ -15,10 +15,12 @@ export default function AnalyzeRunPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto px-6 py-16">
-      <h1 className="text-lg font-medium text-slate-300 mb-2">Running analysis…</h1>
-      <p className="text-xs text-slate-500 mb-8 font-mono">{runId}</p>
-      <RunProgress runId={runId} onComplete={handleComplete} onFailed={handleFailed} />
+    <div className="flex items-center justify-center flex-1">
+      <div className="w-full max-w-sm px-6 py-12">
+        <h1 className="text-base font-semibold text-stone-700 mb-1">Running analysis…</h1>
+        <p className="text-xs text-stone-400 mb-8 font-mono">{runId}</p>
+        <RunProgress runId={runId} onComplete={handleComplete} onFailed={handleFailed} />
+      </div>
     </div>
   );
 }
