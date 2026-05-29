@@ -1,19 +1,26 @@
 """
 Solar Lead Intelligence Platform
-Streamlit frontend — three pages:
+Streamlit frontend — four pages:
   1. Map & Scores  — run pipeline, view opportunity map
   2. Report        — view and download generated report
   3. Chatbot       — RAG chatbot over generated KB
+  4. Admin         — geo score refresh, DB stats, KB re-index
 """
 
 import json
+import threading
+import time
+import uuid
+from datetime import datetime
+
 import streamlit as st
 import folium
 from streamlit_folium import st_folium
 
+import config
 from graph.pipeline import run_pipeline
 from agents.chatbot import chat, index_documents_from_kb
-from agents.session_store import save_session, load_session, list_sessions
+from agents import db_store
 from agents.location_db import get_provinces, get_municipalities
 
 
@@ -38,13 +45,17 @@ if "pipeline_result" not in st.session_state:
     st.session_state.pipeline_result = None
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+if "current_run_id" not in st.session_state:
+    st.session_state.current_run_id = ""
 
+# Module-level precompute state — written by background thread, read by Streamlit UI
+_precompute_state: dict = {"done": 0, "total": 0, "running": False}
 
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.title("☀️ Solar Lead Intel")
     st.markdown("---")
-    page = st.radio("Navigate", ["🗺️ Map & Scores", "📄 Report", "💬 Chatbot"])
+    page = st.radio("Navigate", ["🗺️ Map & Scores", "📄 Report", "💬 Chatbot", "⚙️ Admin"])
 
     st.markdown("---")
     st.subheader("Run Pipeline")
@@ -53,6 +64,7 @@ with st.sidebar:
     if not provinces:
         st.warning("⚠️ Location DB not built. Run: `python scripts/build_location_db.py`")
         location_str = None
+        selected_prov_name = None
     else:
         prov_by_name = {p["name"]: p["id"] for p in provinces}
         selected_prov_name = st.selectbox(
@@ -84,15 +96,23 @@ with st.sidebar:
         if not location_str:
             st.error("Select a province first.")
         else:
+            run_id = uuid.uuid4().hex[:8]
+            st.session_state.current_run_id = run_id
+            db_store.create_run(run_id, location_str, selected_prov_name)
+
             with st.spinner(f"Analyzing {location_str}... (this takes ~1-2 mins)"):
-                result = run_pipeline(location_str)
-                st.session_state.pipeline_result = result
-                st.session_state.chat_history = []
-                save_session(result, [])
-            if result.get("errors"):
-                st.warning(f"Completed with {len(result['errors'])} warning(s).")
-            else:
-                st.success("Done!")
+                try:
+                    result = run_pipeline(location_str, run_id=run_id)
+                    db_store.complete_run(run_id, result.get("top_targets", []))
+                    st.session_state.pipeline_result = result
+                    st.session_state.chat_history = []
+                    if result.get("errors"):
+                        st.warning(f"Completed with {len(result['errors'])} warning(s).")
+                    else:
+                        st.success("Done!")
+                except Exception as exc:
+                    db_store.fail_run(run_id, str(exc))
+                    st.error(f"Pipeline failed: {exc}")
 
     if st.session_state.pipeline_result:
         result = st.session_state.pipeline_result
@@ -103,26 +123,36 @@ with st.sidebar:
             st.markdown(f"Score: `{top[0]['final_score']:.3f}` | Tier: `{top[0]['tier']}`")
 
     st.markdown("---")
-    with st.expander("📂 Load Past Session"):
-        sessions = list_sessions()
-        if not sessions:
-            st.caption("No saved sessions yet.")
-        else:
-            options = {s["label"]: s for s in sessions}
-            chosen_label = st.selectbox(
-                "Select session",
-                list(options.keys()),
-                label_visibility="collapsed",
+    st.subheader("📋 Past Runs")
+    runs = db_store.list_runs(limit=10)
+    if not runs:
+        st.caption("No completed runs yet.")
+    else:
+        for run in runs:
+            if run["status"] == "failed":
+                st.caption(f"⚠️ {run['location']} — failed")
+                continue
+            try:
+                dt = datetime.fromisoformat(run["created_at"])
+                date_str = dt.strftime("%b %d, %Y")
+            except Exception:
+                date_str = str(run["created_at"])[:10]
+            top_score = run.get("top_score")
+            score_str = f"top {top_score:.2f}" if top_score else "no data"
+            tier_icon = {"HIGH": "🟢", "MEDIUM": "🟡", "LOW": "🔴"}.get(
+                run.get("top_tier", ""), "⚪"
             )
-            if st.button("Load", use_container_width=True):
-                try:
-                    loaded_pr, loaded_history = load_session(options[chosen_label]["path"])
-                    st.session_state.pipeline_result = loaded_pr
-                    st.session_state.chat_history = loaded_history
-                    st.toast(f"Loaded: {chosen_label}", icon="📂")
+            btn_label = f"🗺️ {run['location']} — {date_str}"
+            btn_help  = f"{run.get('target_count', 0)} targets · {score_str} {tier_icon}"
+            if st.button(btn_label, key=f"run_{run['id']}",
+                         use_container_width=True, help=btn_help):
+                loaded = db_store.load_run(run["id"])
+                if loaded:
+                    st.session_state.pipeline_result = loaded
+                    st.session_state.chat_history    = db_store.load_chat_history(run["id"])
+                    st.session_state.current_run_id  = run["id"]
+                    st.toast(f"Loaded: {run['location']}", icon="📂")
                     st.rerun()
-                except Exception as exc:
-                    st.error(f"Could not load session: {exc}")
 
 
 # ── Page: Map & Scores ─────────────────────────────────────────────────────────
@@ -249,8 +279,85 @@ elif page == "💬 Chatbot":
 
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
-                reply, updated_history = chat(user_input, st.session_state.chat_history)
+                current_run_id = st.session_state.get("current_run_id", "")
+                reply, updated_history = chat(user_input, st.session_state.chat_history, run_id=current_run_id)
             st.write(reply)
             st.session_state.chat_history = updated_history
-            if st.session_state.pipeline_result:
-                save_session(st.session_state.pipeline_result, updated_history)
+
+
+# ── Page: Admin ────────────────────────────────────────────────────────────────
+elif page == "⚙️ Admin":
+    st.title("⚙️ Admin")
+
+    # ── Geo Score Refresh ──────────────────────────────────────────────────
+    st.subheader("Geo Scores")
+    import sqlite3 as _sq
+    try:
+        conn = _sq.connect(str(config.HELIO_DB))
+        last_ts = conn.execute("SELECT MAX(computed_at) FROM geo_scores").fetchone()[0]
+        count   = conn.execute("SELECT COUNT(*) FROM geo_scores").fetchone()[0]
+        conn.close()
+        st.caption(f"{count:,} municipalities scored · last updated: {last_ts or 'never'}")
+    except Exception:
+        st.caption("Could not read geo_scores stats.")
+
+    if not _precompute_state["running"]:
+        if st.button("🔄 Refresh Geo Scores", type="primary"):
+            from scripts.precompute_geo_scores import precompute_geo_scores
+
+            def _run_precompute():
+                _precompute_state["running"] = True
+                _precompute_state["done"]    = 0
+                _precompute_state["total"]   = 0
+
+                def _cb(done: int, total: int) -> None:
+                    _precompute_state["done"]  = done
+                    _precompute_state["total"] = total
+
+                precompute_geo_scores(progress_callback=_cb)
+                _precompute_state["running"] = False
+
+            threading.Thread(target=_run_precompute, daemon=True).start()
+            st.rerun()
+    else:
+        done  = _precompute_state["done"]
+        total = _precompute_state["total"] or 1
+        st.progress(done / total, text=f"Scoring municipalities... {done}/{total}")
+        time.sleep(0.5)
+        st.rerun()
+
+    st.markdown("---")
+
+    # ── DB Stats ───────────────────────────────────────────────────────────
+    st.subheader("DB Stats")
+    try:
+        conn = _sq.connect(str(config.HELIO_DB))
+        tables = ["municipalities", "geo_scores", "web_intel_cache",
+                  "runs", "run_results", "reports", "chat_messages"]
+        for tbl in tables:
+            n = conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()[0]
+            st.metric(tbl, f"{n:,}")
+        conn.close()
+    except Exception as e:
+        st.warning(f"Could not read DB stats: {e}")
+
+    st.markdown("---")
+
+    # ── Re-index KB ────────────────────────────────────────────────────────
+    st.subheader("Knowledge Base")
+    st.caption(
+        "Re-index rebuilds the ChromaDB collection from all reports in the DB. "
+        "Run this after changing the embedding model."
+    )
+    if st.button("🔁 Re-index KB"):
+        from agents.chatbot import _chroma_client, _get_collection, index_documents_from_kb, _EMBED_MARKER
+        with st.spinner("Wiping and rebuilding KB index..."):
+            try:
+                _chroma_client.delete_collection("solar_lead_kb")
+                if _EMBED_MARKER.exists():
+                    _EMBED_MARKER.unlink()
+                _get_collection()
+                index_documents_from_kb()
+                st.success("KB re-indexed successfully.")
+            except Exception as e:
+                st.error(f"Re-index failed: {e}")
