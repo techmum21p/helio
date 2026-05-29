@@ -1,34 +1,25 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import Nav from "@/components/nav";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Helio — Solar Lead Intelligence",
-  description: "AI-powered solar installation targeting for the Philippines",
+  title: "Helio — Solar Opportunity Intelligence",
+  description: "Identify solar installation targets in the Philippines",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="en" className="dark">
+      <body className={`${inter.className} bg-slate-950 text-slate-100 min-h-screen flex flex-col`}>
+        <Nav />
+        <main className="flex-1 flex flex-col">{children}</main>
       </body>
     </html>
   );

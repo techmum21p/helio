@@ -57,3 +57,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  :root {
+    --background: 222 47% 6%;
+    --foreground: 213 31% 91%;
+  }
+  body {
+    @apply bg-slate-950 text-slate-100;
+  }
+}
