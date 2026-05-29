@@ -1,4 +1,13 @@
+import pytest
 from api.events import push_event, get_events, clear_events
+
+
+@pytest.fixture(autouse=True)
+def _clean_events():
+    from api import events as _ev
+    _ev._run_events.clear()
+    yield
+    _ev._run_events.clear()
 
 
 def test_push_and_get():

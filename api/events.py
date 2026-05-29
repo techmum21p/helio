@@ -14,7 +14,7 @@ def push_event(run_id: str, step: str, status: str, elapsed_ms: int) -> None:
 
 def get_events(run_id: str) -> list[dict]:
     with _lock:
-        return list(_run_events.get(run_id, []))
+        return [dict(e) for e in _run_events.get(run_id, [])]
 
 
 def clear_events(run_id: str) -> None:
