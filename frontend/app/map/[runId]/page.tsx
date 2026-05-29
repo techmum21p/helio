@@ -111,16 +111,16 @@ export default function MapScoresPage() {
           </div>
           <div className="flex flex-col gap-1.5 p-2.5">
             {results.slice(0, 15).map((r) => {
-              const expanded = expandedId === r.municipality_id;
+              const expanded = r.municipality_id !== null && expandedId === r.municipality_id;
               return (
                 <div
-                  key={r.municipality_id}
+                  key={r.municipality_id ?? r.municipality_name}
                   className={`border rounded-lg px-3 py-2 shadow-sm cursor-pointer transition-colors ${
                     expanded
                       ? "bg-amber-50 border-amber-300"
                       : "bg-white border-stone-200 hover:border-amber-200"
                   }`}
-                  onClick={() => setExpandedId(expanded ? null : r.municipality_id)}
+                  onClick={() => setExpandedId(expanded ? null : (r.municipality_id ?? null))}
                 >
                   <div className="flex items-center gap-1.5">
                     <span className="flex-1 text-xs font-semibold text-stone-900 truncate">

@@ -28,7 +28,7 @@ export interface Run {
 }
 
 export interface RunResult {
-  municipality_id: number;
+  municipality_id: number | null;
   municipality_name: string;
   province: string;
   lat: number | null;
@@ -37,7 +37,7 @@ export interface RunResult {
   web_score: number;
   final_score: number;
   tier: string;
-  assessment: string;
+  assessment: string | null;
   opportunities: string[];
   risks: string[];
 }

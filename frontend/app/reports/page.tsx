@@ -5,7 +5,7 @@ import type { Run } from "@/lib/types";
 import { getRuns } from "@/lib/api";
 
 export default function ReportsIndexPage() {
-  const { data: runs = [], isLoading } = useSWR<Run[]>("runs-reports", () => getRuns(50));
+  const { data: runs = [], isLoading } = useSWR<Run[]>("runs", () => getRuns(50));
   const doneRuns = runs.filter((r) => r.status === "done" && !r.location.startsWith("admin:"));
 
   if (isLoading) {
