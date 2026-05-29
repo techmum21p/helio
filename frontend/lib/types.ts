@@ -31,6 +31,8 @@ export interface RunResult {
   municipality_id: number;
   municipality_name: string;
   province: string;
+  lat: number | null;
+  lon: number | null;
   geo_score: number;
   web_score: number;
   final_score: number;

@@ -99,7 +99,8 @@ def get_run(run_id: str) -> RunDetailOut:
         if not run:
             raise HTTPException(404, "Run not found")
         results = conn.execute(
-            """SELECT rr.*, m.name AS municipality_name, m.province
+            """SELECT rr.*, m.name AS municipality_name, m.province,
+                      m.lat, m.lon
                FROM   run_results rr
                LEFT JOIN municipalities m ON rr.municipality_id = m.id
                WHERE  rr.run_id=? ORDER BY rr.final_score DESC""",
