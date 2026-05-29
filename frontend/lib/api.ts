@@ -67,9 +67,10 @@ export async function postAdminReindexKB(): Promise<void> {
   if (!res.ok) throw new Error("Failed to trigger reindex");
 }
 
-export async function postAdminRefreshScores(): Promise<void> {
+export async function postAdminRefreshScores(): Promise<{ run_id: string }> {
   const res = await fetch(`${API_URL}/admin/refresh-scores`, { method: "POST" });
   if (!res.ok) throw new Error("Failed to trigger refresh");
+  return res.json();
 }
 
 // ── EventSource helpers ────────────────────────────────────────────────────────

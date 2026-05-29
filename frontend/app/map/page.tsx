@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
 import { getRuns } from "@/lib/api";
+import type { Run } from "@/lib/types";
 
 export default async function MapIndexPage() {
-  let runs;
+  let runs: Run[];
   try { runs = await getRuns(1); } catch { runs = []; }
 
   if (runs.length > 0) redirect(`/map/${runs[0].id}`);
