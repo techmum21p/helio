@@ -415,26 +415,97 @@ def compute_geo_scores(gdf: gpd.GeoDataFrame, ee=None) -> dict:
     return df.set_index("municipality").to_dict(orient="index")
 
 
+# ── DB helpers ─────────────────────────────────────────────────────────────────
+
+def _load_scores_from_db(units: list[dict]) -> dict:
+    """
+    Look up pre-computed geo scores from helio.db.
+    Returns the same dict shape as compute_geo_scores() so downstream agents are unaffected.
+    """
+    import sqlite3 as _sq
+    if not config.HELIO_DB.exists() or not units:
+        return {}
+
+    conditions = " OR ".join(["(m.name=? AND m.province=?)"] * len(units))
+    params = []
+    for u in units:
+        params.extend([u["name"], u.get("province", "")])
+
+    conn = _sq.connect(str(config.HELIO_DB))
+    conn.row_factory = _sq.Row
+    try:
+        rows = conn.execute(
+            f"""SELECT m.name, m.province, m.region, m.lat, m.lon,
+                       m.income_class, m.population, m.area_km2,
+                       g.solar_irradiance, g.solar_norm, g.income_score,
+                       g.pop_density, g.pop_density_norm, g.geo_score
+                FROM municipalities m
+                JOIN geo_scores g ON g.municipality_id = m.id
+                WHERE {conditions}""",
+            params,
+        ).fetchall()
+    finally:
+        conn.close()
+
+    result = {}
+    for r in rows:
+        income_norm = (r["income_score"] - 1) / 5.0 if r["income_score"] else 0
+        population  = r["population"] or 0
+        result[r["name"]] = {
+            "province":       r["province"],
+            "region":         r["region"],
+            "is_urban":       population > 50000,
+            "income_class":   r["income_class"] or "3rd",
+            "solar_raw":      r["solar_irradiance"] or 5.0,
+            "population_raw": population,
+            "income_raw":     r["income_score"] or 3,
+            "solar_yield_kwh": round((r["solar_irradiance"] or 5.0) * 365 * 0.80, 0),
+            "lat":            r["lat"],
+            "lon":            r["lon"],
+            "solar_norm":     r["solar_norm"] or 0,
+            "pop_norm":       r["pop_density_norm"] or 0,
+            "income_norm":    income_norm,
+            "geo_score":      r["geo_score"] or 0,
+        }
+    return result
+
+
+def _db_has_scores() -> bool:
+    """Return True if geo_scores table is populated."""
+    import sqlite3 as _sq
+    if not config.HELIO_DB.exists():
+        return False
+    try:
+        conn = _sq.connect(str(config.HELIO_DB))
+        count = conn.execute("SELECT COUNT(*) FROM geo_scores").fetchone()[0]
+        conn.close()
+        return count > 0
+    except Exception:
+        return False
+
+
 # ── Agent Node ─────────────────────────────────────────────────────────────────
 
 def geo_scoring_agent(state: SolarLeadState) -> SolarLeadState:
     logger.info(f"[Agent 1] Geo scoring for: {state['location']}")
 
     try:
-        ee = _init_gee()
-
         location = state["location"]
+
+        # ── Parse location into unit list (names + provinces only) ──────────
+        # Also retain original input names for DB lookup fallback
+        raw_db_units: list[dict] = []
         if location.count(",") == 1:
             parts = location.rsplit(",", 1)
             town_part, province = parts[0].strip(), parts[1].strip()
             if " | " in town_part:
                 towns = [t.strip() for t in town_part.split(" | ")]
-                logger.info(f"[Agent 1] Multi-municipality mode: {towns} in {province}")
                 units = []
                 for town in towns:
+                    raw_db_units.append({"name": town, "province": province})
                     units.extend(load_single_municipality(town, province))
             else:
-                logger.info(f"[Agent 1] Single-municipality mode: {town_part}, {province}")
+                raw_db_units = [{"name": town_part, "province": province}]
                 units = load_single_municipality(town_part, province)
         else:
             units = load_municipalities(location)
@@ -443,27 +514,44 @@ def geo_scoring_agent(state: SolarLeadState) -> SolarLeadState:
             logger.warning("[Agent 1] No municipalities found. Using synthetic fallback.")
             units = _synthetic_fallback(state["location"])
 
-        # Geocode to real coordinates (cached after first run per province)
+        # ── Try DB lookup ────────────────────────────────────────────────────
+        if _db_has_scores():
+            # Try barangay-resolved names first, then original input names as fallback
+            scores = _load_scores_from_db(units)
+            if not scores and raw_db_units:
+                scores = _load_scores_from_db(raw_db_units)
+            if scores:
+                logger.info(
+                    f"[Agent 1] DB lookup: {len(scores)} municipalities (no GEE)."
+                )
+                # Build GeoJSON from DB coordinates
+                import geopandas as gpd
+                from shapely.geometry import Point
+                records = [
+                    {**v, "name": k, "geometry": Point(v["lon"], v["lat"])}
+                    for k, v in scores.items()
+                    if v.get("lat") and v.get("lon")
+                ]
+                gdf = gpd.GeoDataFrame(records, geometry="geometry", crs="EPSG:4326")
+                gdf["geo_score"] = gdf["name"].map(
+                    lambda n: scores.get(n, {}).get("geo_score", 0)
+                )
+                return {**state, "geo_scores": scores, "geo_geojson": gdf.to_json()}
+
+        # ── On-the-fly fallback (DB empty or unit not found) ─────────────────
+        logger.info("[Agent 1] DB empty — computing geo scores on the fly.")
+        ee = _init_gee()
         from agents.geocoder import geocode_units
         units = geocode_units(units)
-
         gdf = units_to_geodataframe(units)
         if gdf.empty:
             raise ValueError("No geographic units to score.")
-
         scores = compute_geo_scores(gdf, ee=ee)
-
         gdf["geo_score"] = gdf["name"].map(
             lambda n: scores.get(n, {}).get("geo_score", 0)
         )
-        geojson_str = gdf.to_json()
-
-        logger.info(
-            f"[Agent 1] Scored {len(scores)} municipalities. "
-            f"barangay: ✓ | GEE: {'✓' if ee else '✗ (synthetic solar)'}"
-        )
-
-        return {**state, "geo_scores": scores, "geo_geojson": geojson_str}
+        logger.info(f"[Agent 1] On-the-fly scored {len(scores)} municipalities.")
+        return {**state, "geo_scores": scores, "geo_geojson": gdf.to_json()}
 
     except Exception as e:
         logger.error(f"[Agent 1] Failed: {e}")
