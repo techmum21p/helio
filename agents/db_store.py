@@ -25,12 +25,6 @@ def _migrate() -> None:
         logger.info("db_store: added web_score column to web_intel_cache")
     except Exception:
         pass  # column already exists
-    try:
-        conn.execute("ALTER TABLE run_results ADD COLUMN municipality_name TEXT")
-        conn.commit()
-        logger.info("db_store: added municipality_name column to run_results")
-    except Exception:
-        pass  # column already exists
     conn.close()
 
 
@@ -60,18 +54,29 @@ def complete_run(run_id: str, top_targets: list) -> None:
         )
         for t in top_targets:
             muni_name = t.get("municipality", "")
+            province = t.get("province", "")
+            region = t.get("region", "")
+            # Ensure municipality exists so load_run JOIN can recover the name
+            if muni_name:
+                conn.execute(
+                    """INSERT OR IGNORE INTO municipalities
+                       (name, province, region, lat, lon, area_km2, population, income_class)
+                       VALUES (?, ?, ?, NULL, NULL, NULL, ?, ?)""",
+                    (muni_name, province, region,
+                     t.get("population"), t.get("income_class")),
+                )
             row = conn.execute(
                 "SELECT id FROM municipalities WHERE name=? AND province=?",
-                (muni_name, t.get("province", "")),
+                (muni_name, province),
             ).fetchone()
             muni_id = row["id"] if row else None
             conn.execute(
                 """INSERT INTO run_results
-                   (run_id, municipality_id, municipality_name, geo_score, web_score, final_score,
+                   (run_id, municipality_id, geo_score, web_score, final_score,
                     tier, assessment, opportunities, risks)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (
-                    run_id, muni_id, muni_name,
+                    run_id, muni_id,
                     t.get("geo_score"), t.get("web_score"), t.get("final_score"),
                     t.get("tier"), t.get("assessment"),
                     json.dumps([t.get("opportunity", "")]),
@@ -167,7 +172,7 @@ def list_runs(limit: int = 20) -> list[dict]:
             LEFT JOIN run_results rr ON rr.run_id = r.id
             WHERE r.status IN ('done', 'failed')
             GROUP BY r.id
-            ORDER BY COALESCE(r.completed_at, r.created_at) DESC
+            ORDER BY r.created_at DESC
             LIMIT ?
             """,
             (limit,),
@@ -189,7 +194,7 @@ def load_run(run_id: str) -> dict | None:
         result_rows = conn.execute(
             """SELECT rr.geo_score, rr.web_score, rr.final_score, rr.tier,
                       rr.assessment, rr.opportunities, rr.risks,
-                      COALESCE(m.name, rr.municipality_name) AS municipality_name,
+                      COALESCE(m.name, '') AS municipality_name,
                       COALESCE(m.province, '') AS province,
                       COALESCE(m.region, '') AS region,
                       m.income_class, m.population

@@ -146,7 +146,7 @@ def test_list_runs_returns_done_runs_newest_first(fresh_db):
     from agents.db_store import create_run, complete_run, list_runs
     create_run("r1", "Laguna", "Laguna")
     complete_run("r1", [])
-    time.sleep(0.01)
+    time.sleep(1.05)
     create_run("r2", "Cebu", "Cebu")
     complete_run("r2", [])
     runs = list_runs()
