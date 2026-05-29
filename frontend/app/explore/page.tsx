@@ -35,11 +35,11 @@ export default function ExplorePage() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-56px)]">
+    <div className="flex flex-col h-full">
       {/* Filter bar */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-800 bg-slate-950 shrink-0">
+      <div className="flex items-center gap-3 border-b border-stone-200 bg-white px-4 py-3 shrink-0">
         <select
-          className="bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded px-2 py-1.5 focus:outline-none focus:border-amber-500"
+          className="bg-stone-50 border border-stone-200 text-stone-700 rounded-md text-sm px-2 py-1.5 focus:outline-none focus:border-amber-400"
           value={provinceFilter}
           onChange={(e) => { setProvinceFilter(e.target.value); setSelectedId(null); }}
         >
@@ -51,27 +51,27 @@ export default function ExplorePage() {
         <input
           type="text"
           placeholder="Search municipality…"
-          className="bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded px-2 py-1.5 focus:outline-none focus:border-amber-500 w-48"
+          className="bg-stone-50 border border-stone-200 text-stone-700 rounded-md text-sm px-2 py-1.5 focus:outline-none focus:border-amber-400 w-48"
           value={searchFilter}
           onChange={(e) => { setSearchFilter(e.target.value); setSelectedId(null); }}
         />
-        <label className="flex items-center gap-1.5 text-sm text-slate-400 cursor-pointer">
+        <label className="flex items-center gap-1.5 text-sm text-stone-500 cursor-pointer">
           <span>Min score</span>
           <input
             type="range" min={0} max={1} step={0.05}
             value={minScore}
             onChange={(e) => setMinScore(Number(e.target.value))}
-            className="w-24 accent-amber-400"
+            className="w-24 accent-amber-500"
           />
-          <span className="text-amber-400 tabular-nums w-8">{minScore.toFixed(2)}</span>
+          <span className="text-amber-600 tabular-nums w-8">{minScore.toFixed(2)}</span>
         </label>
         <div className="ml-auto flex items-center gap-2">
-          <span className="text-slate-500 text-xs">{filtered.length.toLocaleString()} results</span>
+          <span className="text-stone-400 text-xs">{filtered.length.toLocaleString()} results</span>
           <button
             className={`px-3 py-1.5 text-xs rounded border transition-colors ${
               showMap
-                ? "border-amber-500 text-amber-400 bg-amber-500/10"
-                : "border-slate-700 text-slate-400 hover:border-slate-500"
+                ? "border-amber-500 text-amber-600 bg-amber-50"
+                : "border-stone-300 text-stone-500 hover:border-stone-400"
             }`}
             onClick={() => setShowMap((v) => !v)}
           >
@@ -82,7 +82,7 @@ export default function ExplorePage() {
 
       {/* Map panel */}
       {showMap && (
-        <div className="h-64 shrink-0 border-b border-slate-800">
+        <div className="h-64 shrink-0 border-b border-stone-200">
           <MapView
             municipalities={filtered}
             selectedId={selectedId}
@@ -94,7 +94,7 @@ export default function ExplorePage() {
       {/* Table */}
       <div className="flex-1 overflow-y-auto">
         {isLoading ? (
-          <div className="flex items-center justify-center h-32 text-slate-500">Loading…</div>
+          <div className="flex items-center justify-center h-32 text-stone-400">Loading…</div>
         ) : (
           <MunicipalityTable
             municipalities={filtered}

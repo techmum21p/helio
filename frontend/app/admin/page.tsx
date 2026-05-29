@@ -32,8 +32,8 @@ export default function AdminPage() {
   async function handleRefresh() {
     setRefreshMsg("");
     try {
-      await postAdminRefreshScores();
-      setRefreshRunId("admin-refresh-" + Date.now());
+      const { run_id } = await postAdminRefreshScores();
+      setRefreshRunId(run_id);
     } catch (e) {
       setRefreshMsg(`Error: ${e}`);
     }
@@ -45,7 +45,7 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-10">
-      <h1 className="text-xl font-semibold text-slate-100 mb-6">Admin</h1>
+      <h1 className="text-xl font-bold text-stone-900 mb-6">Admin</h1>
 
       {/* Stats grid */}
       {stats && (
@@ -63,9 +63,9 @@ export default function AdminPage() {
 
       {/* Actions */}
       <div className="space-y-6">
-        <div className="border border-slate-800 rounded-lg p-5">
-          <h2 className="text-sm font-semibold text-slate-200 mb-1">Refresh Geo Scores</h2>
-          <p className="text-xs text-slate-500 mb-4">Re-run precompute_geo_scores.py for all 1,622 municipalities. Implemented in Plan 2.</p>
+        <div className="bg-white border border-stone-200 rounded-lg shadow-sm p-5">
+          <h2 className="text-sm font-semibold text-stone-900 mb-1">Refresh Geo Scores</h2>
+          <p className="text-xs text-stone-400 mb-4">Re-run precompute_geo_scores.py for all 1,622 municipalities. Implemented in Plan 2.</p>
           {refreshRunId ? (
             <RunProgress
               runId={refreshRunId}
@@ -74,26 +74,26 @@ export default function AdminPage() {
             />
           ) : (
             <button
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm rounded transition-colors"
+              className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold rounded-md transition-colors"
               onClick={handleRefresh}
             >
               Refresh Geo Scores
             </button>
           )}
-          {refreshMsg && <p className="mt-2 text-xs text-slate-400">{refreshMsg}</p>}
+          {refreshMsg && <p className="mt-2 text-xs text-stone-500">{refreshMsg}</p>}
         </div>
 
-        <div className="border border-slate-800 rounded-lg p-5">
-          <h2 className="text-sm font-semibold text-slate-200 mb-1">Re-index Knowledge Base</h2>
-          <p className="text-xs text-slate-500 mb-4">Scan kb/reports/ and kb/intel/ for new markdown files and add to ChromaDB.</p>
+        <div className="bg-white border border-stone-200 rounded-lg shadow-sm p-5">
+          <h2 className="text-sm font-semibold text-stone-900 mb-1">Re-index Knowledge Base</h2>
+          <p className="text-xs text-stone-400 mb-4">Scan kb/reports/ and kb/intel/ for new markdown files and add to ChromaDB.</p>
           <button
-            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-300 text-sm rounded transition-colors"
+            className="px-4 py-2 bg-amber-600 hover:bg-amber-700 disabled:opacity-40 text-white text-sm font-semibold rounded-md transition-colors"
             onClick={handleReindex}
             disabled={reindexing}
           >
             {reindexing ? "Re-indexing…" : "Re-index KB"}
           </button>
-          {reindexMsg && <p className="mt-2 text-xs text-slate-400">{reindexMsg}</p>}
+          {reindexMsg && <p className="mt-2 text-xs text-stone-500">{reindexMsg}</p>}
         </div>
       </div>
     </div>

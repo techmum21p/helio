@@ -29,26 +29,26 @@ export default function ReportPage() {
 
   return (
     <div
-      className="grid h-[calc(100vh-56px)]"
+      className="grid h-full"
       style={{ gridTemplateColumns: "180px 1fr" }}
     >
       {/* Left sidebar — run list */}
-      <aside className="border-r border-slate-800 overflow-y-auto bg-slate-950">
-        <div className="px-3 py-3 border-b border-slate-800">
-          <p className="text-xs text-slate-500 uppercase tracking-wider">Past Runs</p>
+      <aside className="border-r border-stone-200 overflow-y-auto bg-stone-50">
+        <div className="px-3 py-3 border-b border-stone-200">
+          <p className="text-xs font-bold tracking-widest uppercase text-stone-400">Past Runs</p>
         </div>
         <RunList runs={runs} />
       </aside>
 
       {/* Right — report + chat */}
-      <div className="flex flex-col overflow-hidden">
+      <div className="flex flex-col overflow-hidden bg-white">
         {/* Report scroll area */}
         <div className="flex-1 overflow-y-auto min-h-0">
           {isLoading && (
-            <div className="flex items-center justify-center h-32 text-slate-500">Loading…</div>
+            <div className="flex items-center justify-center h-32 text-stone-400">Loading…</div>
           )}
           {run && !run.report && (
-            <div className="p-8 text-slate-500">
+            <div className="p-8 text-stone-500">
               {run.status === "running" || run.status === "pending"
                 ? "Analysis still running…"
                 : "No report available for this run."}
@@ -56,21 +56,21 @@ export default function ReportPage() {
           )}
           {run?.report && (
             <div className="p-8">
-              <div className="flex items-center justify-between mb-6">
+              <div className="border-b border-stone-200 px-8 py-5 -mx-8 -mt-8 mb-6 flex items-center justify-between">
                 <div>
-                  <h1 className="text-xl font-semibold text-slate-100">{run.location}</h1>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <h1 className="text-xl font-bold text-stone-900">{run.location}</h1>
+                  <p className="text-xs text-stone-400 mt-1">
                     {new Date(run.created_at).toLocaleString("en-PH")}
                   </p>
                 </div>
                 <button
                   onClick={downloadMarkdown}
-                  className="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 rounded hover:border-slate-500 transition-colors"
+                  className="px-3 py-1.5 text-xs border border-stone-300 text-stone-500 rounded-md hover:border-stone-400 bg-white transition-colors"
                 >
                   ↓ Download .md
                 </button>
               </div>
-              <div className="prose prose-invert max-w-none prose-headings:text-amber-400 prose-a:text-amber-400 prose-strong:text-slate-200 prose-code:text-emerald-400 prose-pre:bg-slate-900 prose-table:text-sm">
+              <div className="prose max-w-none">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {run.report.markdown}
                 </ReactMarkdown>
@@ -80,7 +80,7 @@ export default function ReportPage() {
         </div>
 
         {/* Bottom-pinned chat */}
-        <div className="h-72 border-t border-slate-800 shrink-0">
+        <div className="h-72 border-t border-stone-200 shrink-0">
           <ChatPanel
             runId={runId}
             placeholder={`Ask about ${run?.location ?? "this report"}…`}

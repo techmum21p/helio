@@ -11,11 +11,11 @@ export default function ChatPage() {
 
   return (
     <div
-      className="h-[calc(100vh-56px)] grid"
+      className="h-full grid"
       style={{ gridTemplateColumns: "1fr 220px" }}
     >
       {/* Chat panel */}
-      <div className="border-r border-slate-800 overflow-hidden">
+      <div className="border-r border-stone-200 overflow-hidden">
         <ChatPanel
           runId={contextRunId}
           placeholder={
@@ -27,29 +27,31 @@ export default function ChatPage() {
       </div>
 
       {/* Run context switcher */}
-      <aside className="overflow-y-auto bg-slate-950">
-        <div className="px-3 py-3 border-b border-slate-800">
-          <p className="text-xs text-slate-500 uppercase tracking-wider">Context</p>
+      <aside className="overflow-y-auto bg-stone-50">
+        <div className="px-3 py-3 border-b border-stone-200">
+          <p className="text-xs font-bold tracking-widest uppercase text-stone-400">Context</p>
         </div>
         <button
-          className={`w-full text-left px-3 py-3 text-sm border-b border-slate-800 transition-colors hover:bg-slate-900 ${
-            contextRunId === null ? "text-amber-400 bg-slate-900 border-l-2 border-amber-500" : "text-slate-400"
+          className={`w-full text-left px-3 py-3 text-sm border-b border-stone-200 transition-colors ${
+            contextRunId === null
+              ? "bg-amber-50 border-l-2 border-amber-500 text-amber-800 font-semibold"
+              : "text-stone-600 hover:bg-stone-100"
           }`}
           onClick={() => setContextRunId(null)}
         >
           Global KB
-          <p className="text-xs text-slate-600 mt-0.5">All analyzed locations</p>
+          <p className="text-xs text-stone-400 mt-0.5">All analyzed locations</p>
         </button>
         {runs.map((run) => (
           <button
             key={run.id}
-            className={`w-full text-left px-3 py-3 border-b border-slate-800 transition-colors hover:bg-slate-900 ${
-              contextRunId === run.id ? "bg-slate-900 border-l-2 border-amber-500" : ""
+            className={`w-full text-left px-3 py-3 border-b border-stone-200 transition-colors hover:bg-stone-100 ${
+              contextRunId === run.id ? "bg-amber-50 border-l-2 border-amber-500" : ""
             }`}
             onClick={() => setContextRunId(run.id)}
           >
-            <p className="text-xs text-slate-300 font-medium line-clamp-2">{run.location}</p>
-            <p className="text-xs text-slate-600 mt-0.5">
+            <p className="text-xs font-semibold text-stone-700 line-clamp-2">{run.location}</p>
+            <p className="text-xs text-stone-400 mt-0.5">
               {new Date(run.created_at).toLocaleDateString("en-PH", { month: "short", day: "numeric" })}
             </p>
           </button>
