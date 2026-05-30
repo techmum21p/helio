@@ -96,6 +96,109 @@ INCOME_CLASS_MAP = {
 }
 
 
+# ── GEE initialization ─────────────────────────────────────────────────────────
+
+def _init_gee():
+    """Initialize Google Earth Engine. Returns ee module or None."""
+    try:
+        import ee
+        try:
+            ee.Initialize(project=config.GEE_PROJECT_ID)
+        except Exception:
+            ee.Authenticate()
+            ee.Initialize(project=config.GEE_PROJECT_ID)
+        print("GEE initialized.")
+        return ee
+    except ImportError:
+        return None
+    except Exception:
+        return None
+
+
+def fetch_gee_irradiance_batch(ee, units: list[dict]) -> dict:
+    """
+    Fetch mean annual solar irradiance for a batch of municipalities via GEE reduceRegions.
+
+    Returns {"province:name": kwh_per_day_or_None} for all units in the batch.
+    None means GEE returned null for that feature (caller should fall back).
+    """
+    features = []
+    for u in units:
+        pt = ee.Geometry.Point([u["lon"], u["lat"]]).buffer(11000)
+        features.append(
+            ee.Feature(pt, {"name": u["name"], "province": u["province"]})
+        )
+
+    fc = ee.FeatureCollection(features)
+    dataset = (
+        ee.ImageCollection("ECMWF/ERA5_LAND/DAILY_AGGR")
+        .filterDate("2023-01-01", "2023-12-31")
+        .select("surface_solar_radiation_downwards_sum")
+        .mean()
+    )
+
+    result_fc = dataset.reduceRegions(
+        collection=fc,
+        reducer=ee.Reducer.mean(),
+        scale=11132,
+    ).getInfo()
+
+    result: dict = {}
+    for feat in result_fc.get("features", []):
+        props    = feat.get("properties", {})
+        name     = props.get("name", "")
+        province = props.get("province", "")
+        raw      = props.get("surface_solar_radiation_downwards_sum")
+        kwh      = float(raw) / 3_600_000 if raw is not None else None
+        result[f"{province}:{name}"] = kwh
+
+    return result
+
+
+def _load_existing_solar() -> dict:
+    """
+    Return {"province:name" -> solar_irradiance} for rows where
+    geo_scores.solar_irradiance IS NOT NULL, enabling resume of interrupted runs.
+    """
+    conn = sqlite3.connect(str(config.HELIO_DB))
+    conn.row_factory = sqlite3.Row
+    try:
+        rows = conn.execute(
+            """SELECT m.name, m.province, g.solar_irradiance
+               FROM geo_scores g
+               JOIN municipalities m ON m.id = g.municipality_id
+               WHERE g.solar_irradiance IS NOT NULL"""
+        ).fetchall()
+        return {f"{r['province']}:{r['name']}": r["solar_irradiance"] for r in rows}
+    except Exception:
+        return {}
+    finally:
+        conn.close()
+
+
+def _upsert_solar_batch(conn: sqlite3.Connection, units: list[dict]) -> None:
+    """Write solar_irradiance to geo_scores for a batch; commits immediately."""
+    for u in units:
+        if u.get("solar") is None:
+            continue
+        row = conn.execute(
+            "SELECT id FROM municipalities WHERE name=? AND province=?",
+            (u["name"], u["province"]),
+        ).fetchone()
+        if row is None:
+            continue
+        muni_id = row[0]
+        conn.execute(
+            """INSERT INTO geo_scores (municipality_id, solar_irradiance, computed_at)
+               VALUES (?, ?, CURRENT_TIMESTAMP)
+               ON CONFLICT(municipality_id) DO UPDATE SET
+                   solar_irradiance = excluded.solar_irradiance,
+                   computed_at      = excluded.computed_at""",
+            (muni_id, u["solar"]),
+        )
+    conn.commit()
+
+
 # ── Stable hash-based demographic helpers ──────────────────────────────────────
 
 def _stable_float(seed: str, lo: float, hi: float) -> float:
@@ -170,7 +273,7 @@ def _get_all_municipalities() -> list[dict]:
                 population = int(_stable_float(f"{prov_name}:{muni_name}:pop", 5000, 150000))
                 area_km2 = _stable_float(f"{prov_name}:{muni_name}:area", 20, 500)
                 pop_density = population / area_km2
-                solar = _stable_float(f"{muni_name}:solar", 4.5, 6.0)
+                solar = None  # filled by GEE in precompute_geo_scores()
                 lat, lon = _municipality_coord(muni_name, prov_name)
 
                 units.append({
@@ -322,9 +425,74 @@ def upsert_to_db(units: list[dict], progress_callback=None) -> None:
 
 def precompute_geo_scores(progress_callback=None) -> None:
     """
-    Full pipeline: enumerate municipalities, normalize, upsert to DB.
+    Full pipeline: enumerate municipalities → fetch real GEE irradiance in batches
+    → normalize → upsert to DB.
+
+    Exits with error if GEE is not authenticated (never silently uses synthetic values
+    during a deliberate precompute run).
+    Resumes interrupted runs: skips municipalities that already have solar_irradiance in DB.
     """
-    units = _get_all_municipalities()
+    import time
+
+    ee = _init_gee()
+    if ee is None:
+        print("ERROR: GEE initialization failed.")
+        print("Run: earthengine authenticate && earthengine set_project <project-id>")
+        sys.exit(1)
+
+    units = _get_all_municipalities()  # solar=None for all
+
+    # Resume: fill in already-fetched solar values
+    existing = _load_existing_solar()
+    for u in units:
+        key = f"{u['province']}:{u['name']}"
+        if key in existing:
+            u["solar"] = existing[key]
+
+    to_fetch      = [u for u in units if u["solar"] is None]
+    total_batches = (len(to_fetch) + 199) // 200
+
+    if to_fetch:
+        db_conn = sqlite3.connect(str(config.HELIO_DB))
+        db_conn.row_factory = sqlite3.Row
+        try:
+            for batch_idx in range(0, len(to_fetch), 200):
+                batch     = to_fetch[batch_idx : batch_idx + 200]
+                batch_num = batch_idx // 200 + 1
+                range_str = f"{batch[0]['name']} … {batch[-1]['name']}"
+                t0        = time.time()
+                print(f"  Batch {batch_num}/{total_batches}: {len(batch)} munis ({range_str})")
+
+                try:
+                    gee_results = fetch_gee_irradiance_batch(ee, batch)
+                except Exception as exc:
+                    print(f"    WARNING: batch {batch_num} GEE call failed ({exc}); using synthetic fallback")
+                    gee_results = {}
+
+                for u in batch:
+                    key = f"{u['province']}:{u['name']}"
+                    val = gee_results.get(key)
+                    if val is not None and val > 0:
+                        u["solar"] = val
+                    else:
+                        if val is None:
+                            print(f"    WARNING: GEE returned null for {key}; using synthetic fallback")
+                        u["solar"] = _stable_float(f"{u['name']}:solar", 4.5, 6.0)
+
+                _upsert_solar_batch(db_conn, batch)
+                elapsed = time.time() - t0
+                print(f"    Done in {elapsed:.1f}s")
+                time.sleep(1)
+        finally:
+            db_conn.close()
+    else:
+        print("All municipalities already have GEE solar data. Skipping fetch.")
+
+    # Fill any remaining None (guard)
+    for u in units:
+        if u["solar"] is None:
+            u["solar"] = _stable_float(f"{u['name']}:solar", 4.5, 6.0)
+
     units = normalize_and_score(units)
     upsert_to_db(units, progress_callback=progress_callback)
 

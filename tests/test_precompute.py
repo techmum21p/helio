@@ -140,6 +140,89 @@ def test_upsert_is_idempotent(temp_db):
     assert count == 2
 
 
+def test_get_all_municipalities_solar_is_none():
+    """After Task 6 change, _get_all_municipalities returns solar=None (to be filled by GEE)."""
+    from precompute_geo_scores import _get_all_municipalities
+    units = _get_all_municipalities()
+    assert all(u["solar"] is None for u in units[:20]), \
+        "Expected solar=None for all units; GEE fill hasn't happened yet"
+
+
+def test_fetch_gee_irradiance_batch_uses_reduceRegions(monkeypatch):
+    """fetch_gee_irradiance_batch calls ee.FeatureCollection().reduceRegions()."""
+    from precompute_geo_scores import fetch_gee_irradiance_batch
+
+    class MockReduceResult:
+        def getInfo(self):
+            return {
+                "features": [
+                    {"properties": {"name": "Town0", "province": "P",
+                                    "surface_solar_radiation_downwards_sum": 18_000_000.0}},
+                    {"properties": {"name": "Town1", "province": "P",
+                                    "surface_solar_radiation_downwards_sum": None}},
+                ]
+            }
+
+    class MockDataset:
+        def reduceRegions(self, **kwargs):
+            return MockReduceResult()
+        def filterDate(self, *a): return self
+        def select(self, *a): return self
+        def mean(self): return self
+
+    class MockFC:
+        def __init__(self, *a): pass
+
+    class MockGeometry:
+        def buffer(self, *a): return self
+
+    class MockReducer:
+        @staticmethod
+        def mean(): return "mean"
+
+    class MockEE:
+        class Geometry:
+            @staticmethod
+            def Point(coords):
+                return MockGeometry()
+        FeatureCollection = MockFC
+        @staticmethod
+        def Feature(*a, **kw): return {"geometry": None, "properties": kw.get("properties", {})}
+        Reducer = MockReducer
+        def ImageCollection(self, *a): return MockDataset()
+
+    ee = MockEE()
+    units = [
+        {"name": "Town0", "province": "P", "lat": 14.0, "lon": 121.0},
+        {"name": "Town1", "province": "P", "lat": 14.1, "lon": 121.1},
+    ]
+    result = fetch_gee_irradiance_batch(ee, units)
+    assert "P:Town0" in result
+    assert result["P:Town0"] == pytest.approx(18_000_000.0 / 3_600_000)
+    assert result["P:Town1"] is None
+
+
+def test_load_existing_solar_returns_dict(temp_db):
+    """_load_existing_solar returns {province:name -> float} for rows with solar set."""
+    import sqlite3 as _sq
+    from precompute_geo_scores import _load_existing_solar
+
+    conn = _sq.connect(str(temp_db))
+    conn.execute(
+        "INSERT INTO municipalities (name, province, region) VALUES ('A', 'PA', 'R')"
+    )
+    mid = conn.execute("SELECT id FROM municipalities WHERE name='A'").fetchone()[0]
+    conn.execute(
+        "INSERT INTO geo_scores (municipality_id, solar_irradiance) VALUES (?, 5.3)",
+        (mid,),
+    )
+    conn.commit()
+    conn.close()
+
+    result = _load_existing_solar()
+    assert result.get("PA:A") == pytest.approx(5.3)
+
+
 def test_progress_callback_called(temp_db):
     from precompute_geo_scores import normalize_and_score, upsert_to_db
     units = _make_units(3)
