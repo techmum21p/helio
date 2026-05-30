@@ -55,7 +55,7 @@ _precompute_state: dict = {"done": 0, "total": 0, "running": False}
 with st.sidebar:
     st.title("☀️ Solar Lead Intel")
     st.markdown("---")
-    page = st.radio("Navigate", ["🗺️ Map & Scores", "📄 Report", "💬 Chatbot", "⚙️ Admin"])
+    page = st.radio("Navigate", ["🗺️ Map & Scores", "📄 Report", "💬 Chatbot", "⚙️ Admin", "📚 Past Runs"])
 
     st.markdown("---")
     st.subheader("Run Pipeline")
@@ -382,3 +382,74 @@ elif page == "⚙️ Admin":
                 st.success("KB re-indexed successfully.")
             except Exception as e:
                 st.error(f"Re-index failed: {e}")
+
+
+# ── Page: Past Runs ────────────────────────────────────────────────────────────
+elif page == "📚 Past Runs":
+    st.title("📚 Past Runs")
+
+    if "runs_page" not in st.session_state:
+        st.session_state.runs_page = 0
+
+    all_runs = db_store.list_runs(limit=1000)
+
+    if not all_runs:
+        st.info("No completed runs with reports yet.")
+    else:
+        page_size   = 20
+        total_pages = max(1, (len(all_runs) + page_size - 1) // page_size)
+        current_page = min(st.session_state.runs_page, total_pages - 1)
+        st.session_state.runs_page = current_page
+        page_runs = all_runs[current_page * page_size : (current_page + 1) * page_size]
+
+        for run in page_runs:
+            try:
+                dt = datetime.fromisoformat(run["created_at"])
+                date_str = dt.strftime("%b %d, %Y")
+            except Exception:
+                date_str = str(run["created_at"])[:10]
+
+            top_score = run.get("top_score")
+            score_str = f"{top_score:.2f}" if top_score else "—"
+            tier_icon = {"HIGH": "🟢", "MEDIUM": "🟡", "LOW": "🔴"}.get(
+                run.get("top_tier", ""), "⚪"
+            )
+            header = (
+                f"{run['location']}  ·  {date_str}  ·  "
+                f"{run.get('target_count', 0)} targets  ·  top {score_str} {tier_icon}"
+            )
+
+            with st.expander(header):
+                loaded = db_store.load_run(run["id"])
+                if loaded:
+                    md = loaded.get("report_markdown", "")
+                    if md:
+                        st.markdown(md)
+                    report_path = loaded.get("report_path")
+                    if report_path:
+                        try:
+                            with open(report_path, "r", encoding="utf-8") as f:
+                                st.download_button(
+                                    "⬇️ Download Report (.md)",
+                                    data=f.read(),
+                                    file_name=f"solar_report_{run['id']}.md",
+                                    mime="text/markdown",
+                                    key=f"dl_{run['id']}",
+                                )
+                        except FileNotFoundError:
+                            pass
+
+        col_prev, col_mid, col_next = st.columns([1, 2, 1])
+        with col_prev:
+            if st.button("← Previous", disabled=(current_page == 0), key="runs_prev"):
+                st.session_state.runs_page -= 1
+                st.rerun()
+        with col_mid:
+            st.markdown(
+                f"<div style='text-align:center'>Page {current_page + 1} of {total_pages}</div>",
+                unsafe_allow_html=True,
+            )
+        with col_next:
+            if st.button("Next →", disabled=(current_page >= total_pages - 1), key="runs_next"):
+                st.session_state.runs_page += 1
+                st.rerun()

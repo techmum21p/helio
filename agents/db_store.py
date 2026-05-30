@@ -264,7 +264,7 @@ def load_chat_history(run_id: str) -> list[dict]:
         conn.close()
 
 
-def list_runs(limit: int = 20) -> list[dict]:
+def list_runs(limit: int = 1000) -> list[dict]:
     conn = _get_conn()
     try:
         rows = conn.execute(
@@ -275,6 +275,7 @@ def list_runs(limit: int = 20) -> list[dict]:
                    (SELECT tier FROM run_results
                     WHERE run_id = r.id ORDER BY final_score DESC LIMIT 1) AS top_tier
             FROM runs r
+            INNER JOIN reports rep ON rep.run_id = r.id
             LEFT JOIN run_results rr ON rr.run_id = r.id
             WHERE r.status IN ('done', 'failed')
             GROUP BY r.id

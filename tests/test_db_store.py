@@ -150,12 +150,14 @@ def test_save_report_inserts_row(fresh_db):
 
 def test_list_runs_returns_done_runs_newest_first(fresh_db):
     import time
-    from agents.db_store import create_run, complete_run, list_runs
+    from agents.db_store import create_run, complete_run, save_report, list_runs
     create_run("r1", "Laguna", "Laguna")
     complete_run("r1", [])
+    save_report("r1", "Laguna", None, "# R1", "/r1.md")
     time.sleep(1.05)
     create_run("r2", "Cebu", "Cebu")
     complete_run("r2", [])
+    save_report("r2", "Cebu", None, "# R2", "/r2.md")
     runs = list_runs()
     assert len(runs) >= 2
     locations = [r["location"] for r in runs]
@@ -206,6 +208,27 @@ def test_migrate_adds_web_score_column(fresh_db):
 def test_get_municipality_id_returns_none_for_unknown(fresh_db):
     from agents.db_store import get_municipality_id
     assert get_municipality_id("Nonexistent", "Nowhere") is None
+
+
+def test_list_runs_excludes_runs_without_reports(fresh_db):
+    from agents.db_store import create_run, complete_run, save_report, list_runs
+    create_run("r_report", "Cebu", "Cebu")
+    complete_run("r_report", [])
+    save_report("r_report", "Cebu", None, "# Cebu", "/r.md")
+    create_run("r_noreport", "Davao", "Davao")
+    complete_run("r_noreport", [])
+
+    runs = list_runs()
+    ids = [r["id"] for r in runs]
+    assert "r_report"   in ids
+    assert "r_noreport" not in ids
+
+
+def test_list_runs_default_limit_is_1000(fresh_db):
+    from agents import db_store as ds
+    import inspect
+    sig = inspect.signature(ds.list_runs)
+    assert sig.parameters["limit"].default == 1000
 
 
 def test_migrate_adds_score_component_columns(fresh_db):
