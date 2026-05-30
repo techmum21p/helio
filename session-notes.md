@@ -1,8 +1,80 @@
-> Last updated: 2026-05-28 | Session 4
+> Last updated: 2026-05-30 | Session 5
 
 # Helio — Solar Lead Intelligence Platform Session Notes
 
 ---
+
+## Session 5 — Score Transparency, GEE Precompute & Past Runs Page (2026-05-30)
+
+### Branch
+`feat-geo-scoring` (off `main`) — 6 commits, 89 tests passing
+
+### DB Migration (`agents/db_store.py`)
+- `_migrate()` now adds 3 nullable columns to `run_results` (idempotent `ALTER TABLE IF NOT EXISTS` pattern):
+  - `solar_irradiance REAL` — raw irradiance in kWh/m²/day
+  - `solar_yield_kwh REAL` — annual yield: `solar_irradiance × 365 × 0.80`
+  - `pop_density REAL` — people/km²
+- `complete_run()`: writes all 3 new columns from each `top_targets` entry (via `t.get()`)
+- `load_run()`: SELECT now includes `rr.solar_irradiance/solar_yield_kwh/pop_density` + LEFT JOIN `geo_scores g ON g.municipality_id = rr.municipality_id`; fallback chain: `rr.solar_irradiance or g.solar_irradiance or 5.0`; `solar_yield_kwh` recomputed if NULL
+- `list_runs()`: changed from `LEFT JOIN run_results` to `INNER JOIN reports rep ON rep.run_id = r.id` (only returns runs with saved reports); default `limit` changed from 20 → 1000
+
+### Synthesis Agent (`agents/synthesis.py`)
+- `final_scores[municipality]` dict now includes 3 new keys:
+  - `"solar_irradiance": geo.get("solar_raw", 5.0)`
+  - `"solar_yield_kwh": round(geo.get("solar_raw", 5.0) * 365 * 0.80, 0)`
+  - `"pop_density": geo.get("pop_density", round(geo.get("population_raw", 0) / 500, 1))` — fallback divides population by 500 (midpoint area estimate)
+
+### Report Prompt (`agents/report_gen.py`)
+- `REPORT_PROMPT` now includes a `## Score Breakdown` section after `## Top Target Areas`:
+  - Table columns: `Municipality | Irradiance (kWh/m²/day) | Income Class | Pop Density (ppl/km²) | Annual Yield (kWh/kWp) | Final Score`
+
+### App UI (`app.py`)
+- **Map popup** (was `"<b>{name}</b><br>Score: {score:.3f}"`): now rich HTML showing Final Score, Tier, ☀ Irradiance, 📈 Income class, 👥 Population, ⚡ Yield with 5 kWp concrete example (`yield_kwp * 5`); `max_width=260`
+- **Map tooltip**: changed from `"{name}: {score:.3f}"` → `"{name}: {score:.3f} | {irr:.1f} kWh/m²/day"`
+- **Sidebar expander** (was single `st.metric("Est. Annual Solar Yield"...)`): replaced with 4-column metrics grid — `c1.metric("☀ Irradiance")`, `c2.metric("📈 Income")`, `c3.metric("👥 Population")`, `c4.metric("⚡ Yield")`; LLM assessment/opportunity/risk text follows below
+- **Nav radio**: added `"📚 Past Runs"` option (5th page)
+- **Past Runs page** (new `elif page == "📚 Past Runs":` block):
+  - Fetches `db_store.list_runs(limit=1000)` once; paginates client-side at 20/page
+  - `st.session_state.runs_page` (int, default 0) tracks current page
+  - Expander header: `"{location} · {date} · {count} targets · top {score} {tier_icon}"`
+  - Expander body: `db_store.load_run(run_id)` lazily, `st.markdown(report_markdown)`, download button if `report_path` set
+  - Pagination: `← Previous` / `Next →` buttons (disabled at boundaries), `"Page N of M"` centered between them
+
+### Precompute Script (`scripts/precompute_geo_scores.py`)
+- **`_init_gee()`** (new): initialises GEE via `ee.Initialize(project=config.GEE_PROJECT_ID)`; returns `ee` module or `None`
+- **`fetch_gee_irradiance_batch(ee, units)`** (new): builds `ee.FeatureCollection` of buffered points (11 km radius), calls `ECMWF/ERA5_LAND/DAILY_AGGR` → `filterDate("2023-01-01","2023-12-31")` → `reduceRegions(scale=11132)`, returns `{"province:name": kwh/day or None}`; J/m² → kWh/m²/day divides by 3,600,000
+- **`_load_existing_solar()`** (new): returns `{"province:name": float}` for rows where `geo_scores.solar_irradiance IS NOT NULL` — enables resume of interrupted runs
+- **`_upsert_solar_batch(conn, units)`** (new): writes `solar_irradiance` to `geo_scores` per batch; commits immediately after each batch
+- **`_get_all_municipalities()`**: `solar = None` now (was `_stable_float(f"{muni_name}:solar", 4.5, 6.0)`) — placeholder filled by GEE
+- **`precompute_geo_scores()`** rewritten: (1) calls `_init_gee()` — exits with error if GEE auth fails; (2) resumes from `_load_existing_solar()`; (3) batches 200 munis per `reduceRegions()` call (~9 batches, 1s sleep between); (4) synthetic fallback per municipality if GEE returns null; (5) batch commit via `_upsert_solar_batch`; (6) then runs `normalize_and_score` + `upsert_to_db` as before
+
+### Config Fix
+- `config.py` (pre-existing uncommitted change): `OLLAMA_EMBED_MODEL` default changed from `"qwen3-embedding"` → `"qwen3-embedding:0.6b"`
+- `tests/test_config.py::test_ollama_defaults` updated to match
+
+### New Tests
+- `tests/test_db_store.py`: +6 tests (4 for new columns + fallback JOIN, 2 for `list_runs` INNER JOIN/limit)
+- `tests/test_synthesis_weights.py`: +1 test (`test_synthesis_agent_top_targets_have_component_fields`)
+- `tests/test_precompute.py`: +3 tests (`test_get_all_municipalities_solar_is_none`, `test_fetch_gee_irradiance_batch_uses_reduceRegions`, `test_load_existing_solar_returns_dict`)
+- Also updated `test_list_runs_returns_done_runs_newest_first` to call `save_report` (required by new INNER JOIN)
+- Total: 89 tests, all passing
+
+### ⚠️ Next session
+- `feat-geo-scoring` branch has not been merged to `main` yet (user kept as-is)
+- `precompute_geo_scores.py` has real GEE flow but needs `earthengine authenticate` + GEE project set before running
+- The precompute script must be run manually to backfill real irradiance into `geo_scores.solar_irradiance`; until then, live `geo_scoring_agent` runs still use synthetic solar values for on-the-fly scoring
+
+#### Files changed (session 5)
+- `agents/db_store.py` — `_migrate` + `complete_run` + `load_run` + `list_runs`
+- `agents/synthesis.py` — added 3 component fields to `final_scores` dict
+- `agents/report_gen.py` — Score Breakdown section in `REPORT_PROMPT`
+- `app.py` — rich map popup, 4-col sidebar metrics, Past Runs page, nav radio
+- `scripts/precompute_geo_scores.py` — real GEE batch fetch, resume support
+- `config.py` — `OLLAMA_EMBED_MODEL` default updated
+- `tests/test_db_store.py` — geo_scores table in schema, 6 new tests, updated list_runs test
+- `tests/test_synthesis_weights.py` — 1 new test
+- `tests/test_precompute.py` — 3 new tests
+- `tests/test_config.py` — updated OLLAMA_EMBED_MODEL assertion
 
 ## Session 4 — Town-Level Location Selection + SQLite Location DB (2026-05-28)
 
