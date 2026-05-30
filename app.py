@@ -171,34 +171,51 @@ if page == "🗺️ Map & Scores":
         col1, col2 = st.columns([3, 2])
 
         with col1:
-            # Build score lookup for coloring
-            score_map = {t["municipality"]: t["final_score"] for t in top_targets}
+            score_map  = {t["municipality"]: t["final_score"] for t in top_targets}
+            target_map = {t["municipality"]: t                  for t in top_targets}
 
-            # Center map on Philippines
             m = folium.Map(location=[12.5, 122.5], zoom_start=7, tiles="CartoDB positron")
 
             if geo_geojson:
                 geo_data = json.loads(geo_geojson)
                 for feature in geo_data.get("features", []):
                     props = feature.get("properties", {})
-                    name = props.get("name", "")
-                    geom = feature.get("geometry", {})
+                    name  = props.get("name", "")
+                    geom  = feature.get("geometry", {})
 
                     if geom.get("type") != "Point":
                         continue
 
                     lon, lat = geom["coordinates"]
-                    score = score_map.get(name, props.get("geo_score", 0))
+                    score    = score_map.get(name, props.get("geo_score", 0))
+                    target   = target_map.get(name, {})
 
-                    # Color by score tier
                     if score >= 0.65:
-                        color = "#2ecc71"   # green — high opportunity
+                        color = "#2ecc71"
                     elif score >= 0.35:
-                        color = "#f39c12"   # orange — medium
+                        color = "#f39c12"
                     else:
-                        color = "#e74c3c"   # red — low
+                        color = "#e74c3c"
 
-                    radius = 6 + score * 14  # bigger circle = higher score
+                    radius     = 6 + score * 14
+                    irr        = target.get("solar_irradiance", 0)
+                    income     = target.get("income_class", "N/A")
+                    pop        = target.get("population", 0)
+                    yield_kwp  = target.get("solar_yield_kwh", 0)
+                    yield_5kwp = int(yield_kwp * 5)
+                    tier       = target.get("tier", "")
+                    province   = target.get("province", props.get("province", ""))
+
+                    popup_html = (
+                        f"<b>{name}</b> ({province})<br>"
+                        f"────────────────────<br>"
+                        f"Final Score: {score:.3f} &nbsp;|&nbsp; Tier: {tier}<br>"
+                        f"&#9728; Irradiance: {irr:.2f} kWh/m&#178;/day<br>"
+                        f"&#128200; Income: {income} class<br>"
+                        f"&#128101; Population: {pop:,}<br>"
+                        f"&#9889; Yield: {yield_kwp:,.0f} kWh/kWp/yr "
+                        f"(~{yield_5kwp:,} kWh/yr for 5 kWp)"
+                    )
 
                     folium.CircleMarker(
                         location=[lat, lon],
@@ -208,11 +225,8 @@ if page == "🗺️ Map & Scores":
                         fill_color=color,
                         fill_opacity=0.75,
                         weight=1.5,
-                        popup=folium.Popup(
-                            f"<b>{name}</b><br>Score: {score:.3f}",
-                            max_width=200,
-                        ),
-                        tooltip=f"{name}: {score:.3f}",
+                        popup=folium.Popup(popup_html, max_width=260),
+                        tooltip=f"{name}: {score:.3f} | {irr:.1f} kWh/m²/day",
                     ).add_to(m)
 
             st_folium(m, width=700, height=500)
@@ -222,11 +236,14 @@ if page == "🗺️ Map & Scores":
             for i, t in enumerate(top_targets[:10], 1):
                 tier_color = {"HIGH": "🟢", "MEDIUM": "🟡", "LOW": "🔴"}.get(t["tier"], "⚪")
                 with st.expander(f"{i}. {t['municipality']} {tier_color} — `{t['final_score']:.3f}`"):
+                    c1, c2, c3, c4 = st.columns(4)
+                    c1.metric("☀ Irradiance",  f"{t.get('solar_irradiance', 0):.2f} kWh/m²/day")
+                    c2.metric("📈 Income",      f"{t.get('income_class', 'N/A')} class")
+                    c3.metric("👥 Population",  f"{t.get('population', 0):,}")
+                    c4.metric("⚡ Yield",       f"{t.get('solar_yield_kwh', 0):,.0f} kWh/kWp/yr")
                     st.write(f"**Assessment:** {t.get('assessment', 'N/A')}")
                     st.write(f"**Opportunity:** {t.get('opportunity', 'N/A')}")
                     st.write(f"**Risk:** {t.get('risk', 'N/A')}")
-                    est_kwh = t.get("solar_kwh_estimate", 0)
-                    st.metric("Est. Annual Solar Yield", f"{est_kwh:,.0f} kWh/kWp")
 
         if result.get("errors"):
             with st.expander("⚠️ Pipeline warnings"):
