@@ -34,6 +34,9 @@ Write a professional but readable markdown report with these sections:
 ## Top Target Areas
 (Table with columns: Rank | Municipality | Score | Tier | Key Opportunity)
 
+## Score Breakdown
+(Table with columns: Municipality | Irradiance (kWh/m²/day) | Income Class | Pop Density (ppl/km²) | Annual Yield (kWh/kWp) | Final Score)
+
 ## Detailed Profiles
 (For each of the top 5 targets, one paragraph with assessment, opportunity, and risk.)
 
