@@ -50,7 +50,7 @@ FINAL_WEB_WEIGHT = 0.30   # was 0.20
 
 # Ollama embedding
 OLLAMA_URL         = os.getenv("OLLAMA_URL", "http://localhost:11434")
-OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "qwen3-embedding")
+OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "qwen3-embedding:0.6b")
 
 # Consolidated DB (helio.db replaces ph_locations.db for all structured data)
 HELIO_DB = ROOT_DIR / "data" / "helio.db"
