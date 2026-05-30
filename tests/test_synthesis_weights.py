@@ -38,6 +38,46 @@ def test_compute_final_score_falls_back_when_no_cached_web_score():
     assert final == pytest.approx(0.70 * 0.5, abs=1e-4)
 
 
+def test_synthesis_agent_top_targets_have_component_fields():
+    """synthesis_agent must include solar_irradiance, solar_yield_kwh, pop_density in top_targets."""
+    from graph.state import SolarLeadState
+    from agents.synthesis import synthesis_agent
+    from unittest.mock import patch
+
+    geo_scores = {
+        "Biñan": {
+            "geo_score": 0.7, "solar_norm": 0.8, "pop_norm": 0.6, "income_norm": 0.9,
+            "solar_raw": 5.42, "solar_yield_kwh": 1587.0, "population_raw": 80000,
+            "income_class": "2nd", "province": "Laguna", "region": "IV-A",
+            "is_urban": True,
+        },
+    }
+
+    fake_narrative = {
+        "assessment": "Good area.", "confidence": "HIGH",
+        "opportunity": "Malls", "risk": "Flooding",
+    }
+
+    state = SolarLeadState(
+        location="Laguna", run_id="t01",
+        geo_scores=geo_scores, geo_geojson=None,
+        web_intel={}, final_scores=None, top_targets=None,
+        report_markdown=None, report_path=None,
+        chat_history=[], kb_updated=False, errors=[], status="running",
+    )
+
+    with patch("agents.synthesis.synthesize_municipality", return_value=fake_narrative):
+        result = synthesis_agent(state)
+
+    t = result["top_targets"][0]
+    assert "solar_irradiance" in t, "solar_irradiance missing from top_targets entry"
+    assert "solar_yield_kwh"  in t, "solar_yield_kwh missing from top_targets entry"
+    assert "pop_density"      in t, "pop_density missing from top_targets entry"
+    assert t["solar_irradiance"] == pytest.approx(5.42)
+    assert t["solar_yield_kwh"]  == pytest.approx(round(5.42 * 365 * 0.80, 0))
+    assert t["pop_density"]      == pytest.approx(80000 / 500)
+
+
 def test_synthesis_agent_stores_web_score_in_final_scores(monkeypatch):
     import agents.synthesis as synth
     monkeypatch.setattr(synth, "synthesize_municipality",

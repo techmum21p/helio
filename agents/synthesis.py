@@ -164,19 +164,23 @@ def synthesis_agent(state: SolarLeadState) -> SolarLeadState:
         narrative = synthesize_municipality(municipality, geo, intel)
 
         final_scores[municipality] = {
-            "geo_score": geo.get("geo_score", 0),
-            "web_score": web_score,
-            "final_score": final_score,
+            "geo_score":        geo.get("geo_score", 0),
+            "web_score":        web_score,
+            "final_score":      final_score,
             "solar_kwh_estimate": round(geo.get("solar_raw", 5.0) * 365 * 0.8, 0),
-            "tier": narrative["confidence"],
-            "assessment": narrative["assessment"],
-            "opportunity": narrative["opportunity"],
-            "risk": narrative["risk"],
-            "province": geo.get("province", ""),
-            "region": geo.get("region", ""),
-            "income_class": geo.get("income_class", ""),
-            "population": int(geo.get("population_raw", 0)),
-            "is_urban": geo.get("is_urban", False),
+            "solar_irradiance": geo.get("solar_raw", 5.0),
+            "solar_yield_kwh":  round(geo.get("solar_raw", 5.0) * 365 * 0.80, 0),
+            "pop_density":      geo.get("pop_density",
+                                        round(geo.get("population_raw", 0) / 500, 1)),
+            "tier":             narrative["confidence"],
+            "assessment":       narrative["assessment"],
+            "opportunity":      narrative["opportunity"],
+            "risk":             narrative["risk"],
+            "province":         geo.get("province", ""),
+            "region":           geo.get("region", ""),
+            "income_class":     geo.get("income_class", ""),
+            "population":       int(geo.get("population_raw", 0)),
+            "is_urban":         geo.get("is_urban", False),
         }
 
     # Rank and return top N
