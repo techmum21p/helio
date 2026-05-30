@@ -9,6 +9,13 @@ CREATE TABLE municipalities (
     region TEXT NOT NULL, lat REAL, lon REAL, area_km2 REAL,
     population INTEGER, income_class TEXT
 );
+CREATE TABLE geo_scores (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    municipality_id INTEGER NOT NULL UNIQUE,
+    solar_irradiance REAL, solar_norm REAL, income_score REAL,
+    pop_density REAL, pop_density_norm REAL, geo_score REAL,
+    computed_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 CREATE TABLE runs (
     id TEXT PRIMARY KEY, location TEXT NOT NULL, province TEXT,
     status TEXT NOT NULL DEFAULT 'pending',
@@ -199,3 +206,94 @@ def test_migrate_adds_web_score_column(fresh_db):
 def test_get_municipality_id_returns_none_for_unknown(fresh_db):
     from agents.db_store import get_municipality_id
     assert get_municipality_id("Nonexistent", "Nowhere") is None
+
+
+def test_migrate_adds_score_component_columns(fresh_db):
+    from agents import db_store as ds
+    conn = sqlite3.connect(str(fresh_db))
+    cols = [r[1] for r in conn.execute("PRAGMA table_info(run_results)").fetchall()]
+    conn.close()
+    assert "solar_irradiance" in cols
+    assert "solar_yield_kwh" in cols
+    assert "pop_density" in cols
+
+
+def test_complete_run_writes_component_fields(fresh_db):
+    from agents.db_store import create_run, complete_run
+    create_run("run_comp", "Laguna", "Laguna")
+    targets = [{
+        "municipality": "Biñan", "province": "Laguna", "region": "IV-A",
+        "geo_score": 0.7, "web_score": 0.4, "final_score": 0.61,
+        "tier": "HIGH", "assessment": "Good", "opportunity": "Solar", "risk": "Rain",
+        "solar_irradiance": 5.42,
+        "solar_yield_kwh": 1587.0,
+        "pop_density": 850.3,
+    }]
+    complete_run("run_comp", targets)
+    conn = sqlite3.connect(str(fresh_db))
+    row = conn.execute(
+        "SELECT solar_irradiance, solar_yield_kwh, pop_density FROM run_results WHERE run_id='run_comp'"
+    ).fetchone()
+    conn.close()
+    assert row[0] == pytest.approx(5.42)
+    assert row[1] == pytest.approx(1587.0)
+    assert row[2] == pytest.approx(850.3)
+
+
+def test_load_run_returns_component_fields(fresh_db):
+    from agents.db_store import create_run, complete_run, save_report, load_run
+    create_run("run_load", "Laguna", "Laguna")
+    targets = [{
+        "municipality": "Biñan", "province": "Laguna", "region": "IV-A",
+        "income_class": "2nd", "population": 80000,
+        "geo_score": 0.7, "web_score": 0.4, "final_score": 0.61,
+        "tier": "HIGH", "assessment": "Good", "opportunity": "Solar", "risk": "Rain",
+        "solar_irradiance": 5.42,
+        "solar_yield_kwh": 1587.0,
+        "pop_density": 850.3,
+    }]
+    complete_run("run_load", targets)
+    save_report("run_load", "Laguna", None, "# Report", "/reports/r.md")
+    result = load_run("run_load")
+    t = result["top_targets"][0]
+    assert t["solar_irradiance"] == pytest.approx(5.42)
+    assert t["solar_yield_kwh"] == pytest.approx(1587.0)
+    assert t["pop_density"] == pytest.approx(850.3)
+
+
+def test_load_run_fallback_join_for_old_rows(fresh_db):
+    """Rows with NULL solar_irradiance in run_results fall back to geo_scores JOIN."""
+    import sqlite3 as _sq
+    from agents.db_store import load_run
+    conn = _sq.connect(str(fresh_db))
+    conn.execute(
+        "INSERT INTO municipalities (name, province, region) VALUES ('OldTown', 'OldProv', 'R')"
+    )
+    muni_id = conn.execute("SELECT id FROM municipalities WHERE name='OldTown'").fetchone()[0]
+    conn.execute(
+        """INSERT INTO geo_scores (municipality_id, solar_irradiance, pop_density)
+           VALUES (?, 5.1, 300.0)""",
+        (muni_id,),
+    )
+    conn.execute(
+        "INSERT INTO runs (id, location, status) VALUES ('old_run', 'OldProv', 'done')"
+    )
+    conn.execute(
+        """INSERT INTO run_results (run_id, municipality_id, geo_score, web_score,
+           final_score, tier)
+           VALUES ('old_run', ?, 0.5, 0.3, 0.46, 'MEDIUM')""",
+        (muni_id,),
+    )
+    conn.execute(
+        """INSERT INTO reports (run_id, province, slug, markdown, file_path)
+           VALUES ('old_run', 'OldProv', 'oldprov_old_run', '# R', '/r.md')"""
+    )
+    conn.commit()
+    conn.close()
+
+    result = load_run("old_run")
+    assert result is not None
+    t = result["top_targets"][0]
+    assert t["solar_irradiance"] == pytest.approx(5.1)
+    assert t["pop_density"] == pytest.approx(300.0)
+    assert t["solar_yield_kwh"] == pytest.approx(5.1 * 365 * 0.80, abs=1.0)

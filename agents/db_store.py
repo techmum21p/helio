@@ -111,9 +111,19 @@ def _migrate() -> None:
         conn.commit()
         logger.info("db_store: added web_score column to web_intel_cache")
     except Exception:
-        pass  # column already exists
-    finally:
-        conn.close()
+        pass
+    for col, typedef in [
+        ("solar_irradiance", "REAL"),
+        ("solar_yield_kwh",  "REAL"),
+        ("pop_density",      "REAL"),
+    ]:
+        try:
+            conn.execute(f"ALTER TABLE run_results ADD COLUMN {col} {typedef}")
+            conn.commit()
+            logger.info(f"db_store: added {col} column to run_results")
+        except Exception:
+            pass
+    conn.close()
 
 
 try:
@@ -165,14 +175,18 @@ def complete_run(run_id: str, top_targets: list) -> None:
             conn.execute(
                 """INSERT INTO run_results
                    (run_id, municipality_id, geo_score, web_score, final_score,
-                    tier, assessment, opportunities, risks)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                    tier, assessment, opportunities, risks,
+                    solar_irradiance, solar_yield_kwh, pop_density)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (
                     run_id, muni_id,
                     t.get("geo_score"), t.get("web_score"), t.get("final_score"),
                     t.get("tier"), t.get("assessment"),
                     json.dumps([t.get("opportunity", "")]),
                     json.dumps([t.get("risk", "")]),
+                    t.get("solar_irradiance"),
+                    t.get("solar_yield_kwh"),
+                    t.get("pop_density"),
                 ),
             )
         conn.commit()
@@ -286,31 +300,41 @@ def load_run(run_id: str) -> dict | None:
         result_rows = conn.execute(
             """SELECT rr.geo_score, rr.web_score, rr.final_score, rr.tier,
                       rr.assessment, rr.opportunities, rr.risks,
-                      COALESCE(m.name, '') AS municipality_name,
+                      rr.solar_irradiance, rr.solar_yield_kwh, rr.pop_density,
+                      COALESCE(m.name, '')     AS municipality_name,
                       COALESCE(m.province, '') AS province,
-                      COALESCE(m.region, '') AS region,
-                      m.income_class, m.population
+                      COALESCE(m.region, '')   AS region,
+                      m.income_class, m.population,
+                      g.solar_irradiance AS gs_solar_irradiance,
+                      g.pop_density      AS gs_pop_density
                FROM run_results rr
                LEFT JOIN municipalities m ON m.id = rr.municipality_id
+               LEFT JOIN geo_scores g    ON g.municipality_id = rr.municipality_id
                WHERE rr.run_id = ?
                ORDER BY rr.final_score DESC""",
             (run_id,),
         ).fetchall()
         top_targets = []
         for r in result_rows:
+            solar_irr   = r["solar_irradiance"] or r["gs_solar_irradiance"] or 5.0
+            pop_dens    = r["pop_density"]       or r["gs_pop_density"]       or 0.0
+            solar_yield = r["solar_yield_kwh"]   or round(solar_irr * 365 * 0.80, 0)
             top_targets.append({
-                "municipality": r["municipality_name"] or "",
-                "province":     r["province"] or "",
-                "region":       r["region"] or "",
-                "income_class": r["income_class"] or "",
-                "population":   r["population"] or 0,
-                "geo_score":    r["geo_score"],
-                "web_score":    r["web_score"],
-                "final_score":  r["final_score"],
-                "tier":         r["tier"],
-                "assessment":   r["assessment"] or "",
-                "opportunity":  (json.loads(r["opportunities"] or "[]") or [""])[0],
-                "risk":         (json.loads(r["risks"] or "[]") or [""])[0],
+                "municipality":     r["municipality_name"] or "",
+                "province":         r["province"] or "",
+                "region":           r["region"] or "",
+                "income_class":     r["income_class"] or "",
+                "population":       r["population"] or 0,
+                "geo_score":        r["geo_score"],
+                "web_score":        r["web_score"],
+                "final_score":      r["final_score"],
+                "tier":             r["tier"],
+                "assessment":       r["assessment"] or "",
+                "opportunity":      (json.loads(r["opportunities"] or "[]") or [""])[0],
+                "risk":             (json.loads(r["risks"] or "[]") or [""])[0],
+                "solar_irradiance": solar_irr,
+                "solar_yield_kwh":  solar_yield,
+                "pop_density":      pop_dens,
             })
         report_row = conn.execute(
             "SELECT markdown, file_path FROM reports WHERE run_id=? LIMIT 1",
