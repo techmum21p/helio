@@ -281,7 +281,7 @@ if page == "🗺️ Map & Scores":
                     [[min(lats), min(lons)], [max(lats), max(lons)]],
                     padding=[40, 40],
                 )
-            st_folium(m, height=500, use_container_width=True)
+            st_folium(m, height=500, use_container_width=True, key=f"map_{st.session_state.current_run_id}")
 
         with col2:
             st.subheader(f"Top {min(10, len(top_targets))} Targets")
