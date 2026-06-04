@@ -86,7 +86,11 @@ _precompute_state: dict = {"done": 0, "total": 0, "running": False}
 with st.sidebar:
     st.title("☀️ Solar Lead Intel")
     st.markdown("---")
-    page = st.radio("Navigate", ["🗺️ Map & Scores", "📄 Report", "💬 Chatbot", "⚙️ Admin", "📚 Past Runs"])
+    page = st.radio(
+        "Navigate",
+        ["🗺️ Map & Scores", "📄 Report", "💬 Chatbot", "⚙️ Admin", "📚 Past Runs"],
+        key="nav_page",
+    )
 
     st.markdown("---")
     st.subheader("Run Pipeline")
