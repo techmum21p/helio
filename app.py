@@ -76,8 +76,6 @@ if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "current_run_id" not in st.session_state:
     st.session_state.current_run_id = ""
-if "page" not in st.session_state:
-    st.session_state.page = "🗺️ Map & Scores"
 
 # Module-level precompute state — written by background thread, read by Streamlit UI
 _precompute_state: dict = {"done": 0, "total": 0, "running": False}
@@ -143,8 +141,10 @@ with st.sidebar:
                     st.session_state.chat_history = []
                     if result.get("errors"):
                         st.warning(f"Completed with {len(result['errors'])} warning(s).")
-                    else:
-                        st.success("Done!")
+                    top_count = len(result.get("top_targets") or [])
+                    st.session_state.nav_page = "🗺️ Map & Scores"
+                    st.toast(f"☀️ Analysis complete — {top_count} targets scored.", icon="✅")
+                    st.rerun()
                 except Exception as exc:
                     db_store.fail_run(run_id, str(exc))
                     st.error(f"Pipeline failed: {exc}")
