@@ -133,21 +133,26 @@ with st.sidebar:
             st.session_state.current_run_id = run_id
             db_store.create_run(run_id, location_str, selected_prov_name)
 
+            should_rerun = False
             with st.spinner(f"Analyzing {location_str}... (this takes ~1-2 mins)"):
                 try:
                     result = run_pipeline(location_str, run_id=run_id)
                     db_store.complete_run(run_id, result.get("top_targets") or [])
                     st.session_state.pipeline_result = result
                     st.session_state.chat_history = []
-                    if result.get("errors"):
-                        st.warning(f"Completed with {len(result['errors'])} warning(s).")
                     top_count = len(result.get("top_targets") or [])
                     st.session_state.nav_page = "🗺️ Map & Scores"
-                    st.toast(f"☀️ Analysis complete — {top_count} targets scored.", icon="✅")
-                    st.rerun()
+                    if result.get("errors"):
+                        st.warning(f"Completed with {len(result['errors'])} warning(s). {top_count} targets scored.")
+                    else:
+                        st.toast(f"☀️ Analysis complete — {top_count} targets scored.", icon="✅")
+                    should_rerun = True
                 except Exception as exc:
                     db_store.fail_run(run_id, str(exc))
                     st.error(f"Pipeline failed: {exc}")
+
+            if should_rerun:
+                st.rerun()
 
     if st.session_state.pipeline_result:
         result = st.session_state.pipeline_result
