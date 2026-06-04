@@ -143,7 +143,7 @@ with st.sidebar:
                     top_count = len(result.get("top_targets") or [])
                     st.session_state.nav_page = "🗺️ Map & Scores"
                     if result.get("errors"):
-                        st.warning(f"Completed with {len(result['errors'])} warning(s). {top_count} targets scored.")
+                        st.toast(f"⚠️ Completed with {len(result['errors'])} warning(s). {top_count} targets scored.", icon="⚠️")
                     else:
                         st.toast(f"☀️ Analysis complete — {top_count} targets scored.", icon="✅")
                     should_rerun = True
