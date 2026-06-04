@@ -442,5 +442,149 @@
   "Laguna::Santa Rosa": [
     14.3146042,
     121.1137004
+  ],
+  "Catanduanes::Bagamanoc": [
+    13.9396368,
+    124.2878298
+  ],
+  "Catanduanes::Baras": [
+    13.6591045,
+    124.3704682
+  ],
+  "Catanduanes::Bato": [
+    13.6080363,
+    124.2977872
+  ],
+  "Catanduanes::Caramoran": [
+    13.9838351,
+    124.1338718
+  ],
+  "Catanduanes::Gigmoto": [
+    13.7786693,
+    124.3911728
+  ],
+  "Catanduanes::Pandan": [
+    14.0492274,
+    124.1702111
+  ],
+  "Catanduanes::Panganiban": [
+    13.9081674,
+    124.30082
+  ],
+  "Catanduanes::San Andres": [
+    13.5989151,
+    124.0969685
+  ],
+  "Catanduanes::San Miguel": [
+    13.6403293,
+    124.3031092
+  ],
+  "Catanduanes::Viga": [
+    13.8715307,
+    124.3087305
+  ],
+  "Catanduanes::Virac": [
+    13.5803594,
+    124.2312028
+  ],
+  "City of Isabela (Not a Province)::City of Isabela": [
+    16.719960283805374,
+    122.05161271807927
+  ],
+  "City of Manila::Binondo": [
+    14.5999164,
+    120.9740253
+  ],
+  "City of Manila::Ermita": [
+    14.5785921,
+    120.9794956
+  ],
+  "City of Manila::Intramuros": [
+    14.5909588,
+    120.9746537
+  ],
+  "City of Manila::Malate": [
+    14.5700388,
+    120.9915263
+  ],
+  "City of Manila::Paco": [
+    14.5793612,
+    120.9950209
+  ],
+  "City of Manila::Pandacan": [
+    14.5878027,
+    121.002501
+  ],
+  "City of Manila::Port Area": [
+    14.5889597,
+    120.9686124
+  ],
+  "City of Manila::Quiapo": [
+    14.5982613,
+    120.9836081
+  ],
+  "City of Manila::Sampaloc": [
+    14.6022037,
+    120.9940623
+  ],
+  "City of Manila::San Miguel": [
+    14.5965298,
+    120.9939028
+  ],
+  "City of Manila::San Nicolas": [
+    14.5987849,
+    120.967317
+  ],
+  "City of Manila::Santa Ana": [
+    14.5818357,
+    121.0131656
+  ],
+  "City of Manila::Santa Cruz": [
+    14.5999016,
+    120.9803328
+  ],
+  "City of Manila::Tondo I/II": [
+    12.785884671375594,
+    122.67740779823563
+  ],
+  "Davao Occidental::Don Marcelino": [
+    6.1978508,
+    125.6977653
+  ],
+  "Davao Occidental::Jose Abad Santos": [
+    5.9124655,
+    125.6445932
+  ],
+  "Davao Occidental::Malita": [
+    6.4143745,
+    125.6109051
+  ],
+  "Davao Occidental::Santa Maria": [
+    6.5508908,
+    125.4748759
+  ],
+  "Davao Occidental::Sarangani": [
+    5.4122469,
+    125.4217427
+  ],
+  "Guimaras::Buenavista": [
+    10.6970447,
+    122.6479645
+  ],
+  "Guimaras::Jordan": [
+    10.5959639,
+    122.5877929
+  ],
+  "Guimaras::Nueva Valencia": [
+    10.5264005,
+    122.5400201
+  ],
+  "Guimaras::San Lorenzo": [
+    10.5879285,
+    122.7018482
+  ],
+  "Guimaras::Sibunag": [
+    10.5040415,
+    122.6318224
   ]
 }

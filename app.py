@@ -81,14 +81,19 @@ if "current_run_id" not in st.session_state:
 _precompute_state: dict = {"done": 0, "total": 0, "running": False}
 
 # ── Sidebar ────────────────────────────────────────────────────────────────────
+_NAV_OPTIONS = ["🗺️ Map & Scores", "📄 Report", "💬 Chatbot", "⚙️ Admin", "📚 Past Runs"]
+if "nav_page" not in st.session_state:
+    st.session_state.nav_page = _NAV_OPTIONS[0]
+
 with st.sidebar:
     st.title("☀️ Solar Lead Intel")
     st.markdown("---")
     page = st.radio(
         "Navigate",
-        ["🗺️ Map & Scores", "📄 Report", "💬 Chatbot", "⚙️ Admin", "📚 Past Runs"],
-        key="nav_page",
+        _NAV_OPTIONS,
+        index=_NAV_OPTIONS.index(st.session_state.nav_page),
     )
+    st.session_state.nav_page = page
 
     st.markdown("---")
     st.subheader("Run Pipeline")
@@ -134,20 +139,26 @@ with st.sidebar:
             db_store.create_run(run_id, location_str, selected_prov_name)
 
             should_rerun = False
-            with st.spinner(f"Analyzing {location_str}... (this takes ~1-2 mins)"):
+            with st.status(f"Analyzing {location_str}...", expanded=True) as status:
                 try:
+                    st.write("⚙️ Scoring municipalities (geo + web intel)...")
                     result = run_pipeline(location_str, run_id=run_id)
                     db_store.complete_run(run_id, result.get("top_targets") or [])
                     st.session_state.pipeline_result = result
                     st.session_state.chat_history = []
                     top_count = len(result.get("top_targets") or [])
+                    st.write("📚 Knowledge base indexed.")
                     st.session_state.nav_page = "🗺️ Map & Scores"
                     if result.get("errors"):
+                        status.update(label=f"⚠️ Done with {len(result['errors'])} warning(s) — {top_count} targets scored.", state="error")
                         st.toast(f"⚠️ Completed with {len(result['errors'])} warning(s). {top_count} targets scored.", icon="⚠️")
                     else:
+                        status.update(label=f"✅ Analysis complete — {top_count} targets scored.", state="complete")
                         st.toast(f"☀️ Analysis complete — {top_count} targets scored.", icon="✅")
+                    print(f"[helio] Pipeline complete: {location_str} — {top_count} targets scored.")
                     should_rerun = True
                 except Exception as exc:
+                    status.update(label=f"Pipeline failed: {exc}", state="error")
                     db_store.fail_run(run_id, str(exc))
                     st.error(f"Pipeline failed: {exc}")
 
@@ -169,9 +180,6 @@ with st.sidebar:
         st.caption("No completed runs yet.")
     else:
         for run in runs:
-            if run["status"] == "failed":
-                st.caption(f"⚠️ {run['location']} — failed")
-                continue
             try:
                 dt = datetime.fromisoformat(run["created_at"])
                 date_str = dt.strftime("%b %d, %Y")

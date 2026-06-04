@@ -1,10 +1,53 @@
-> Last updated: 2026-06-05 | Session 6
+> Last updated: 2026-06-05 | Session 7
 
 # Helio — Solar Lead Intelligence Platform Session Notes
 
 ---
 
-## Session 6 — Web Intel Resilience, Map Accuracy & Responsive UI (2026-06-05)
+## Session 7 — KB Indexing Performance, Municipality Slug Bug & Nav Failure Fix (2026-06-05)
+
+### Branch
+`main`
+
+### ChromaDB Indexing Performance (`agents/chatbot.py`)
+- **Bug**: `collection.get()` with no `include` param was loading full document text + embeddings for all chunks on every call — just to build a set of IDs for the skip check. With 8,800+ chunks this was slow.
+- **Fix**: Changed to `collection.get(include=[])["ids"]` — returns IDs only, no document bodies or embeddings.
+- **Bug**: `index_documents_from_kb()` was called at the top of `chat()` — every single chat message triggered a full KB scan over all chunks and all reports.
+- **Fix**: Removed the call from `chat()` entirely. `update_kb_node` (end of pipeline) is the correct and only trigger. Chatbot picks up new data after the pipeline run completes.
+
+### Municipality Slug Sanitization Bug (`agents/kb_builder.py`)
+- **Bug**: Municipality names containing `/` (e.g. "Tondo I/II") were used directly in file paths — `/` became a directory separator, creating a nested path `kb/intel/city_of_manila__tondo_i/ii__<run_id>.md` instead of a flat file. Caused `[Errno 2] No such file or directory` crashing KB update for City of Manila.
+- **Fix**: Added `.replace("/", "_")` to `muni_slug` sanitization in `save_municipality_docs()`. "Tondo I/II" → `tondo_i_ii`.
+
+### `nav_page` Session State Fix — Runs Falsely Marked as Failed (`app.py`)
+- **Root cause**: `st.radio(..., key="nav_page")` made the widget own `st.session_state.nav_page`. After pipeline completion, `st.session_state.nav_page = "🗺️ Map & Scores"` raised `StreamlitAPIException: st.session_state.nav_page cannot be modified after the widget with key nav_page is instantiated`. This exception was caught by `except Exception as exc:` → `db_store.fail_run(run_id, ...)` — so even successful pipeline runs got marked `failed` in DB.
+- **Fix**: Removed `key="nav_page"` from `st.radio`. Instead: initialized `st.session_state.nav_page` before the widget using `if "nav_page" not in st.session_state`, passed `index=_NAV_OPTIONS.index(st.session_state.nav_page)` to `st.radio`, and synced back with `st.session_state.nav_page = page` after widget renders. `nav_page` is now a plain session state key, not widget-owned.
+
+### Failed Runs Made Clickable (`app.py` + DB)
+- Three runs (City of Manila, City of Isabela ×2) were stuck as `status='failed'` in DB due to the `nav_page` bug above — but their reports and `run_results` were fully intact.
+- **DB patch**: `UPDATE runs SET status='done', error=NULL WHERE status='failed'` — all 3 corrected.
+- **Sidebar**: Removed `if run["status"] == "failed": continue` guard from Past Runs sidebar. `list_runs()` already uses `INNER JOIN reports` so only runs with actual data appear — the join is the real guard, not the status check.
+
+### Pipeline Completion Notifications (terminal + UI)
+
+- **Terminal**: Added `logger.info("[Agent 5] KB indexing complete — pipeline finished.")` at end of `update_kb_node` success path — fires after all chunks are indexed, confirming pipeline is truly done.
+- **Terminal**: Added `print(f"[helio] Pipeline complete: {location_str} — {top_count} targets scored.")` in `app.py` after `run_pipeline` returns — visible in the Streamlit process terminal.
+- **UI**: Replaced `st.spinner(...)` with `st.status(..., expanded=True)` in the pipeline run block:
+  - Shows `⚙️ Scoring municipalities (geo + web intel)...` while running
+  - Appends `📚 Knowledge base indexed.` once KB step completes
+  - Collapses to `✅ Analysis complete — N targets scored.` (`state="complete"`) on success
+  - Collapses to `⚠️ Done with N warning(s) — N targets scored.` (`state="error"`) on partial errors
+  - Exception path: `status.update(label=..., state="error")` + `st.error()`
+- `st.rerun()` still fires after status update → navigates to Map & Scores, remounts map via `key=f"map_{current_run_id}"`
+
+#### Files changed (session 7)
+- `agents/chatbot.py` — `collection.get(include=[])` for ID-only fetch; removed `index_documents_from_kb()` from `chat()`; added KB-done terminal log in `update_kb_node`
+- `agents/kb_builder.py` — `.replace("/", "_")` added to `muni_slug` sanitization
+- `app.py` — `nav_page` widget → plain session state pattern; removed failed-run `continue` skip in sidebar; `st.spinner` → `st.status` with live stage labels; `print()` terminal completion signal
+
+---
+
+## Session 6 — Web Intel Resilience, Map Accuracy, Responsive UI & Pipeline Notifications (2026-06-05)
 
 ### Branch
 `feat-geo-scoring`
@@ -54,18 +97,42 @@ To force-refresh web intel for a province (bypass TTL cache):
 sqlite3 data/helio.db "DELETE FROM web_intel_cache WHERE municipality_id IN (SELECT id FROM municipalities WHERE province LIKE '%Camiguin%');"
 ```
 
+### Map Refresh & Pipeline Completion Notification (`app.py`)
+
+Two bugs fixed / features added in the same session (continuation):
+
+#### Map Stale Render Fix
+- **Bug**: `st_folium(m, ...)` had no `key` parameter — Streamlit never remounted the component between runs, so the map showed the previous province's circles after a new pipeline run.
+- **Fix**: Added `key=f"map_{st.session_state.current_run_id}"` to `st_folium(...)` call. `current_run_id` is a UUID set on every new run and on every past-run load, forcing a full component remount each time.
+
+#### Pipeline Completion Notification + Auto-Navigate
+- **Feature**: After pipeline completes, app now auto-navigates to the Map & Scores page and shows a toast notification.
+- **Implementation**:
+  - `st.radio("Navigate", [...], key="nav_page")` — bound the sidebar radio to `st.session_state.nav_page` so it can be set programmatically
+  - After `run_pipeline` succeeds: sets `st.session_state.nav_page = "🗺️ Map & Scores"`, fires `st.toast(...)`, then `st.rerun()`
+  - `st.rerun()` is placed **outside** the `with st.spinner()` block using a `should_rerun` flag — calling it inside the spinner can cause teardown issues
+  - Clean run toast: `"☀️ Analysis complete — {N} targets scored."` with `✅` icon
+  - Partial-error path toast: `"⚠️ Completed with {N} warning(s). {N} targets scored."` with `⚠️` icon — uses `st.toast` (not `st.warning`) so notification survives the `st.rerun()`
+  - Exception/failure path: unchanged — stays on current page, shows `st.error`
+
+### Branch Merged
+- `feat-geo-scoring` merged to `main` via fast-forward after all 89 tests passed on both branches.
+- Branch deleted locally (was never pushed to origin).
+
 ### ⚠️ Next session
 - Municipalities in DB from runs BEFORE session 6 still have hash-based (fake) lat/lon. On next pipeline run for that province, `geocode_units()` will replace them automatically. No manual migration needed — it's lazy/automatic.
 - Nominatim geocoder file cache (`data/processed/municipality_coords.json`) has 88 entries; grows as new provinces are run.
-- `feat-geo-scoring` branch still not merged to main.
+- GEE precompute (`scripts/precompute_geo_scores.py`) still not run with real auth — `geo_scores.solar_irradiance` still NULL in live DB; live runs fall back to synthetic solar data.
 
-#### Files changed (session 6)
+#### Files changed (session 6 — full list)
 - `agents/web_intel.py` — combined query, DDG fallback, INFO-level provider logging
 - `agents/db_store.py` — `complete_run` saves lat/lon; `load_run` selects lat/lon + returns `geo_geojson`
 - `agents/geo_scoring.py` — DB path calls `geocode_units()`, writes real coords to DB
 - `agents/synthesis.py` — `lat`/`lon` added to `final_scores`/`top_targets`
-- `app.py` — `_bans()` responsive metric cards, map auto-zoom + `fit_bounds`, `use_container_width`, column ratio `[3, 2.5]`
+- `app.py` — `_bans()` responsive metric cards, map auto-zoom + `fit_bounds`, `use_container_width`, column ratio `[3, 2.5]`; `st_folium` run-scoped key; `nav_page` session state binding; `should_rerun` flag pattern; toast notifications on pipeline completion
 - `requirements.txt` — `ddgs>=9.0.0`
+- `docs/superpowers/specs/2026-06-05-map-refresh-and-pipeline-notification-design.md` — feature spec
+- `docs/superpowers/plans/2026-06-05-map-refresh-and-pipeline-notification.md` — implementation plan
 
 ---
 

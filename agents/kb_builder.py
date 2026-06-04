@@ -126,6 +126,7 @@ def save_municipality_docs(
             .replace(" ", "_")
             .replace(",", "")
             .replace(".", "")
+            .replace("/", "_")
         )
         filename = f"{slug}__{muni_slug}__{run_id}.md"
         path = config.KB_INTEL / filename

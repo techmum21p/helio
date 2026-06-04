@@ -62,7 +62,7 @@ def index_documents_from_kb() -> None:
     from agents.db_store import list_reports
 
     collection = _get_collection()              # always get fresh/current collection
-    existing_ids = set(collection.get()["ids"])
+    existing_ids = set(collection.get(include=[])["ids"])
 
     # ── Reports from DB ────────────────────────────────────────────────────
     for report in list_reports():
@@ -124,6 +124,7 @@ def update_kb_node(state: SolarLeadState) -> SolarLeadState:
 
         # Index everything (report + municipality docs)
         index_documents_from_kb()
+        logger.info("[Agent 5] KB indexing complete — pipeline finished.")
         return {**state, "kb_updated": True}
     except Exception as e:
         logger.error(f"KB update failed: {e}")
@@ -184,7 +185,6 @@ def chat(user_message: str, chat_history: list, run_id: str = "") -> tuple[str, 
     Returns (assistant_response, updated_chat_history).
     Persists both turns to DB if run_id is provided.
     """
-    index_documents_from_kb()
     context  = retrieve_context(user_message)
     messages = chat_history.copy()
     messages.append({
