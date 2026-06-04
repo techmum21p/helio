@@ -1,6 +1,71 @@
-> Last updated: 2026-05-30 | Session 5
+> Last updated: 2026-06-05 | Session 6
 
 # Helio — Solar Lead Intelligence Platform Session Notes
+
+---
+
+## Session 6 — Web Intel Resilience, Map Accuracy & Responsive UI (2026-06-05)
+
+### Branch
+`feat-geo-scoring`
+
+### Web Intel: Tavily → DuckDuckGo Fallback (`agents/web_intel.py`)
+- Combined 4 separate Tavily queries per municipality into 1 comprehensive query: `"economic development businesses real estate solar energy {place} Philippines 2024 2025"` — cuts Tavily usage 75%
+- Added `_tavily_rate_limited` session-level flag; flips to `True` on first rate-limit/usage-limit error, stays True for rest of session
+- Added `_search_ddg()` using `ddgs>=9.0.0` package (was `duckduckgo_search` — upstream renamed it)
+- Terminal output: `[Tavily] query…` at INFO level (was DEBUG, invisible) and `[DDG] query…` at INFO on fallback
+- `gather_intel_for_municipality` now logs `via Tavily` or `via DDG` per municipality fetch
+
+### Map Circle Placement — Root Cause & Fix (multiple files)
+Four compounding bugs, all fixed:
+
+1. **`agents/db_store.py` `complete_run`**: was saving `NULL, NULL` for lat/lon (`VALUES (?, ?, ?, NULL, NULL, NULL, ...)`). Fixed: now passes `t.get("lat"), t.get("lon")` from top_targets. Added backfill UPDATE for rows where lat/lon were previously NULL.
+2. **`agents/geo_scoring.py` DB path**: `_load_scores_from_db()` was never calling `geocode_units()` — used hash-based fake coordinates from precompute script. Fixed: DB path now calls `geocode_units()` after loading scores, updates `municipalities` table with real Nominatim coordinates permanently.
+3. **`agents/db_store.py` `load_run`**: never returned `geo_geojson` — map showed no circles for any loaded past run. Fixed: `load_run` now selects `m.lat, m.lon`, rebuilds GeoJSON FeatureCollection, returns `geo_geojson` key.
+4. **`agents/synthesis.py`**: `lat`/`lon` were present in `geo_scores` but dropped when building `top_targets`. Fixed: added `"lat": geo.get("lat")` and `"lon": geo.get("lon")` to `final_scores` dict.
+
+Note: `agents/geocoder.py` already existed with Nominatim + persistent file cache at `data/processed/municipality_coords.json` — the gap was the DB path never calling it.
+
+### Map Auto-Zoom (`app.py`)
+- Map now centers on centroid of top_targets lat/lon — was hardcoded `[12.5, 122.5]` zoom 7 (whole Philippines)
+- Calls `m.fit_bounds([[min_lat, min_lon], [max_lat, max_lon]], padding=[40, 40])` after all markers are added
+- `st_folium` now uses `use_container_width=True` (was fixed `width=700`, caused overflow in narrower layout)
+
+### Responsive Sidebar Metrics (`app.py`)
+- Replaced `st.columns(4)` with `st.metric` calls → custom HTML `_bans()` helper at top of `app.py`
+- CSS `clamp(0.55rem, 1.1vw, 0.75rem)` for labels, `clamp(0.85rem, 1.8vw, 1.25rem)` for values — scales across laptop to wide monitor
+- Layout: 2×2 grid (2 rows of 2 flex cards), `min-width: 0` prevents flex overflow, `text-overflow: ellipsis`
+- Outer column ratio changed `[3, 2]` → `[3, 2.5]` to widen the sidebar panel
+
+### Requirements
+- `duckduckgo_search>=8.0.0` → `ddgs>=9.0.0` (upstream package rename)
+
+### Pipeline Re-run Behaviour (what updates vs. what's cached)
+| Component | On re-run | Reason |
+|---|---|---|
+| Coordinates | Updated once, then cached | `geocode_units()` → Nominatim → writes to DB + `municipality_coords.json` permanently |
+| Web snippets | Updated if 30-day TTL expired | `web_intel_cache` table TTL = `WEB_INTEL_CACHE_TTL_DAYS` (default 30) |
+| Assessment / Opportunity / Risk | Always regenerated | Synthesis agent runs LLM every pipeline run, no caching |
+| Report markdown | Always regenerated | `report_gen` agent re-generates every run |
+| Geo scores (solar, income, pop density) | Reused from DB | Precomputed — no GEE call on re-run |
+
+To force-refresh web intel for a province (bypass TTL cache):
+```bash
+sqlite3 data/helio.db "DELETE FROM web_intel_cache WHERE municipality_id IN (SELECT id FROM municipalities WHERE province LIKE '%Camiguin%');"
+```
+
+### ⚠️ Next session
+- Municipalities in DB from runs BEFORE session 6 still have hash-based (fake) lat/lon. On next pipeline run for that province, `geocode_units()` will replace them automatically. No manual migration needed — it's lazy/automatic.
+- Nominatim geocoder file cache (`data/processed/municipality_coords.json`) has 88 entries; grows as new provinces are run.
+- `feat-geo-scoring` branch still not merged to main.
+
+#### Files changed (session 6)
+- `agents/web_intel.py` — combined query, DDG fallback, INFO-level provider logging
+- `agents/db_store.py` — `complete_run` saves lat/lon; `load_run` selects lat/lon + returns `geo_geojson`
+- `agents/geo_scoring.py` — DB path calls `geocode_units()`, writes real coords to DB
+- `agents/synthesis.py` — `lat`/`lon` added to `final_scores`/`top_targets`
+- `app.py` — `_bans()` responsive metric cards, map auto-zoom + `fit_bounds`, `use_container_width`, column ratio `[3, 2.5]`
+- `requirements.txt` — `ddgs>=9.0.0`
 
 ---
 

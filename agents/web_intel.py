@@ -22,6 +22,21 @@ tavily = TavilyClient(api_key=config.TAVILY_API_KEY) if config.TAVILY_API_KEY el
 
 _TAVILY_DELAY = 0.4  # seconds between requests — keeps dev key under rate limit
 
+# ── DuckDuckGo fallback ────────────────────────────────────────────────────────
+_tavily_rate_limited = False  # flip to True on first rate-limit hit; stays True for session
+
+def _search_ddg(query: str) -> str:
+    """DuckDuckGo search via duckduckgo_search package. No API key required."""
+    try:
+        from ddgs import DDGS
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=config.MAX_WEB_RESULTS))
+        snippets = [r.get("body", "") for r in results]
+        return " ".join(snippets)[:2000]
+    except Exception as e:
+        logger.warning(f"DuckDuckGo search failed for '{query}': {e}")
+        return ""
+
 # ── SQLite web intel cache ─────────────────────────────────────────────────────
 
 def _compute_web_score(intel: dict) -> float:
@@ -100,18 +115,34 @@ def _set_db_cache(municipality: str, province: str, intel: dict, web_score: floa
 
 
 def search_web(query: str) -> str:
-    """Tavily web search. Returns a summarized text result."""
-    if not tavily:
-        logger.warning("Tavily API key not set. Skipping web search.")
-        return ""
-    try:
-        time.sleep(_TAVILY_DELAY)
-        result = tavily.search(query=query, max_results=config.MAX_WEB_RESULTS)
-        snippets = [r.get("content", "") for r in result.get("results", [])]
-        return " ".join(snippets)[:2000]
-    except Exception as e:
-        logger.warning(f"Tavily search failed for '{query}': {e}")
-        return ""
+    """Web search via Tavily (primary) with DuckDuckGo fallback on rate-limit."""
+    global _tavily_rate_limited
+
+    if not _tavily_rate_limited and tavily:
+        logger.info(f"  [Tavily] {query[:80]}…")
+        try:
+            time.sleep(_TAVILY_DELAY)
+            result = tavily.search(query=query, max_results=config.MAX_WEB_RESULTS)
+            snippets = [r.get("content", "") for r in result.get("results", [])]
+            text = " ".join(snippets)[:2000]
+            logger.debug(f"  [Tavily] OK — {len(text)} chars")
+            return text
+        except Exception as e:
+            err = str(e).lower()
+            if "usage limit" in err or "rate limit" in err or "429" in err:
+                logger.warning("  [Tavily] Rate-limit hit — falling back to DuckDuckGo for rest of session.")
+                _tavily_rate_limited = True
+            else:
+                logger.warning(f"  [Tavily] Failed: {e}")
+                return ""
+
+    if _tavily_rate_limited or not tavily:
+        logger.info(f"  [DDG] {query[:80]}…")
+        text = _search_ddg(query)
+        logger.debug(f"  [DDG] OK — {len(text)} chars")
+        return text
+
+    return ""
 
 
 _PRICE_LEVEL_MAP = {
@@ -199,22 +230,22 @@ def gather_intel_for_municipality(municipality: str, geo: dict | None = None) ->
         logger.info(f"  [Web Intel] DB cache hit: {municipality} ({province})")
         return cached
 
-    logger.info(f"  [Web Intel] Fetching: {municipality} ({province})")
+    provider = "DDG" if (_tavily_rate_limited or not tavily) else "Tavily"
+    logger.info(f"  [Web Intel] Fetching: {municipality} ({province}) via {provider}")
     lat = (geo or {}).get("lat")
     lon = (geo or {}).get("lon")
     search_name = f"{municipality}, {province}" if province else municipality
 
-    news            = search_web(f"economic development {search_name} Philippines 2024 2025")
-    property_signal = search_web(f"house prices real estate {search_name} Philippines Lamudi PropertyPro")
-    commerce        = search_web(f"business establishments commercial activity {search_name} Philippines")
-    solar_news      = search_web(f"solar panel installation {search_name} Philippines")
-    places          = get_places_signal(municipality, province=province, lat=lat, lon=lon)
+    combined = search_web(
+        f"economic development businesses real estate solar energy {search_name} Philippines 2024 2025"
+    )
+    places = get_places_signal(municipality, province=province, lat=lat, lon=lon)
 
     result = {
-        "news_snippet":        news[:500],
-        "property_snippet":    property_signal[:500],
-        "commerce_snippet":    commerce[:500],
-        "solar_news_snippet":  solar_news[:300],
+        "news_snippet":        combined[:500],
+        "property_snippet":    combined[500:1000],
+        "commerce_snippet":    combined[1000:1500],
+        "solar_news_snippet":  combined[1500:1800],
         "business_count":      places.get("business_count", 0),
         "avg_price_level":     places.get("avg_price_level", 0),
         "avg_rating":          places.get("avg_rating", 0),

@@ -144,7 +144,7 @@ def _province_coord(province: str) -> tuple:
 
 
 def _municipality_coord(name: str, province: str) -> tuple:
-    """Place municipality near province centroid with stable hash-based offset."""
+    """Rough hash-based placement — overridden by geocoder.py when pipeline runs."""
     base_lat, base_lon = _province_coord(province)
     lat_offset = _stable_float(f"{name}:lat", -0.30, 0.30)
     lon_offset = _stable_float(f"{name}:lon", -0.30, 0.30)
@@ -524,9 +524,27 @@ def geo_scoring_agent(state: SolarLeadState) -> SolarLeadState:
                 logger.info(
                     f"[Agent 1] DB lookup: {len(scores)} municipalities (no GEE)."
                 )
-                # Build GeoJSON from DB coordinates
-                import geopandas as gpd
-                from shapely.geometry import Point
+                # Geocode for accurate coordinates (file-cached; only slow on first encounter)
+                from agents.geocoder import geocode_units
+                units_to_geo = [
+                    {"name": k, "province": v.get("province", ""),
+                     "lat": v.get("lat") or 0.0, "lon": v.get("lon") or 0.0}
+                    for k, v in scores.items()
+                ]
+                geocoded = geocode_units(units_to_geo)
+                # Update scores and persist real coordinates back to DB
+                import sqlite3 as _sq
+                conn = _sq.connect(str(config.HELIO_DB))
+                for g in geocoded:
+                    scores[g["name"]]["lat"] = g["lat"]
+                    scores[g["name"]]["lon"] = g["lon"]
+                    conn.execute(
+                        "UPDATE municipalities SET lat=?, lon=? WHERE name=? AND province=?",
+                        (g["lat"], g["lon"], g["name"], g["province"]),
+                    )
+                conn.commit()
+                conn.close()
+                # Build GeoJSON from geocoded coordinates
                 records = [
                     {**v, "name": k, "geometry": Point(v["lon"], v["lat"])}
                     for k, v in scores.items()

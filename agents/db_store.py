@@ -163,10 +163,18 @@ def complete_run(run_id: str, top_targets: list) -> None:
                 conn.execute(
                     """INSERT OR IGNORE INTO municipalities
                        (name, province, region, lat, lon, area_km2, population, income_class)
-                       VALUES (?, ?, ?, NULL, NULL, NULL, ?, ?)""",
+                       VALUES (?, ?, ?, ?, ?, NULL, ?, ?)""",
                     (muni_name, province, region,
+                     t.get("lat"), t.get("lon"),
                      t.get("population"), t.get("income_class")),
                 )
+                # Backfill coords for rows inserted without them (prior runs)
+                if t.get("lat") and t.get("lon"):
+                    conn.execute(
+                        """UPDATE municipalities SET lat=?, lon=?
+                           WHERE name=? AND province=? AND (lat IS NULL OR lon IS NULL)""",
+                        (t["lat"], t["lon"], muni_name, province),
+                    )
             row = conn.execute(
                 "SELECT id FROM municipalities WHERE name=? AND province=?",
                 (muni_name, province),
@@ -306,6 +314,7 @@ def load_run(run_id: str) -> dict | None:
                       COALESCE(m.province, '') AS province,
                       COALESCE(m.region, '')   AS region,
                       m.income_class, m.population,
+                      m.lat, m.lon,
                       g.solar_irradiance AS gs_solar_irradiance,
                       g.pop_density      AS gs_pop_density
                FROM run_results rr
@@ -316,13 +325,16 @@ def load_run(run_id: str) -> dict | None:
             (run_id,),
         ).fetchall()
         top_targets = []
+        geojson_features = []
         for r in result_rows:
             solar_irr   = r["solar_irradiance"] or r["gs_solar_irradiance"] or 5.0
             pop_dens    = r["pop_density"]       or r["gs_pop_density"]       or 0.0
             solar_yield = r["solar_yield_kwh"]   or round(solar_irr * 365 * 0.80, 0)
+            muni_name   = r["municipality_name"] or ""
+            province    = r["province"] or ""
             top_targets.append({
-                "municipality":     r["municipality_name"] or "",
-                "province":         r["province"] or "",
+                "municipality":     muni_name,
+                "province":         province,
                 "region":           r["region"] or "",
                 "income_class":     r["income_class"] or "",
                 "population":       r["population"] or 0,
@@ -336,7 +348,20 @@ def load_run(run_id: str) -> dict | None:
                 "solar_irradiance": solar_irr,
                 "solar_yield_kwh":  solar_yield,
                 "pop_density":      pop_dens,
+                "lat":              r["lat"],
+                "lon":              r["lon"],
             })
+            if r["lat"] and r["lon"]:
+                geojson_features.append({
+                    "type": "Feature",
+                    "geometry": {"type": "Point", "coordinates": [r["lon"], r["lat"]]},
+                    "properties": {
+                        "name":      muni_name,
+                        "province":  province,
+                        "geo_score": r["geo_score"],
+                    },
+                })
+        geo_geojson = json.dumps({"type": "FeatureCollection", "features": geojson_features}) if geojson_features else None
         report_row = conn.execute(
             "SELECT markdown, file_path FROM reports WHERE run_id=? LIMIT 1",
             (run_id,),
@@ -345,6 +370,7 @@ def load_run(run_id: str) -> dict | None:
             "run_id":          run_row["id"],
             "location":        run_row["location"],
             "top_targets":     top_targets,
+            "geo_geojson":     geo_geojson,
             "report_markdown": report_row["markdown"] if report_row else "",
             "report_path":     report_row["file_path"] if report_row else None,
             "errors":          [],

@@ -181,6 +181,8 @@ def synthesis_agent(state: SolarLeadState) -> SolarLeadState:
             "income_class":     geo.get("income_class", ""),
             "population":       int(geo.get("population_raw", 0)),
             "is_urban":         geo.get("is_urban", False),
+            "lat":              geo.get("lat"),
+            "lon":              geo.get("lon"),
         }
 
     # Rank and return top N
