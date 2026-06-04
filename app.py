@@ -24,6 +24,35 @@ from agents import db_store
 from agents.location_db import get_provinces, get_municipalities
 
 
+def _score_dot(score: float) -> str:
+    """Color dot matching map circle thresholds: green ≥0.65, orange ≥0.35, red <0.35."""
+    if score >= 0.65:
+        return "🟢"
+    elif score >= 0.35:
+        return "🟡"
+    return "🔴"
+
+
+def _bans(items: list[tuple[str, str]]) -> str:
+    """Responsive BAN cards in a 2×2 grid using CSS clamp — scales from laptop to wide monitor."""
+    def card(label, value):
+        return (
+            f'<div style="flex:1;min-width:0;padding:8px 6px;background:#f8f9fa;'
+            f'border-radius:6px;text-align:center;overflow:hidden">'
+            f'<div style="font-size:clamp(0.55rem,1.1vw,0.75rem);color:#6c757d;'
+            f'white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{label}</div>'
+            f'<div style="font-size:clamp(0.85rem,1.8vw,1.25rem);font-weight:700;color:#212529;'
+            f'white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{value}</div>'
+            f'</div>'
+        )
+    row_style = 'display:flex;gap:6px;margin-bottom:6px'
+    rows = "".join(
+        f'<div style="{row_style}">{card(items[i][0], items[i][1])}{card(items[i+1][0], items[i+1][1])}</div>'
+        for i in range(0, len(items), 2)
+    )
+    return rows
+
+
 @st.cache_data(ttl=3600)
 def _cached_provinces() -> list[dict]:
     return get_provinces()
@@ -47,6 +76,8 @@ if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "current_run_id" not in st.session_state:
     st.session_state.current_run_id = ""
+if "page" not in st.session_state:
+    st.session_state.page = "🗺️ Map & Scores"
 
 # Module-level precompute state — written by background thread, read by Streamlit UI
 _precompute_state: dict = {"done": 0, "total": 0, "running": False}
@@ -160,6 +191,10 @@ with st.sidebar:
 # ── Page: Map & Scores ─────────────────────────────────────────────────────────
 if page == "🗺️ Map & Scores":
     st.title("🗺️ Solar Opportunity Map")
+    st.markdown(
+        "🟢 **High** (score ≥ 0.65) &nbsp;&nbsp; 🟡 **Medium** (0.35 – 0.64) &nbsp;&nbsp; 🔴 **Low** (< 0.35)",
+        unsafe_allow_html=True,
+    )
 
     if not st.session_state.pipeline_result:
         st.info("Run the pipeline from the sidebar to see results.")
@@ -168,13 +203,16 @@ if page == "🗺️ Map & Scores":
         top_targets = result.get("top_targets", [])
         geo_geojson = result.get("geo_geojson")
 
-        col1, col2 = st.columns([3, 2])
+        col1, col2 = st.columns([3, 2.5])
 
         with col1:
             score_map  = {t["municipality"]: t["final_score"] for t in top_targets}
             target_map = {t["municipality"]: t                  for t in top_targets}
 
-            m = folium.Map(location=[12.5, 122.5], zoom_start=7, tiles="CartoDB positron")
+            lats = [t["lat"] for t in top_targets if t.get("lat")]
+            lons = [t["lon"] for t in top_targets if t.get("lon")]
+            center = [sum(lats) / len(lats), sum(lons) / len(lons)] if lats else [12.5, 122.5]
+            m = folium.Map(location=center, zoom_start=10, tiles="CartoDB positron")
 
             if geo_geojson:
                 geo_data = json.loads(geo_geojson)
@@ -229,18 +267,23 @@ if page == "🗺️ Map & Scores":
                         tooltip=f"{name}: {score:.3f} | {irr:.1f} kWh/m²/day",
                     ).add_to(m)
 
-            st_folium(m, width=700, height=500)
+            if lats and lons:
+                m.fit_bounds(
+                    [[min(lats), min(lons)], [max(lats), max(lons)]],
+                    padding=[40, 40],
+                )
+            st_folium(m, height=500, use_container_width=True)
 
         with col2:
             st.subheader(f"Top {min(10, len(top_targets))} Targets")
             for i, t in enumerate(top_targets[:10], 1):
-                tier_color = {"HIGH": "🟢", "MEDIUM": "🟡", "LOW": "🔴"}.get(t["tier"], "⚪")
-                with st.expander(f"{i}. {t['municipality']} {tier_color} — `{t['final_score']:.3f}`"):
-                    c1, c2, c3, c4 = st.columns(4)
-                    c1.metric("☀ Irradiance",  f"{t.get('solar_irradiance', 0):.2f} kWh/m²/day")
-                    c2.metric("📈 Income",      f"{t.get('income_class', 'N/A')} class")
-                    c3.metric("👥 Population",  f"{t.get('population', 0):,}")
-                    c4.metric("⚡ Yield",       f"{t.get('solar_yield_kwh', 0):,.0f} kWh/kWp/yr")
+                with st.expander(f"{i}. {t['municipality']} {_score_dot(t['final_score'])} — `{t['final_score']:.3f}`"):
+                    st.markdown(_bans([
+                        ("☀ Irradiance",  f"{t.get('solar_irradiance', 0):.2f} kWh/m²/day"),
+                        ("📈 Income",      f"{t.get('income_class', 'N/A')} class"),
+                        ("👥 Population",  f"{t.get('population', 0):,}"),
+                        ("⚡ Yield",       f"{t.get('solar_yield_kwh', 0):,.0f} kWh/kWp/yr"),
+                    ]), unsafe_allow_html=True)
                     st.write(f"**Assessment:** {t.get('assessment', 'N/A')}")
                     st.write(f"**Opportunity:** {t.get('opportunity', 'N/A')}")
                     st.write(f"**Risk:** {t.get('risk', 'N/A')}")
