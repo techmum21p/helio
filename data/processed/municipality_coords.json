@@ -586,5 +586,1753 @@
   "Guimaras::Sibunag": [
     10.5040415,
     122.6318224
+  ],
+  "Ilocos Norte::Adams": [
+    18.4613108,
+    120.903571
+  ],
+  "Ilocos Norte::Bacarra": [
+    18.2517377,
+    120.6106589
+  ],
+  "Ilocos Norte::Badoc": [
+    17.9267006,
+    120.4740893
+  ],
+  "Ilocos Norte::Bangui": [
+    18.5367387,
+    120.7657563
+  ],
+  "Ilocos Norte::Banna": [
+    17.9799546,
+    120.6549681
+  ],
+  "Ilocos Norte::Burgos": [
+    18.5110086,
+    120.6436311
+  ],
+  "Ilocos Norte::Carasi": [
+    18.1414459,
+    120.821757
+  ],
+  "Ilocos Norte::City of Batac": [
+    17.9167072,
+    120.489151
+  ],
+  "Ilocos Norte::City of Laoag": [
+    18.1994082,
+    120.5861421
+  ],
+  "Ilocos Norte::Currimao": [
+    18.0194482,
+    120.4868281
+  ],
+  "Ilocos Norte::Dingras": [
+    18.1034564,
+    120.6977344
+  ],
+  "Ilocos Norte::Dumalneg": [
+    18.5203924,
+    120.812245
+  ],
+  "Ilocos Norte::Marcos": [
+    18.0434949,
+    120.6783103
+  ],
+  "Ilocos Norte::Nueva Era": [
+    17.9152782,
+    120.6644106
+  ],
+  "Ilocos Norte::Pagudpud": [
+    18.5593916,
+    120.7869782
+  ],
+  "Ilocos Norte::Paoay": [
+    18.0617813,
+    120.5195093
+  ],
+  "Ilocos Norte::Pasuquin": [
+    18.3339819,
+    120.6194886
+  ],
+  "Ilocos Norte::Piddig": [
+    18.1635915,
+    120.7165263
+  ],
+  "Ilocos Norte::Pinili": [
+    17.9526115,
+    120.5273877
+  ],
+  "Ilocos Norte::San Nicolas": [
+    18.1734424,
+    120.5944216
+  ],
+  "Ilocos Norte::Sarrat": [
+    18.1568444,
+    120.6443463
+  ],
+  "Ilocos Norte::Solsona": [
+    18.0927008,
+    120.7726048
+  ],
+  "Ilocos Norte::Vintar": [
+    18.2306726,
+    120.6491506
+  ],
+  "Ilocos Sur::Alilem": [
+    16.8859992,
+    120.5306897
+  ],
+  "Ilocos Sur::Banayoyo": [
+    17.2362842,
+    120.4797383
+  ],
+  "Ilocos Sur::Bantay": [
+    17.5820178,
+    120.3896288
+  ],
+  "Ilocos Sur::Burgos": [
+    17.3335331,
+    120.4947775
+  ],
+  "Ilocos Sur::Cabugao": [
+    17.7944818,
+    120.4549514
+  ],
+  "Ilocos Sur::Caoayan": [
+    17.5468059,
+    120.3827051
+  ],
+  "Ilocos Sur::Cervantes": [
+    16.989946,
+    120.7354563
+  ],
+  "Ilocos Sur::City of Candon": [
+    17.27579162094004,
+    120.0928442677549
+  ],
+  "Ilocos Sur::City of Vigan": [
+    17.5755487,
+    120.3872632
+  ],
+  "Ilocos Sur::Galimuyod": [
+    17.183128,
+    120.4692241
+  ],
+  "Ilocos Sur::Gregorio del Pilar": [
+    17.1460297,
+    120.6118325
+  ],
+  "Ilocos Sur::Lidlidda": [
+    17.2517706,
+    120.5210619
+  ],
+  "Ilocos Sur::Magsingal": [
+    17.6851901,
+    120.4257345
+  ],
+  "Ilocos Sur::Nagbukel": [
+    17.4472774,
+    120.5260318
+  ],
+  "Ilocos Sur::Narvacan": [
+    17.4194242,
+    120.4769173
+  ],
+  "Ilocos Sur::Quirino": [
+    17.1375583,
+    120.6769986
+  ],
+  "Ilocos Sur::Salcedo": [
+    17.1510694,
+    120.536337
+  ],
+  "Ilocos Sur::San Emilio": [
+    17.2382931,
+    120.5787045
+  ],
+  "Ilocos Sur::San Esteban": [
+    17.3311208,
+    120.4445227
+  ],
+  "Ilocos Sur::San Ildefonso": [
+    17.6249757,
+    120.3931252
+  ],
+  "Ilocos Sur::San Juan": [
+    17.7422338,
+    120.4583071
+  ],
+  "Ilocos Sur::San Vicente": [
+    17.5940019,
+    120.3741155
+  ],
+  "Ilocos Sur::Santa": [
+    17.4859899,
+    120.4345364
+  ],
+  "Ilocos Sur::Santa Catalina": [
+    17.5888763,
+    120.3633196
+  ],
+  "Ilocos Sur::Santa Cruz": [
+    17.0846929,
+    120.4547867
+  ],
+  "Ilocos Sur::Santa Lucia": [
+    17.1204469,
+    120.4491232
+  ],
+  "Ilocos Sur::Santa Maria": [
+    17.3698618,
+    120.4808168
+  ],
+  "Ilocos Sur::Santiago": [
+    17.2940877,
+    120.4453175
+  ],
+  "Ilocos Sur::Santo Domingo": [
+    17.6390234,
+    120.409813
+  ],
+  "Ilocos Sur::Sigay": [
+    17.0425835,
+    120.5804799
+  ],
+  "Ilocos Sur::Sinait": [
+    17.8657434,
+    120.4571865
+  ],
+  "Ilocos Sur::Sugpon": [
+    16.8444574,
+    120.516718
+  ],
+  "Ilocos Sur::Suyo": [
+    16.983764,
+    120.5151368
+  ],
+  "Ilocos Sur::Tagudin": [
+    16.9345656,
+    120.445017
+  ],
+  "Isabela::Alicia": [
+    16.7789338,
+    121.6992173
+  ],
+  "Isabela::Angadanan": [
+    16.7568394,
+    121.7480912
+  ],
+  "Isabela::Aurora": [
+    16.9908811,
+    121.6358
+  ],
+  "Isabela::Benito Soliven": [
+    16.9865052,
+    121.9578429
+  ],
+  "Isabela::Burgos": [
+    17.0678152,
+    121.6936012
+  ],
+  "Isabela::Cabagan": [
+    17.4264795,
+    121.764914
+  ],
+  "Isabela::Cabatuan": [
+    16.9533365,
+    121.668882
+  ],
+  "Isabela::City of Cauayan": [
+    16.9367518,
+    121.7719694
+  ],
+  "Isabela::City of Ilagan": [
+    17.1486341,
+    121.8886466
+  ],
+  "Isabela::City of Santiago": [
+    16.6825453,
+    121.5511549
+  ],
+  "Isabela::Cordon": [
+    16.6737316,
+    121.4663518
+  ],
+  "Isabela::Delfin Albano": [
+    17.3045743,
+    121.7789303
+  ],
+  "Isabela::Dinapigue": [
+    16.5258231,
+    122.2621516
+  ],
+  "Isabela::Divilacan": [
+    17.3325917,
+    122.2996515
+  ],
+  "Isabela::Echague": [
+    16.70536,
+    121.6749455
+  ],
+  "Isabela::Gamu": [
+    17.0473401,
+    121.8333707
+  ],
+  "Isabela::Jones": [
+    16.561296,
+    121.7022613
+  ],
+  "Isabela::Luna": [
+    16.9683863,
+    121.7293475
+  ],
+  "Isabela::Maconacon": [
+    17.3871286,
+    122.2379036
+  ],
+  "Isabela::Mallig": [
+    17.2112124,
+    121.6108848
+  ],
+  "Isabela::Naguilian": [
+    17.0231211,
+    121.8356
+  ],
+  "Isabela::Palanan": [
+    17.0628683,
+    122.4292704
+  ],
+  "Isabela::Quezon": [
+    17.3119421,
+    121.6053889
+  ],
+  "Isabela::Quirino": [
+    17.1357747,
+    121.7366679
+  ],
+  "Isabela::Ramon": [
+    16.7815027,
+    121.5351148
+  ],
+  "Isabela::Reina Mercedes": [
+    16.9850846,
+    121.8279423
+  ],
+  "Isabela::Roxas": [
+    17.121915,
+    121.6199232
+  ],
+  "Isabela::San Agustin": [
+    16.5066966,
+    121.7474086
+  ],
+  "Isabela::San Guillermo": [
+    16.7209774,
+    121.8094689
+  ],
+  "Isabela::San Isidro": [
+    16.7341724,
+    121.6345148
+  ],
+  "Isabela::San Manuel": [
+    17.0269105,
+    121.6308091
+  ],
+  "Isabela::San Mariano": [
+    16.9835964,
+    122.0127684
+  ],
+  "Isabela::San Mateo": [
+    16.88122,
+    121.5878223
+  ],
+  "Isabela::San Pablo": [
+    17.4484981,
+    121.7943953
+  ],
+  "Isabela::Santa Maria": [
+    17.4687748,
+    121.7525091
+  ],
+  "Isabela::Santo Tomas": [
+    17.3989287,
+    121.7668448
+  ],
+  "Isabela::Tumauini": [
+    17.2740459,
+    121.809876
+  ],
+  "Kalinga::Balbalan": [
+    17.5013752,
+    121.2008986
+  ],
+  "Kalinga::City of Tabuk": [
+    17.4111502,
+    121.4414409
+  ],
+  "Kalinga::Lubuagan": [
+    17.352847,
+    121.175829
+  ],
+  "Kalinga::Pasil": [
+    17.3894632,
+    121.1597951
+  ],
+  "Kalinga::Pinukpuk": [
+    17.5736876,
+    121.3650367
+  ],
+  "Kalinga::Rizal": [
+    17.5009164,
+    121.5849576
+  ],
+  "Kalinga::Tanudan": [
+    17.2813321,
+    121.2313652
+  ],
+  "Kalinga::Tinglayan": [
+    17.2649471,
+    121.1488626
+  ],
+  "La Union::Agoo": [
+    16.3223973,
+    120.3670036
+  ],
+  "La Union::Aringay": [
+    16.3946672,
+    120.354351
+  ],
+  "La Union::Bacnotan": [
+    16.7202558,
+    120.3525941
+  ],
+  "La Union::Bagulin": [
+    16.6062112,
+    120.4373211
+  ],
+  "La Union::Balaoan": [
+    16.8221917,
+    120.4029188
+  ],
+  "La Union::Bangar": [
+    16.8933093,
+    120.4233732
+  ],
+  "La Union::Bauang": [
+    16.5265951,
+    120.3292822
+  ],
+  "La Union::Burgos": [
+    16.5189301,
+    120.4583283
+  ],
+  "La Union::Caba": [
+    16.4318378,
+    120.3456178
+  ],
+  "La Union::City of San Fernando": [
+    16.6162676,
+    120.317104
+  ],
+  "La Union::Luna": [
+    16.8529495,
+    120.3775805
+  ],
+  "La Union::Naguilian": [
+    16.5313384,
+    120.3941216
+  ],
+  "La Union::Pugo": [
+    16.3202994,
+    120.4673523
+  ],
+  "La Union::Rosario": [
+    16.2299397,
+    120.487704
+  ],
+  "La Union::San Gabriel": [
+    16.673886,
+    120.4011842
+  ],
+  "La Union::San Juan": [
+    16.6699328,
+    120.3385507
+  ],
+  "La Union::Santo Tomas": [
+    16.2823499,
+    120.3867155
+  ],
+  "La Union::Santol": [
+    16.7721697,
+    120.4600563
+  ],
+  "La Union::Sudipen": [
+    16.9060713,
+    120.4618395
+  ],
+  "La Union::Tubao": [
+    16.3470326,
+    120.4126153
+  ],
+  "Lanao del Norte::Bacolod": [
+    8.1900792,
+    124.0239856
+  ],
+  "Lanao del Norte::Baloi": [
+    8.1155656,
+    124.2220178
+  ],
+  "Lanao del Norte::Baroy": [
+    8.0244948,
+    123.7794482
+  ],
+  "Lanao del Norte::Kapatagan": [
+    7.8959157,
+    123.7671411
+  ],
+  "Lanao del Norte::Kauswagan": [
+    8.1886898,
+    124.0864362
+  ],
+  "Lanao del Norte::Kolambugan": [
+    8.111282,
+    123.8965933
+  ],
+  "Lanao del Norte::Lala": [
+    7.9733694,
+    123.7476509
+  ],
+  "Lanao del Norte::Linamon": [
+    8.1839585,
+    124.1569454
+  ],
+  "Lanao del Norte::Magsaysay": [
+    8.0347903,
+    123.9131672
+  ],
+  "Lanao del Norte::Maigo": [
+    8.1586175,
+    123.9610824
+  ],
+  "Lanao del Norte::Matungao": [
+    8.1332196,
+    124.1671308
+  ],
+  "Lanao del Norte::Munai": [
+    8.0787755,
+    124.052425
+  ],
+  "Lanao del Norte::Nunungan": [
+    7.7874638,
+    123.9104982
+  ],
+  "Lanao del Norte::Pantao Ragat": [
+    8.0610559,
+    124.1846453
+  ],
+  "Lanao del Norte::Pantar": [
+    8.061219,
+    124.2642034
+  ],
+  "Lanao del Norte::Poona Piagapo": [
+    8.1328988,
+    124.1177626
+  ],
+  "Lanao del Norte::Salvador": [
+    7.9031902,
+    123.8408099
+  ],
+  "Lanao del Norte::Sapad": [
+    7.8458435,
+    123.8364762
+  ],
+  "Lanao del Norte::Sultan Naga Dimaporo": [
+    7.7949239,
+    123.7187454
+  ],
+  "Lanao del Norte::Tagoloan": [
+    8.1268565,
+    124.2767478
+  ],
+  "Lanao del Norte::Tangcal": [
+    8.0449438,
+    123.9438908
+  ],
+  "Lanao del Norte::Tubod": [
+    8.0486582,
+    123.7961839
+  ],
+  "Lanao del Sur::Amai Manabilang": [
+    7.7854607,
+    124.6821593
+  ],
+  "Lanao del Sur::Bacolod-Kalawi": [
+    7.8576753,
+    124.1423567
+  ],
+  "Lanao del Sur::Balabagan": [
+    7.5093206,
+    124.127834
+  ],
+  "Lanao del Sur::Balindong": [
+    7.9162827,
+    124.2055463
+  ],
+  "Lanao del Sur::Bayang": [
+    7.793733,
+    124.1972049
+  ],
+  "Lanao del Sur::Binidayan": [
+    7.7949244,
+    124.1670371
+  ],
+  "Lanao del Sur::Buadiposo-Buntong": [
+    7.9654,
+    124.37615
+  ],
+  "Lanao del Sur::Bubong": [
+    7.9833903,
+    124.3855095
+  ],
+  "Lanao del Sur::Butig": [
+    7.7436291,
+    124.3131226
+  ],
+  "Lanao del Sur::Calanogas": [
+    7.7335431,
+    124.07895
+  ],
+  "Lanao del Sur::City of Marawi": [
+    8.0010799,
+    124.2849241
+  ],
+  "Lanao del Sur::Ditsaan-Ramain": [
+    7.9788768,
+    124.3516506
+  ],
+  "Lanao del Sur::Ganassi": [
+    7.8260261,
+    124.1018827
+  ],
+  "Lanao del Sur::Kapai": [
+    8.0736026,
+    124.3638057
+  ],
+  "Lanao del Sur::Kapatagan": [
+    7.5419344,
+    124.2142754
+  ],
+  "Lanao del Sur::Lumba-Bayabao": [
+    7.8634383,
+    124.370507
+  ],
+  "Lanao del Sur::Lumbaca-Unayan": [
+    7.749628,
+    124.2059475
+  ],
+  "Lanao del Sur::Lumbatan": [
+    7.7848782,
+    124.2552241
+  ],
+  "Lanao del Sur::Lumbayanague": [
+    7.7830923,
+    124.2815746
+  ],
+  "Lanao del Sur::Madalum": [
+    7.8540188,
+    124.1140094
+  ],
+  "Lanao del Sur::Madamba": [
+    7.8588264,
+    124.050705
+  ],
+  "Lanao del Sur::Maguing": [
+    7.8887846,
+    124.3712164
+  ],
+  "Lanao del Sur::Malabang": [
+    7.5927798,
+    124.0686251
+  ],
+  "Lanao del Sur::Marantao": [
+    7.9482892,
+    124.2315699
+  ],
+  "Lanao del Sur::Marogong": [
+    7.6754959,
+    124.153302
+  ],
+  "Lanao del Sur::Masiu": [
+    7.8184459,
+    124.3308048
+  ],
+  "Lanao del Sur::Mulondo": [
+    7.9170563,
+    124.3615673
+  ],
+  "Lanao del Sur::Pagayawan": [
+    7.7965721,
+    124.1001642
+  ],
+  "Lanao del Sur::Piagapo": [
+    7.989793,
+    124.1796138
+  ],
+  "Lanao del Sur::Picong": [
+    7.6694893,
+    123.9669805
+  ],
+  "Lanao del Sur::Poona Bayabao": [
+    7.8531283,
+    124.3394332
+  ],
+  "Lanao del Sur::Pualas": [
+    7.8201575,
+    124.0801292
+  ],
+  "Lanao del Sur::Saguiaran": [
+    8.0340831,
+    124.2687239
+  ],
+  "Lanao del Sur::Sultan Dumalondong": [
+    7.75749,
+    124.2574747
+  ],
+  "Lanao del Sur::Tagoloan II": [
+    8.0798345,
+    124.4157352
+  ],
+  "Lanao del Sur::Tamparan": [
+    7.8765155,
+    124.3264879
+  ],
+  "Lanao del Sur::Taraka": [
+    7.8998799,
+    124.3339467
+  ],
+  "Lanao del Sur::Tubaran": [
+    7.7450128,
+    124.1841657
+  ],
+  "Lanao del Sur::Tugaya": [
+    7.883728,
+    124.17801
+  ],
+  "Lanao del Sur::Wao": [
+    7.6382215,
+    124.7241605
+  ],
+  "Leyte::Abuyog": [
+    10.7467715,
+    125.0120993
+  ],
+  "Leyte::Alangalang": [
+    11.2066762,
+    124.8466247
+  ],
+  "Leyte::Albuera": [
+    10.9166552,
+    124.6943663
+  ],
+  "Leyte::Babatngon": [
+    11.4231843,
+    124.8448166
+  ],
+  "Leyte::Barugo": [
+    11.3246577,
+    124.734946
+  ],
+  "Leyte::Bato": [
+    10.32793,
+    124.7893242
+  ],
+  "Leyte::Burauen": [
+    10.9748709,
+    124.8932225
+  ],
+  "Leyte::Calubian": [
+    11.4467301,
+    124.4286683
+  ],
+  "Leyte::Capoocan": [
+    11.2932356,
+    124.6426843
+  ],
+  "Leyte::Carigara": [
+    11.3017446,
+    124.6872516
+  ],
+  "Leyte::City of Baybay": [
+    10.6778023,
+    124.7977531
+  ],
+  "Leyte::Dagami": [
+    11.065407,
+    124.9032144
+  ],
+  "Leyte::Dulag": [
+    10.9532437,
+    125.0334522
+  ],
+  "Leyte::Hilongos": [
+    10.3733001,
+    124.7488169
+  ],
+  "Leyte::Hindang": [
+    10.434445,
+    124.7267437
+  ],
+  "Leyte::Inopacan": [
+    10.5003419,
+    124.7398262
+  ],
+  "Leyte::Isabel": [
+    10.9260948,
+    124.4343966
+  ],
+  "Leyte::Jaro": [
+    11.1895192,
+    124.7831875
+  ],
+  "Leyte::Javier": [
+    10.7929104,
+    124.9362671
+  ],
+  "Leyte::Julita": [
+    10.9723393,
+    124.9623212
+  ],
+  "Leyte::Kananga": [
+    11.1847129,
+    124.561077
+  ],
+  "Leyte::La Paz": [
+    10.890486,
+    124.9577957
+  ],
+  "Leyte::Leyte": [
+    10.7841157,
+    124.892321
+  ],
+  "Leyte::Macarthur": [
+    10.8354762,
+    124.9958814
+  ],
+  "Leyte::Mahaplag": [
+    10.6052385,
+    124.9646732
+  ],
+  "Leyte::Matag-Ob": [
+    11.1455709,
+    124.4722659
+  ],
+  "Leyte::Matalom": [
+    10.2821237,
+    124.7858627
+  ],
+  "Leyte::Mayorga": [
+    10.9034481,
+    125.0059346
+  ],
+  "Leyte::Merida": [
+    10.9081163,
+    124.5383375
+  ],
+  "Leyte::Ormoc City": [
+    11.0090349,
+    124.609394
+  ],
+  "Leyte::Palo": [
+    11.159448,
+    124.9908138
+  ],
+  "Leyte::Palompon": [
+    11.0483792,
+    124.3825547
+  ],
+  "Leyte::Pastrana": [
+    11.1367152,
+    124.8864225
+  ],
+  "Leyte::San Isidro": [
+    11.4057556,
+    124.3504917
+  ],
+  "Leyte::San Miguel": [
+    11.2945424,
+    124.8297663
+  ],
+  "Leyte::Santa Fe": [
+    11.1858908,
+    124.915326
+  ],
+  "Leyte::Tabango": [
+    11.3061737,
+    124.371579
+  ],
+  "Leyte::Tabontabon": [
+    11.0426452,
+    124.9650854
+  ],
+  "Leyte::Tanauan": [
+    11.1112113,
+    125.0169194
+  ],
+  "Leyte::Tolosa": [
+    11.0634389,
+    125.0375888
+  ],
+  "Leyte::Tunga": [
+    11.2458921,
+    124.7507799
+  ],
+  "Leyte::Villaba": [
+    11.2132891,
+    124.3914186
+  ],
+  "Maguindanao del Norte::Barira": [
+    7.4705878,
+    124.355677
+  ],
+  "Maguindanao del Norte::Buldon": [
+    7.5144498,
+    124.3710663
+  ],
+  "Maguindanao del Norte::City of Cotabato": [
+    7.2237628,
+    124.2467062
+  ],
+  "Maguindanao del Norte::Datu Blah T. Sinsuat": [
+    7.0678918,
+    124.0189526
+  ],
+  "Maguindanao del Norte::Datu Odin Sinsuat": [
+    7.0235591,
+    124.3157123
+  ],
+  "Maguindanao del Norte::Kabuntalan": [
+    7.1180891,
+    124.3639908
+  ],
+  "Maguindanao del Norte::Matanog": [
+    7.4668478,
+    124.2585697
+  ],
+  "Maguindanao del Norte::Northern Kabuntalan": [
+    7.1928262,
+    124.4538197
+  ],
+  "Maguindanao del Norte::Parang": [
+    7.3755802,
+    124.267482
+  ],
+  "Maguindanao del Norte::Sultan Kudarat": [
+    7.271093,
+    124.2919201
+  ],
+  "Maguindanao del Norte::Sultan Mastura": [
+    7.2981511,
+    124.2852328
+  ],
+  "Maguindanao del Norte::Talitay": [
+    7.0352152,
+    124.3745009
+  ],
+  "Maguindanao del Norte::Upi": [
+    7.0110523,
+    124.1565346
+  ],
+  "Maguindanao del Sur::Ampatuan": [
+    6.8321846,
+    124.4571005
+  ],
+  "Maguindanao del Sur::Buluan": [
+    6.7166195,
+    124.7865943
+  ],
+  "Maguindanao del Sur::Datu Abdullah Sangki": [
+    6.7666556,
+    124.481723
+  ],
+  "Maguindanao del Sur::Datu Anggal Midtimbang": [
+    6.9931618,
+    124.3415426
+  ],
+  "Maguindanao del Sur::Datu Hoffer Ampatuan": [
+    6.8581394,
+    124.4249654
+  ],
+  "Maguindanao del Sur::Datu Paglas": [
+    6.7466118,
+    124.8699956
+  ],
+  "Maguindanao del Sur::Datu Piang": [
+    7.0287661,
+    124.499512
+  ],
+  "Maguindanao del Sur::Datu Salibo": [
+    6.9767315,
+    124.4823832
+  ],
+  "Maguindanao del Sur::Datu Saudi Ampatuan": [
+    6.9261327,
+    124.4145057
+  ],
+  "Maguindanao del Sur::Datu Unsay": [
+    6.8812524,
+    124.4355823
+  ],
+  "Maguindanao del Sur::Gen. S.K. Pendatun": [
+    6.784132,
+    124.7469459
+  ],
+  "Maguindanao del Sur::Guindulungan": [
+    6.9766551,
+    124.3862549
+  ],
+  "Maguindanao del Sur::Mamasapano": [
+    6.8926767,
+    124.500925
+  ],
+  "Maguindanao del Sur::Mangudadatu": [
+    6.6467834,
+    124.7859734
+  ],
+  "Maguindanao del Sur::Pagagawan": [
+    7.077019,
+    124.7487629
+  ],
+  "Maguindanao del Sur::Pagalungan": [
+    7.0599392,
+    124.6992377
+  ],
+  "Maguindanao del Sur::Paglat": [
+    6.7806618,
+    124.7850687
+  ],
+  "Maguindanao del Sur::Pandag": [
+    6.7411968,
+    124.7836552
+  ],
+  "Maguindanao del Sur::Rajah Buayan": [
+    6.9077057,
+    124.5514195
+  ],
+  "Maguindanao del Sur::Shariff Aguak": [
+    6.8610172,
+    124.4444871
+  ],
+  "Maguindanao del Sur::Shariff Saydona Mustapha": [
+    6.8816312,
+    124.4843998
+  ],
+  "Maguindanao del Sur::South Upi": [
+    6.8549414,
+    124.1439996
+  ],
+  "Maguindanao del Sur::Sultan Sa Barongis": [
+    6.8826611,
+    124.6002051
+  ],
+  "Maguindanao del Sur::Talayan": [
+    6.9841524,
+    124.3560226
+  ],
+  "Marinduque::Boac": [
+    13.4479146,
+    121.8400274
+  ],
+  "Marinduque::Buenavista": [
+    13.2541728,
+    121.9425793
+  ],
+  "Marinduque::Gasan": [
+    13.3241764,
+    121.8467339
+  ],
+  "Marinduque::Mogpog": [
+    13.4735672,
+    121.8608199
+  ],
+  "Marinduque::Santa Cruz": [
+    13.4763975,
+    122.0278552
+  ],
+  "Marinduque::Torrijos": [
+    13.3203645,
+    122.0859961
+  ],
+  "Masbate::Aroroy": [
+    12.5123345,
+    123.3986925
+  ],
+  "Masbate::Baleno": [
+    12.4738762,
+    123.4975215
+  ],
+  "Masbate::Balud": [
+    12.0384347,
+    123.1933683
+  ],
+  "Masbate::Batuan": [
+    12.4216283,
+    123.779537
+  ],
+  "Masbate::Cataingan": [
+    11.9996467,
+    123.9978457
+  ],
+  "Masbate::Cawayan": [
+    11.9283971,
+    123.7692131
+  ],
+  "Masbate::City of Masbate": [
+    10.3167896,
+    123.9070277
+  ],
+  "Masbate::Claveria": [
+    12.9034794,
+    123.2457124
+  ],
+  "Masbate::Dimasalang": [
+    12.1931384,
+    123.8586018
+  ],
+  "Masbate::Esperanza": [
+    11.7369622,
+    124.041699
+  ],
+  "Masbate::Mandaon": [
+    12.2266459,
+    123.2849134
+  ],
+  "Masbate::Milagros": [
+    12.218165,
+    123.5093507
+  ],
+  "Masbate::Mobo": [
+    12.3366103,
+    123.6580769
+  ],
+  "Masbate::Monreal": [
+    12.6441423,
+    123.6637788
+  ],
+  "Masbate::Palanas": [
+    12.1459982,
+    123.9222245
+  ],
+  "Masbate::Pio V. Corpus": [
+    11.8837245,
+    124.0489113
+  ],
+  "Masbate::Placer": [
+    11.8702901,
+    123.9182252
+  ],
+  "Masbate::San Fernando": [
+    12.4843347,
+    123.7628527
+  ],
+  "Masbate::San Jacinto": [
+    12.5677,
+    123.7337
+  ],
+  "Masbate::San Pascual": [
+    13.1281223,
+    122.9775697
+  ],
+  "Masbate::Uson": [
+    12.2251109,
+    123.78466
+  ],
+  "Misamis Occidental::Aloran": [
+    8.4164194,
+    123.8210876
+  ],
+  "Misamis Occidental::Baliangao": [
+    8.6601564,
+    123.6027017
+  ],
+  "Misamis Occidental::Bonifacio": [
+    8.0522878,
+    123.6139434
+  ],
+  "Misamis Occidental::Calamba": [
+    8.5605342,
+    123.6442296
+  ],
+  "Misamis Occidental::City of Oroquieta": [
+    8.1634535,
+    123.8608074
+  ],
+  "Misamis Occidental::City of Ozamiz": [
+    8.1470175,
+    123.8459793
+  ],
+  "Misamis Occidental::City of Tangub": [
+    8.0609053,
+    123.7512585
+  ],
+  "Misamis Occidental::Clarin": [
+    8.1998924,
+    123.8616135
+  ],
+  "Misamis Occidental::Concepcion": [
+    8.4233368,
+    123.6032778
+  ],
+  "Misamis Occidental::Don Victoriano Chiongbian": [
+    8.4530116679183,
+    123.57425948136911
+  ],
+  "Misamis Occidental::Jimenez": [
+    8.3343655,
+    123.8400281
+  ],
+  "Misamis Occidental::Lopez Jaena": [
+    8.5530838,
+    123.7657748
+  ],
+  "Misamis Occidental::Panaon": [
+    8.362795,
+    123.8409132
+  ],
+  "Misamis Occidental::Plaridel": [
+    8.6198081,
+    123.7113727
+  ],
+  "Misamis Occidental::Sapang Dalaga": [
+    8.5422258,
+    123.5670307
+  ],
+  "Misamis Occidental::Sinacaban": [
+    8.2852005,
+    123.8428482
+  ],
+  "Misamis Occidental::Tudela": [
+    8.2411877,
+    123.8469059
+  ],
+  "Misamis Oriental::Alubijid": [
+    8.5704786,
+    124.4711949
+  ],
+  "Misamis Oriental::Balingasag": [
+    8.7428634,
+    124.7755689
+  ],
+  "Misamis Oriental::Balingoan": [
+    9.0038881,
+    124.8502124
+  ],
+  "Misamis Oriental::Binuangan": [
+    8.921055,
+    124.7850158
+  ],
+  "Misamis Oriental::City of El Salvador": [
+    8.5596597,
+    124.5270577
+  ],
+  "Misamis Oriental::City of Gingoog": [
+    8.8232748,
+    125.1012978
+  ],
+  "Misamis Oriental::Claveria": [
+    8.6119415,
+    124.8933887
+  ],
+  "Misamis Oriental::Gitagum": [
+    8.5944139,
+    124.4057538
+  ],
+  "Misamis Oriental::Initao": [
+    8.4975425,
+    124.3056107
+  ],
+  "Misamis Oriental::Jasaan": [
+    8.6504031,
+    124.7547085
+  ],
+  "Misamis Oriental::Kinoguitan": [
+    8.9840257,
+    124.7911165
+  ],
+  "Misamis Oriental::Lagonglong": [
+    8.8058529,
+    124.7877432
+  ],
+  "Misamis Oriental::Laguindingan": [
+    8.5747178,
+    124.4408927
+  ],
+  "Misamis Oriental::Libertad": [
+    8.5627014,
+    124.3522663
+  ],
+  "Misamis Oriental::Lugait": [
+    8.3431526,
+    124.2597747
+  ],
+  "Misamis Oriental::Magsaysay": [
+    9.0193202,
+    125.1805417
+  ],
+  "Misamis Oriental::Manticao": [
+    8.4032763,
+    124.2888219
+  ],
+  "Misamis Oriental::Medina": [
+    8.911603,
+    125.0245634
+  ],
+  "Misamis Oriental::Naawan": [
+    8.4336209,
+    124.2909727
+  ],
+  "Misamis Oriental::Opol": [
+    8.5212764,
+    124.5747129
+  ],
+  "Misamis Oriental::Salay": [
+    8.8588765,
+    124.7868157
+  ],
+  "Misamis Oriental::Sugbongcogon": [
+    8.9562619,
+    124.7881272
+  ],
+  "Misamis Oriental::Tagoloan": [
+    8.5387132,
+    124.75441
+  ],
+  "Misamis Oriental::Talisayan": [
+    8.9974839,
+    124.8846137
+  ],
+  "Misamis Oriental::Villanueva": [
+    8.5837261,
+    124.7698576
+  ],
+  "Mountain Province::Barlig": [
+    17.0409852,
+    121.0997188
+  ],
+  "Mountain Province::Bauko": [
+    16.9902652,
+    120.865329
+  ],
+  "Mountain Province::Besao": [
+    17.0955228,
+    120.8565903
+  ],
+  "Mountain Province::Bontoc": [
+    17.0891276,
+    120.977394
+  ],
+  "Mountain Province::Natonin": [
+    17.1074577,
+    121.2747091
+  ],
+  "Mountain Province::Paracelis": [
+    17.1809095,
+    121.4036126
+  ],
+  "Mountain Province::Sabangan": [
+    17.0035277,
+    120.9236583
+  ],
+  "Mountain Province::Sadanga": [
+    17.1682043,
+    121.0264409
+  ],
+  "Mountain Province::Sagada": [
+    17.0852054,
+    120.8989806
+  ],
+  "Mountain Province::Tadian": [
+    16.9956909,
+    120.8217222
+  ],
+  "Negros Occidental::Binalbagan": [
+    10.1937474,
+    122.8587743
+  ],
+  "Negros Occidental::Calatrava": [
+    10.5940442,
+    123.4763844
+  ],
+  "Negros Occidental::Candoni": [
+    9.8306756,
+    122.6429611
+  ],
+  "Negros Occidental::Cauayan": [
+    9.9733632,
+    122.6260198
+  ],
+  "Negros Occidental::City of Bago": [
+    10.5376299,
+    122.8352802
+  ],
+  "Negros Occidental::City of Cadiz": [
+    10.956652,
+    123.3057034
+  ],
+  "Negros Occidental::City of Escalante": [
+    10.8412587,
+    123.499306
+  ],
+  "Negros Occidental::City of Himamaylan": [
+    10.0992841,
+    122.870539
+  ],
+  "Negros Occidental::City of Kabankalan": [
+    9.9889153,
+    122.8134802
+  ],
+  "Negros Occidental::City of La Carlota": [
+    10.4268649,
+    122.9208074
+  ],
+  "Negros Occidental::City of Sagay": [
+    10.8960681,
+    123.4154617
+  ],
+  "Negros Occidental::City of San Carlos": [
+    10.486048,
+    123.4190385
+  ],
+  "Negros Occidental::City of Silay": [
+    10.7994126,
+    122.9756149
+  ],
+  "Negros Occidental::City of Sipalay": [
+    9.7491266,
+    122.4040602
+  ],
+  "Negros Occidental::City of Talisay": [
+    10.7372649,
+    122.9673325
+  ],
+  "Negros Occidental::City of Victorias": [
+    10.9013412,
+    123.0714943
+  ],
+  "Negros Occidental::Enrique B. Magalona": [
+    10.8770717,
+    122.9814106
+  ],
+  "Negros Occidental::Hinigaran": [
+    10.2713832,
+    122.8519909
+  ],
+  "Negros Occidental::Hinoba-an": [
+    9.6021766,
+    122.4670994
+  ],
+  "Negros Occidental::Ilog": [
+    10.0242067,
+    122.7691808
+  ],
+  "Negros Occidental::Isabela": [
+    10.2047969,
+    122.9892506
+  ],
+  "Negros Occidental::La Castellana": [
+    10.3230498,
+    123.0187418
+  ],
+  "Negros Occidental::Manapla": [
+    10.9591466,
+    123.1234936
+  ],
+  "Negros Occidental::Moises Padilla": [
+    10.2708302,
+    123.0733691
+  ],
+  "Negros Occidental::Murcia": [
+    10.6066483,
+    123.0404676
+  ],
+  "Negros Occidental::Pontevedra": [
+    10.3751168,
+    122.866821
+  ],
+  "Negros Occidental::Pulupandan": [
+    10.5192005,
+    122.8034563
+  ],
+  "Negros Occidental::Salvador Benedicto": [
+    10.577077,
+    123.220367
+  ],
+  "Negros Occidental::San Enrique": [
+    10.419678,
+    122.8495462
+  ],
+  "Negros Occidental::Toboso": [
+    10.7169474,
+    123.5135576
+  ],
+  "Negros Occidental::Valladolid": [
+    10.461548,
+    122.8234493
+  ],
+  "Negros Oriental::Amlan": [
+    9.4647598,
+    123.2230669
+  ],
+  "Negros Oriental::Ayungon": [
+    9.8584222,
+    123.1435234
+  ],
+  "Negros Oriental::Bacong": [
+    9.2452115,
+    123.2951117
+  ],
+  "Negros Oriental::Basay": [
+    9.4079168,
+    122.640498
+  ],
+  "Negros Oriental::Bindoy": [
+    9.7572821,
+    123.1391552
+  ],
+  "Negros Oriental::City of Bais": [
+    9.5396289,
+    123.1007542
+  ],
+  "Negros Oriental::City of Bayawan": [
+    9.3661533,
+    122.804837
+  ],
+  "Negros Oriental::City of Canlaon": [
+    10.386953,
+    123.2186238
+  ],
+  "Negros Oriental::City of Dumaguete": [
+    9.3054777,
+    123.3080446
+  ],
+  "Negros Oriental::City of Guihulngan": [
+    9.395773101889475,
+    123.21597069660072
+  ],
+  "Negros Oriental::City of Tanjay": [
+    9.5164507,
+    123.1566353
+  ],
+  "Negros Oriental::Dauin": [
+    9.1897165,
+    123.26577
+  ],
+  "Negros Oriental::Jimalalud": [
+    9.9791298,
+    123.2004503
+  ],
+  "Negros Oriental::La Libertad": [
+    10.0259479,
+    123.2347866
+  ],
+  "Negros Oriental::Mabinay": [
+    9.7355043,
+    122.926378
+  ],
+  "Negros Oriental::Manjuyod": [
+    9.6788502,
+    123.1488063
+  ],
+  "Negros Oriental::Pamplona": [
+    9.4733221,
+    123.1211272
+  ],
+  "Negros Oriental::San Jose": [
+    9.4141533,
+    123.241848
+  ],
+  "Negros Oriental::Santa Catalina": [
+    9.3330937,
+    122.8631365
+  ],
+  "Negros Oriental::Siaton": [
+    9.0627498,
+    123.0337961
+  ],
+  "Negros Oriental::Sibulan": [
+    9.3589133,
+    123.2853598
+  ],
+  "Negros Oriental::Tayasan": [
+    9.9225873,
+    123.1715067
+  ],
+  "Negros Oriental::Valencia": [
+    9.2817803,
+    123.2446771
+  ],
+  "Negros Oriental::Vallehermoso": [
+    10.3354066,
+    123.3266886
+  ],
+  "Negros Oriental::Zamboanguita": [
+    9.1004649,
+    123.1994244
+  ],
+  "Northern Samar::Allen": [
+    12.5011163,
+    124.2826577
+  ],
+  "Northern Samar::Biri": [
+    12.6816045,
+    124.3618377
+  ],
+  "Northern Samar::Bobon": [
+    12.5257804,
+    124.5641977
+  ],
+  "Northern Samar::Capul": [
+    12.4230698,
+    124.1822429
+  ],
+  "Northern Samar::Catarman": [
+    12.499648,
+    124.6364767
+  ],
+  "Northern Samar::Catubig": [
+    12.407868,
+    125.0544364
+  ],
+  "Northern Samar::Gamay": [
+    12.3867359,
+    125.3015079
+  ],
+  "Northern Samar::Laoang": [
+    12.5688537,
+    125.0152917
+  ],
+  "Northern Samar::Lapinig": [
+    12.3172219,
+    125.3016342
+  ],
+  "Northern Samar::Las Navas": [
+    12.3381782,
+    125.0310474
+  ],
+  "Northern Samar::Lavezares": [
+    12.534318,
+    124.3305278
+  ],
+  "Northern Samar::Lope De Vega": [
+    12.2995428,
+    124.6249992
+  ],
+  "Northern Samar::Mapanas": [
+    12.4752025,
+    125.255472
+  ],
+  "Northern Samar::Mondragon": [
+    12.5161482,
+    124.7526387
+  ],
+  "Northern Samar::Palapag": [
+    12.5455937,
+    125.1149936
+  ],
+  "Northern Samar::Pambujan": [
+    12.5639616,
+    124.9282311
+  ],
+  "Northern Samar::Rosario": [
+    12.5225697,
+    124.4253004
+  ],
+  "Northern Samar::San Antonio": [
+    12.4138149,
+    124.2790754
+  ],
+  "Northern Samar::San Isidro": [
+    12.3854183,
+    124.3305977
+  ],
+  "Northern Samar::San Jose": [
+    12.5301889,
+    124.4878494
+  ],
+  "Northern Samar::San Roque": [
+    12.5397442,
+    124.8748842
+  ],
+  "Northern Samar::San Vicente": [
+    12.273101,
+    124.0997214
+  ],
+  "Northern Samar::Silvino Lobos": [
+    12.3266874,
+    124.8469461
+  ],
+  "Northern Samar::Victoria": [
+    12.4466736,
+    124.3123478
+  ],
+  "Nueva Vizcaya::Alfonso Castaneda": [
+    15.793314,
+    121.3035569
+  ],
+  "Nueva Vizcaya::Ambaguio": [
+    16.5331234,
+    121.0277675
+  ],
+  "Nueva Vizcaya::Aritao": [
+    16.2968923,
+    121.0340711
+  ],
+  "Nueva Vizcaya::Bagabag": [
+    16.6055376,
+    121.2533079
+  ],
+  "Nueva Vizcaya::Bambang": [
+    16.3850624,
+    121.1054715
+  ],
+  "Nueva Vizcaya::Bayombong": [
+    16.4829252,
+    121.1505219
+  ],
+  "Nueva Vizcaya::Diadi": [
+    16.6606225,
+    121.3693297
+  ],
+  "Nueva Vizcaya::Dupax del Norte": [
+    16.3073041,
+    121.1017442
+  ],
+  "Nueva Vizcaya::Dupax del Sur": [
+    16.2842827,
+    121.091306
+  ],
+  "Nueva Vizcaya::Kasibu": [
+    16.3177486,
+    121.2940862
+  ],
+  "Nueva Vizcaya::Kayapa": [
+    16.3580559,
+    120.8871609
+  ],
+  "Nueva Vizcaya::Quezon": [
+    16.4901938,
+    121.2640347
+  ],
+  "Nueva Vizcaya::Santa Fe": [
+    16.1590291,
+    120.9381714
+  ],
+  "Nueva Vizcaya::Solano": [
+    16.5180604,
+    121.1806163
+  ],
+  "Nueva Vizcaya::Villaverde": [
+    16.6050644,
+    121.1836015
   ]
 }
