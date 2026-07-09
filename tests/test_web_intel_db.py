@@ -107,3 +107,39 @@ def test_web_intel_agent_uses_db_cache_on_hit(fresh_db, monkeypatch):
     result = wi.web_intel_agent(state)
     assert api_called == []   # no API calls — all from cache
     assert result["web_intel"]["Biñan"]["web_score"] == pytest.approx(0.48)
+
+
+def test_web_intel_agent_selects_top_n_by_geo_score(monkeypatch):
+    """Regression for a live bug (2026-07-08): the TOP_N_TARGETS truncation was
+    applied to the geo_scores dict in raw insertion (DB row-return) order, NOT
+    sorted by geo_score — so in every province with >20 municipalities an
+    arbitrary 20 got the web-intel/synthesis budget while true top scorers
+    (e.g. Cavite's #2 and #3) were silently skipped. The agent must sort by
+    geo_score descending BEFORE truncating."""
+    import agents.web_intel as wi
+
+    fetched = []
+    monkeypatch.setattr(
+        wi, "gather_intel_for_municipality",
+        lambda muni, geo=None: fetched.append(muni) or {"web_score": 0.1},
+    )
+    monkeypatch.setattr(config, "TOP_N_TARGETS", 2)
+
+    # Insertion order deliberately puts the highest scorers LAST
+    geo_scores = {
+        "LowTown":  {"geo_score": 0.20},
+        "MidTown":  {"geo_score": 0.50},
+        "BestTown": {"geo_score": 0.90},
+        "NextTown": {"geo_score": 0.80},
+    }
+    from graph.state import SolarLeadState
+    state: SolarLeadState = {
+        "location": "TestProv", "run_id": "t2", "geo_scores": geo_scores,
+        "geo_geojson": None, "web_intel": None, "final_scores": None,
+        "top_targets": None, "report_markdown": None, "report_path": None,
+        "chat_history": [], "kb_updated": False, "errors": [], "status": "running",
+    }
+    result = wi.web_intel_agent(state)
+
+    assert fetched == ["BestTown", "NextTown"]   # top 2 by score, not first 2 inserted
+    assert set(result["web_intel"].keys()) == {"BestTown", "NextTown"}
