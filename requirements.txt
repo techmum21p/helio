@@ -35,6 +35,9 @@ sentence-transformers>=3.0.0
 barangay>=2026.1.13.1
 rapidfuzz>=3.0.0
 
+# Real PSA income classification + census population (yng-me/psgc R package data)
+rdata>=0.11.2
+
 # Report generation
 reportlab>=4.0.0
 markdown>=3.6.0

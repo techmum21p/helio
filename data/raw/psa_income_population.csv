@@ -1,0 +1,1643 @@
+psgc_code,name,province,geographic_level,income_classification,population_2024
+0102801000,Adams,Ilocos Norte,Mun,4th,2279
+0102802000,Bacarra,Ilocos Norte,Mun,2nd,32734
+0102803000,Badoc,Ilocos Norte,Mun,1st,32832
+0102804000,Bangui,Ilocos Norte,Mun,2nd,15227
+0102805000,City of Batac,Ilocos Norte,City,3rd,56781
+0102806000,Burgos,Ilocos Norte,Mun,3rd,10962
+0102807000,Carasi,Ilocos Norte,Mun,5th,1775
+0102808000,Currimao,Ilocos Norte,Mun,3rd,12256
+0102809000,Dingras,Ilocos Norte,Mun,1st,40176
+0102810000,Dumalneg,Ilocos Norte,Mun,4th,3452
+0102811000,Banna,Ilocos Norte,Mun,1st,19363
+0102812000,City of Laoag,Ilocos Norte,City,3rd,112117
+0102813000,Marcos,Ilocos Norte,Mun,2nd,18105
+0102814000,Nueva Era,Ilocos Norte,Mun,1st,13305
+0102815000,Pagudpud,Ilocos Norte,Mun,1st,25565
+0102816000,Paoay,Ilocos Norte,Mun,2nd,24204
+0102817000,Pasuquin,Ilocos Norte,Mun,1st,30521
+0102818000,Piddig,Ilocos Norte,Mun,1st,22781
+0102819000,Pinili,Ilocos Norte,Mun,1st,17705
+0102820000,San Nicolas,Ilocos Norte,Mun,1st,39116
+0102821000,Sarrat,Ilocos Norte,Mun,2nd,26294
+0102822000,Solsona,Ilocos Norte,Mun,2nd,26249
+0102823000,Vintar,Ilocos Norte,Mun,1st,35051
+0102901000,Alilem,Ilocos Sur,Mun,1st,7736
+0102902000,Banayoyo,Ilocos Sur,Mun,1st,7953
+0102903000,Bantay,Ilocos Sur,Mun,1st,37088
+0102904000,Burgos,Ilocos Sur,Mun,1st,13026
+0102905000,Cabugao,Ilocos Sur,Mun,1st,38981
+0102906000,City of Candon,Ilocos Sur,City,1st,61315
+0102907000,Caoayan,Ilocos Sur,Mun,2nd,19715
+0102908000,Cervantes,Ilocos Sur,Mun,1st,20065
+0102909000,Galimuyod,Ilocos Sur,Mun,1st,10263
+0102910000,Gregorio del Pilar,Ilocos Sur,Mun,1st,4385
+0102911000,Lidlidda,Ilocos Sur,Mun,1st,4846
+0102912000,Magsingal,Ilocos Sur,Mun,1st,31970
+0102913000,Nagbukel,Ilocos Sur,Mun,1st,5370
+0102914000,Narvacan,Ilocos Sur,Mun,1st,46265
+0102915000,Quirino,Ilocos Sur,Mun,1st,9460
+0102916000,Salcedo,Ilocos Sur,Mun,1st,11196
+0102917000,San Emilio,Ilocos Sur,Mun,1st,7513
+0102918000,San Esteban,Ilocos Sur,Mun,1st,8621
+0102919000,San Ildefonso,Ilocos Sur,Mun,2nd,8213
+0102920000,San Juan,Ilocos Sur,Mun,1st,26709
+0102921000,San Vicente,Ilocos Sur,Mun,3rd,13074
+0102922000,Santa,Ilocos Sur,Mun,2nd,15164
+0102923000,Santa Catalina,Ilocos Sur,Mun,2nd,14319
+0102924000,Santa Cruz,Ilocos Sur,Mun,1st,41296
+0102925000,Santa Lucia,Ilocos Sur,Mun,1st,26200
+0102926000,Santa Maria,Ilocos Sur,Mun,1st,30076
+0102927000,Santiago,Ilocos Sur,Mun,1st,19771
+0102928000,Santo Domingo,Ilocos Sur,Mun,1st,29372
+0102929000,Sigay,Ilocos Sur,Mun,1st,2577
+0102930000,Sinait,Ilocos Sur,Mun,1st,26059
+0102931000,Sugpon,Ilocos Sur,Mun,3rd,4238
+0102932000,Suyo,Ilocos Sur,Mun,1st,11051
+0102933000,Tagudin,Ilocos Sur,Mun,1st,41606
+0102934000,City of Vigan,Ilocos Sur,City,4th,54498
+0103301000,Agoo,La Union,Mun,1st,65256
+0103302000,Aringay,La Union,Mun,1st,50786
+0103303000,Bacnotan,La Union,Mun,1st,45203
+0103304000,Bagulin,La Union,Mun,4th,14434
+0103305000,Balaoan,La Union,Mun,1st,40440
+0103306000,Bangar,La Union,Mun,1st,38190
+0103307000,Bauang,La Union,Mun,1st,77670
+0103308000,Burgos,La Union,Mun,4th,9121
+0103309000,Caba,La Union,Mun,1st,23432
+0103310000,Luna,La Union,Mun,2nd,38076
+0103311000,Naguilian,La Union,Mun,1st,53443
+0103312000,Pugo,La Union,Mun,3rd,19107
+0103313000,Rosario,La Union,Mun,1st,58797
+0103314000,City of San Fernando,La Union,City,2nd,124809
+0103315000,San Gabriel,La Union,Mun,3rd,18579
+0103316000,San Juan,La Union,Mun,1st,41319
+0103317000,Santo Tomas,La Union,Mun,1st,42777
+0103318000,Santol,La Union,Mun,1st,14877
+0103319000,Sudipen,La Union,Mun,1st,16888
+0103320000,Tubao,La Union,Mun,2nd,31868
+0105501000,Agno,Pangasinan,Mun,2nd,29270
+0105502000,Aguilar,Pangasinan,Mun,1st,45363
+0105503000,City of Alaminos,Pangasinan,City,3rd,100430
+0105504000,Alcala,Pangasinan,Mun,1st,49479
+0105505000,Anda,Pangasinan,Mun,2nd,42688
+0105506000,Asingan,Pangasinan,Mun,1st,58349
+0105507000,Balungao,Pangasinan,Mun,1st,30678
+0105508000,Bani,Pangasinan,Mun,1st,52715
+0105509000,Basista,Pangasinan,Mun,3rd,37840
+0105510000,Bautista,Pangasinan,Mun,3rd,35728
+0105511000,Bayambang,Pangasinan,Mun,1st,129506
+0105512000,Binalonan,Pangasinan,Mun,1st,56560
+0105513000,Binmaley,Pangasinan,Mun,1st,88006
+0105514000,Bolinao,Pangasinan,Mun,1st,84658
+0105515000,Bugallon,Pangasinan,Mun,1st,76027
+0105516000,Burgos,Pangasinan,Mun,3rd,23240
+0105517000,Calasiao,Pangasinan,Mun,1st,100686
+0105518000,City of Dagupan,Pangasinan,City,2nd,174777
+0105519000,Dasol,Pangasinan,Mun,2nd,31842
+0105520000,Infanta,Pangasinan,Mun,2nd,26837
+0105521000,Labrador,Pangasinan,Mun,3rd,26995
+0105522000,Lingayen,Pangasinan,Mun,1st,108510
+0105523000,Mabini,Pangasinan,Mun,2nd,26589
+0105524000,Malasiqui,Pangasinan,Mun,1st,144344
+0105525000,Manaoag,Pangasinan,Mun,1st,76606
+0105526000,Mangaldan,Pangasinan,Mun,1st,113302
+0105527000,Mangatarem,Pangasinan,Mun,1st,79648
+0105528000,Mapandan,Pangasinan,Mun,3rd,38228
+0105529000,Natividad,Pangasinan,Mun,3rd,26721
+0105530000,Pozorrubio,Pangasinan,Mun,1st,75143
+0105531000,Rosales,Pangasinan,Mun,1st,67510
+0105532000,City of San Carlos,Pangasinan,City,2nd,208330
+0105533000,San Fabian,Pangasinan,Mun,1st,87714
+0105534000,San Jacinto,Pangasinan,Mun,1st,44713
+0105535000,San Manuel,Pangasinan,Mun,1st,56876
+0105536000,San Nicolas,Pangasinan,Mun,1st,40144
+0105537000,San Quintin,Pangasinan,Mun,2nd,34322
+0105538000,Santa Barbara,Pangasinan,Mun,1st,92420
+0105539000,Santa Maria,Pangasinan,Mun,2nd,34452
+0105540000,Santo Tomas,Pangasinan,Mun,4th,14894
+0105541000,Sison,Pangasinan,Mun,1st,51439
+0105542000,Sual,Pangasinan,Mun,1st,38625
+0105543000,Tayug,Pangasinan,Mun,1st,45476
+0105544000,Umingan,Pangasinan,Mun,1st,78940
+0105545000,Urbiztondo,Pangasinan,Mun,1st,56349
+0105546000,City of Urdaneta,Pangasinan,City,1st,145935
+0105547000,Villasis,Pangasinan,Mun,1st,65086
+0105548000,Laoac,Pangasinan,Mun,2nd,34550
+0200901000,Basco,Batanes,Mun,4th,9647
+0200902000,Itbayat,Batanes,Mun,5th,2937
+0200903000,Ivana,Batanes,Mun,5th,1368
+0200904000,Mahatao,Batanes,Mun,5th,1745
+0200905000,Sabtang,Batanes,Mun,5th,1774
+0200906000,Uyugan,Batanes,Mun,5th,1466
+0201501000,Abulug,Cagayan,Mun,2nd,35347
+0201502000,Alcala,Cagayan,Mun,1st,41468
+0201503000,Allacapan,Cagayan,Mun,1st,35946
+0201504000,Amulung,Cagayan,Mun,1st,50903
+0201505000,Aparri,Cagayan,Mun,1st,68368
+0201506000,Baggao,Cagayan,Mun,1st,90723
+0201507000,Ballesteros,Cagayan,Mun,2nd,34562
+0201508000,Buguey,Cagayan,Mun,2nd,32351
+0201509000,Calayan,Cagayan,Mun,1st,18008
+0201510000,Camalaniugan,Cagayan,Mun,3rd,25629
+0201511000,Claveria,Cagayan,Mun,2nd,32997
+0201512000,Enrile,Cagayan,Mun,1st,36481
+0201513000,Gattaran,Cagayan,Mun,1st,59704
+0201514000,Gonzaga,Cagayan,Mun,1st,41994
+0201515000,Iguig,Cagayan,Mun,2nd,31342
+0201516000,Lal-Lo,Cagayan,Mun,1st,48404
+0201517000,Lasam,Cagayan,Mun,1st,42042
+0201518000,Pamplona,Cagayan,Mun,3rd,25182
+0201519000,Peñablanca,Cagayan,Mun,1st,50856
+0201520000,Piat,Cagayan,Mun,3rd,25436
+0201521000,Rizal,Cagayan,Mun,4th,19577
+0201522000,Sanchez Mira,Cagayan,Mun,2nd,26292
+0201523000,Santa Ana,Cagayan,Mun,1st,34595
+0201524000,Santa Praxedes,Cagayan,Mun,5th,4643
+0201525000,Santa Teresita,Cagayan,Mun,3rd,19476
+0201526000,Santo Niño,Cagayan,Mun,1st,29066
+0201527000,Solana,Cagayan,Mun,1st,89840
+0201528000,Tuao,Cagayan,Mun,1st,66147
+0201529000,Tuguegarao City,Cagayan,City,2nd,167297
+0203101000,Alicia,Isabela,Mun,1st,74699
+0203102000,Angadanan,Isabela,Mun,1st,45970
+0203103000,Aurora,Isabela,Mun,1st,37191
+0203104000,Benito Soliven,Isabela,Mun,2nd,30682
+0203105000,Burgos,Isabela,Mun,3rd,26729
+0203106000,Cabagan,Isabela,Mun,1st,55445
+0203107000,Cabatuan,Isabela,Mun,1st,40223
+0203108000,City of Cauayan,Isabela,City,2nd,143539
+0203109000,Cordon,Isabela,Mun,1st,46688
+0203110000,Dinapigue,Isabela,Mun,1st,6116
+0203111000,Divilacan,Isabela,Mun,1st,5871
+0203112000,Echague,Isabela,Mun,1st,91320
+0203113000,Gamu,Isabela,Mun,2nd,30850
+0203114000,City of Ilagan,Isabela,City,1st,164020
+0203115000,Jones,Isabela,Mun,1st,46160
+0203116000,Luna,Isabela,Mun,1st,21015
+0203117000,Maconacon,Isabela,Mun,2nd,4252
+0203118000,Delfin Albano,Isabela,Mun,1st,30860
+0203119000,Mallig,Isabela,Mun,1st,32509
+0203120000,Naguilian,Isabela,Mun,1st,34520
+0203121000,Palanan,Isabela,Mun,1st,18091
+0203122000,Quezon,Isabela,Mun,1st,28376
+0203123000,Quirino,Isabela,Mun,1st,25205
+0203124000,Ramon,Isabela,Mun,1st,57412
+0203125000,Reina Mercedes,Isabela,Mun,1st,28222
+0203126000,Roxas,Isabela,Mun,1st,66593
+0203127000,San Agustin,Isabela,Mun,2nd,22228
+0203128000,San Guillermo,Isabela,Mun,2nd,21043
+0203129000,San Isidro,Isabela,Mun,3rd,27326
+0203130000,San Manuel,Isabela,Mun,2nd,34740
+0203131000,San Mariano,Isabela,Mun,1st,61876
+0203132000,San Mateo,Isabela,Mun,1st,67433
+0203133000,San Pablo,Isabela,Mun,1st,26462
+0203134000,Santa Maria,Isabela,Mun,3rd,25919
+0203135000,City of Santiago,Isabela,City,1st,150313
+0203136000,Santo Tomas,Isabela,Mun,3rd,25997
+0203137000,Tumauini,Isabela,Mun,1st,77153
+0205001000,Ambaguio,Nueva Vizcaya,Mun,4th,16401
+0205002000,Aritao,Nueva Vizcaya,Mun,1st,45000
+0205003000,Bagabag,Nueva Vizcaya,Mun,1st,39138
+0205004000,Bambang,Nueva Vizcaya,Mun,1st,60146
+0205005000,Bayombong,Nueva Vizcaya,Mun,1st,72890
+0205006000,Diadi,Nueva Vizcaya,Mun,3rd,20438
+0205007000,Dupax del Norte,Nueva Vizcaya,Mun,1st,35509
+0205008000,Dupax del Sur,Nueva Vizcaya,Mun,1st,22388
+0205009000,Kasibu,Nueva Vizcaya,Mun,1st,46845
+0205010000,Kayapa,Nueva Vizcaya,Mun,1st,27865
+0205011000,Quezon,Nueva Vizcaya,Mun,1st,25306
+0205012000,Santa Fe,Nueva Vizcaya,Mun,2nd,18950
+0205013000,Solano,Nueva Vizcaya,Mun,1st,69296
+0205014000,Villaverde,Nueva Vizcaya,Mun,4th,21001
+0205015000,Alfonso Castaneda,Nueva Vizcaya,Mun,2nd*,8933
+0205701000,Aglipay,Quirino,Mun,2nd,31596
+0205702000,Cabarroguis,Quirino,Mun,1st,34720
+0205703000,Diffun,Quirino,Mun,1st,58254
+0205704000,Maddela,Quirino,Mun,1st,41867
+0205705000,Saguday,Quirino,Mun,4th,17863
+0205706000,Nagtipunan,Quirino,Mun,1st,26541
+0300801000,Abucay,Bataan,Mun,2nd,44846
+0300802000,Bagac,Bataan,Mun,2nd,32799
+0300803000,City of Balanga,Bataan,City,2nd,109931
+0300804000,Dinalupihan,Bataan,Mun,1st,124188
+0300805000,Hermosa,Bataan,Mun,1st,80557
+0300806000,Limay,Bataan,Mun,1st,81960
+0300807000,Mariveles,Bataan,Mun,1st,156200
+0300808000,Morong,Bataan,Mun,1st,37024
+0300809000,Orani,Bataan,Mun,1st,72941
+0300810000,Orion,Bataan,Mun,1st,63044
+0300811000,Pilar,Bataan,Mun,2nd,47107
+0300812000,Samal,Bataan,Mun,2nd,40843
+0301401000,Angat,Bulacan,Mun,1st,67862
+0301402000,Balagtas,Bulacan,Mun,1st,80221
+0301403000,City of Baliwag,Bulacan,City,3rd,174194
+0301404000,Bocaue,Bulacan,Mun,1st,147755
+0301405000,Bulacan,Bulacan,Mun,1st,83101
+0301406000,Bustos,Bulacan,Mun,1st,80565
+0301407000,Calumpit,Bulacan,Mun,1st,122187
+0301408000,Guiguinto,Bulacan,Mun,1st,118173
+0301409000,Hagonoy,Bulacan,Mun,1st,136673
+0301410000,City of Malolos,Bulacan,City,1st,269809
+0301411000,Marilao,Bulacan,Mun,1st,263507
+0301412000,City of Meycauayan,Bulacan,City,1st,228023
+0301413000,Norzagaray,Bulacan,Mun,1st,140697
+0301414000,Obando,Bulacan,Mun,1st,61073
+0301415000,Pandi,Bulacan,Mun,1st,162725
+0301416000,Paombong,Bulacan,Mun,2nd,58453
+0301417000,Plaridel,Bulacan,Mun,1st,120939
+0301418000,Pulilan,Bulacan,Mun,1st,111384
+0301419000,San Ildefonso,Bulacan,Mun,1st,123140
+0301420000,City of San Jose Del Monte,Bulacan,City,1st,685688
+0301421000,San Miguel,Bulacan,Mun,1st,179792
+0301422000,San Rafael,Bulacan,Mun,1st,108256
+0301423000,Santa Maria,Bulacan,Mun,1st,322525
+0301424000,Doña Remedios Trinidad,Bulacan,Mun,1st,30064
+0304901000,Aliaga,Nueva Ecija,Mun,1st,72134
+0304902000,Bongabon,Nueva Ecija,Mun,1st,69376
+0304903000,City of Cabanatuan,Nueva Ecija,City,1st,343672
+0304904000,Cabiao,Nueva Ecija,Mun,1st,89497
+0304905000,Carranglan,Nueva Ecija,Mun,1st,43694
+0304906000,Cuyapo,Nueva Ecija,Mun,1st,70919
+0304907000,Gabaldon,Nueva Ecija,Mun,1st,40223
+0304908000,City of Gapan,Nueva Ecija,City,3rd,129610
+0304909000,General Mamerto Natividad,Nueva Ecija,Mun,2nd,43779
+0304910000,General Tinio,Nueva Ecija,Mun,1st,58093
+0304911000,Guimba,Nueva Ecija,Mun,1st,131468
+0304912000,Jaen,Nueva Ecija,Mun,1st,83895
+0304913000,Laur,Nueva Ecija,Mun,1st,40185
+0304914000,Licab,Nueva Ecija,Mun,3rd,29590
+0304915000,Llanera,Nueva Ecija,Mun,2nd,44620
+0304916000,Lupao,Nueva Ecija,Mun,2nd,47175
+0304917000,Science City of Muñoz,Nueva Ecija,City,4th,85061
+0304918000,Nampicuan,Nueva Ecija,Mun,4th,15297
+0304919000,City of Palayan,Nueva Ecija,City,4th,47883
+0304920000,Pantabangan,Nueva Ecija,Mun,1st,32694
+0304921000,Peñaranda,Nueva Ecija,Mun,2nd,33043
+0304922000,Quezon,Nueva Ecija,Mun,2nd,42621
+0304923000,Rizal,Nueva Ecija,Mun,1st,71749
+0304924000,San Antonio,Nueva Ecija,Mun,1st,84958
+0304925000,San Isidro,Nueva Ecija,Mun,1st,55108
+0304926000,San Jose City,Nueva Ecija,City,2nd,156714
+0304927000,San Leonardo,Nueva Ecija,Mun,1st,69180
+0304928000,Santa Rosa,Nueva Ecija,Mun,1st,80258
+0304929000,Santo Domingo,Nueva Ecija,Mun,1st,63750
+0304930000,Talavera,Nueva Ecija,Mun,1st,137444
+0304931000,Talugtug,Nueva Ecija,Mun,3rd,26469
+0304932000,Zaragoza,Nueva Ecija,Mun,1st,55657
+0305402000,Apalit,Pampanga,Mun,1st,121057
+0305403000,Arayat,Pampanga,Mun,1st,150949
+0305404000,Bacolor,Pampanga,Mun,1st,59361
+0305405000,Candaba,Pampanga,Mun,1st,124019
+0305406000,Floridablanca,Pampanga,Mun,1st,146095
+0305407000,Guagua,Pampanga,Mun,1st,137948
+0305408000,Lubao,Pampanga,Mun,1st,190355
+0305409000,Mabalacat City,Pampanga,City,1st,306594
+0305410000,Macabebe,Pampanga,Mun,1st,82933
+0305411000,Magalang,Pampanga,Mun,1st,133883
+0305412000,Masantol,Pampanga,Mun,1st,57207
+0305413000,Mexico,Pampanga,Mun,1st,187597
+0305414000,Minalin,Pampanga,Mun,2nd,50126
+0305415000,Porac,Pampanga,Mun,1st,147551
+0305416000,City of San Fernando,Pampanga,City,1st,377534
+0305417000,San Luis,Pampanga,Mun,2nd,64674
+0305418000,San Simon,Pampanga,Mun,1st,65760
+0305419000,Santa Ana,Pampanga,Mun,1st,63431
+0305420000,Santa Rita,Pampanga,Mun,2nd,42915
+0305421000,Sto. Tomas,Pampanga,Mun,2nd,44376
+0305422000,Sasmuan,Pampanga,Mun,3rd,32081
+0306901000,Anao,Tarlac,Mun,4th,12865
+0306902000,Bamban,Tarlac,Mun,1st,81012
+0306903000,Camiling,Tarlac,Mun,1st,91400
+0306904000,Capas,Tarlac,Mun,1st,162724
+0306905000,Concepcion,Tarlac,Mun,1st,178549
+0306906000,Gerona,Tarlac,Mun,1st,97937
+0306907000,La Paz,Tarlac,Mun,1st,71978
+0306908000,Mayantoc,Tarlac,Mun,1st,34091
+0306909000,Moncada,Tarlac,Mun,1st,66925
+0306910000,Paniqui,Tarlac,Mun,1st,106190
+0306911000,Pura,Tarlac,Mun,3rd,27017
+0306912000,Ramos,Tarlac,Mun,4th,23808
+0306913000,San Clemente,Tarlac,Mun,4th,13781
+0306914000,San Manuel,Tarlac,Mun,1st,29693
+0306915000,Santa Ignacia,Tarlac,Mun,1st,53620
+0306916000,City of Tarlac,Tarlac,City,1st,401892
+0306917000,Victoria,Tarlac,Mun,1st,71495
+0306918000,San Jose,Tarlac,Mun,1st,43185
+0307101000,Botolan,Zambales,Mun,1st,70340
+0307102000,Cabangan,Zambales,Mun,2nd,29334
+0307103000,Candelaria,Zambales,Mun,1st,32182
+0307104000,Castillejos,Zambales,Mun,1st,70105
+0307105000,Iba,Zambales,Mun,1st,59580
+0307106000,Masinloc,Zambales,Mun,1st,56579
+0307108000,Palauig,Zambales,Mun,1st,43250
+0307109000,San Antonio,Zambales,Mun,1st,38617
+0307110000,San Felipe,Zambales,Mun,3rd,26081
+0307111000,San Marcelino,Zambales,Mun,1st,39542
+0307112000,San Narciso,Zambales,Mun,3rd,32180
+0307113000,Santa Cruz,Zambales,Mun,1st,66647
+0307114000,Subic,Zambales,Mun,1st,116788
+0307701000,Baler,Aurora,Mun,1st,44684
+0307702000,Casiguran,Aurora,Mun,1st,26855
+0307703000,Dilasag,Aurora,Mun,2nd,17536
+0307704000,Dinalungan,Aurora,Mun,3rd,12552
+0307705000,Dingalan,Aurora,Mun,2nd,29286
+0307706000,Dipaculao,Aurora,Mun,1st,33597
+0307707000,Maria Aurora,Aurora,Mun,1st,45972
+0307708000,San Luis,Aurora,Mun,1st,30342
+0330100000,City of Angeles,,City,1st,483452
+0331400000,City of Olongapo,,City,1st,264903
+0401001000,Agoncillo,Batangas,Mun,2nd,40662
+0401002000,Alitagtag,Batangas,Mun,4th,28033
+0401003000,Balayan,Batangas,Mun,1st,96939
+0401004000,Balete,Batangas,Mun,4th,24202
+0401005000,Batangas City,Batangas,City,1st,358267
+0401006000,Bauan,Batangas,Mun,1st,94016
+0401007000,City of Calaca,Batangas,City,3rd,92281
+0401008000,Calatagan,Batangas,Mun,1st,60420
+0401009000,Cuenca,Batangas,Mun,2nd,36453
+0401010000,Ibaan,Batangas,Mun,1st,58673
+0401011000,Laurel,Batangas,Mun,2nd,44791
+0401012000,Lemery,Batangas,Mun,1st,94736
+0401013000,Lian,Batangas,Mun,1st,56788
+0401014000,City of Lipa,Batangas,City,1st,387392
+0401015000,Lobo,Batangas,Mun,1st,41251
+0401016000,Mabini,Batangas,Mun,1st,49876
+0401017000,Malvar,Batangas,Mun,1st,74565
+0401018000,Mataasnakahoy,Batangas,Mun,3rd,31912
+0401019000,Nasugbu,Batangas,Mun,1st,141063
+0401020000,Padre Garcia,Batangas,Mun,1st,53526
+0401021000,Rosario,Batangas,Mun,1st,131365
+0401022000,San Jose,Batangas,Mun,1st,81170
+0401023000,San Juan,Batangas,Mun,1st,115118
+0401024000,San Luis,Batangas,Mun,3rd,36841
+0401025000,San Nicolas,Batangas,Mun,4th,24392
+0401026000,San Pascual,Batangas,Mun,1st,69419
+0401027000,Santa Teresita,Batangas,Mun,4th,21742
+0401028000,City of Sto. Tomas,Batangas,City,1st,226772
+0401029000,Taal,Batangas,Mun,1st,61559
+0401030000,Talisay,Batangas,Mun,1st,46477
+0401031000,City of Tanauan,Batangas,City,1st,209697
+0401032000,Taysan,Batangas,Mun,1st,41332
+0401033000,Tingloy,Batangas,Mun,4th,15866
+0401034000,Tuy,Batangas,Mun,2nd,47199
+0402101000,Alfonso,Cavite,Mun,1st,60583
+0402102000,Amadeo,Cavite,Mun,2nd,44190
+0402103000,City of Bacoor,Cavite,City,1st,661381
+0402104000,City of Carmona,Cavite,City,2nd,112140
+0402105000,City of Cavite,Cavite,City,4th,98673
+0402106000,City of Dasmariñas,Cavite,City,1st,744511
+0402107000,General Emilio Aguinaldo,Cavite,Mun,4th,24264
+0402108000,City of General Trias,Cavite,City,1st,482453
+0402109000,City of Imus,Cavite,City,1st,481949
+0402110000,Indang,Cavite,Mun,1st,70092
+0402111000,Kawit,Cavite,Mun,1st,123631
+0402112000,Magallanes,Cavite,Mun,3rd,25826
+0402113000,Maragondon,Cavite,Mun,2nd,41977
+0402114000,Mendez,Cavite,Mun,2nd,36518
+0402115000,Naic,Cavite,Mun,1st,236978
+0402116000,Noveleta,Cavite,Mun,1st,46172
+0402117000,Rosario,Cavite,Mun,1st,112572
+0402118000,Silang,Cavite,Mun,1st,313145
+0402119000,City of Tagaytay,Cavite,City,1st,87811
+0402120000,Tanza,Cavite,Mun,1st,339308
+0402121000,Ternate,Cavite,Mun,3rd,24891
+0402122000,City of Trece Martires,Cavite,City,2nd,227892
+0402123000,Gen. Mariano Alvarez,Cavite,Mun,1st,176927
+0403401000,Alaminos,Laguna,Mun,1st,53589
+0403402000,Bay,Laguna,Mun,1st,69802
+0403403000,City of Biñan,Laguna,City,1st,584479
+0403404000,City of Cabuyao,Laguna,City,1st,365202
+0403405000,City of Calamba,Laguna,City,1st,575046
+0403406000,Calauan,Laguna,Mun,1st,89670
+0403407000,Cavinti,Laguna,Mun,2nd,24740
+0403408000,Famy,Laguna,Mun,4th,17668
+0403409000,Kalayaan,Laguna,Mun,3rd,25243
+0403410000,Liliw,Laguna,Mun,3rd,39976
+0403411000,Los Baños,Laguna,Mun,1st,117030
+0403412000,Luisiana,Laguna,Mun,4th,21824
+0403413000,Lumban,Laguna,Mun,3rd,32793
+0403414000,Mabitac,Laguna,Mun,4th,21748
+0403415000,Magdalena,Laguna,Mun,3rd,28131
+0403416000,Majayjay,Laguna,Mun,3rd,28504
+0403417000,Nagcarlan,Laguna,Mun,1st,66351
+0403418000,Paete,Laguna,Mun,4th,25254
+0403419000,Pagsanjan,Laguna,Mun,2nd,45602
+0403420000,Pakil,Laguna,Mun,3rd,23972
+0403421000,Pangil,Laguna,Mun,3rd,25318
+0403422000,Pila,Laguna,Mun,1st,57776
+0403423000,Rizal,Laguna,Mun,4th,18864
+0403424000,City of San Pablo,Laguna,City,1st,300166
+0403425000,City of San Pedro,Laguna,City,1st,348968
+0403426000,Santa Cruz,Laguna,Mun,1st,126844
+0403427000,Santa Maria,Laguna,Mun,2nd,34102
+0403428000,City of Santa Rosa,Laguna,City,1st,430920
+0403429000,Siniloan,Laguna,Mun,1st,42533
+0403430000,Victoria,Laguna,Mun,2nd,45230
+0405601000,Agdangan,Quezon,Mun,5th,13316
+0405602000,Alabat,Quezon,Mun,4th,15744
+0405603000,Atimonan,Quezon,Mun,1st,65552
+0405605000,Buenavista,Quezon,Mun,2nd,31550
+0405606000,Burdeos,Quezon,Mun,3rd,22742
+0405607000,Calauag,Quezon,Mun,1st,68999
+0405608000,Candelaria,Quezon,Mun,1st,137933
+0405610000,Catanauan,Quezon,Mun,1st,76250
+0405615000,Dolores,Quezon,Mun,3rd,32645
+0405616000,General Luna,Quezon,Mun,3rd,25110
+0405617000,General Nakar,Quezon,Mun,1st,34982
+0405618000,Guinayangan,Quezon,Mun,1st,45375
+0405619000,Gumaca,Quezon,Mun,1st,72454
+0405620000,Infanta,Quezon,Mun,1st,77676
+0405621000,Jomalig,Quezon,Mun,5th,7884
+0405622000,Lopez,Quezon,Mun,1st,96006
+0405623000,Lucban,Quezon,Mun,1st,54134
+0405625000,Macalelon,Quezon,Mun,3rd,25266
+0405627000,Mauban,Quezon,Mun,1st,70135
+0405628000,Mulanay,Quezon,Mun,1st,53976
+0405629000,Padre Burgos,Quezon,Mun,4th,23392
+0405630000,Pagbilao,Quezon,Mun,1st,82132
+0405631000,Panukulan,Quezon,Mun,3rd,17118
+0405632000,Patnanungan,Quezon,Mun,4th,15554
+0405633000,Perez,Quezon,Mun,4th,13052
+0405634000,Pitogo,Quezon,Mun,4th,22499
+0405635000,Plaridel,Quezon,Mun,5th,10866
+0405636000,Polillo,Quezon,Mun,1st,31737
+0405637000,Quezon,Quezon,Mun,4th,15869
+0405638000,Real,Quezon,Mun,1st,39969
+0405639000,Sampaloc,Quezon,Mun,4th,13331
+0405640000,San Andres,Quezon,Mun,2nd,38407
+0405641000,San Antonio,Quezon,Mun,3rd,36451
+0405642000,San Francisco,Quezon,Mun,1st,63789
+0405644000,San Narciso,Quezon,Mun,1st,53375
+0405645000,Sariaya,Quezon,Mun,1st,172018
+0405646000,Tagkawayan,Quezon,Mun,1st,54709
+0405647000,City of Tayabas,Quezon,City,3rd,115318
+0405648000,Tiaong,Quezon,Mun,1st,107666
+0405649000,Unisan,Quezon,Mun,3rd,25357
+0405801000,Angono,Rizal,Mun,1st,134975
+0405802000,City of Antipolo,Rizal,City,1st,913712
+0405803000,Baras,Rizal,Mun,1st,91099
+0405804000,Binangonan,Rizal,Mun,1st,321281
+0405805000,Cainta,Rizal,Mun,1st,386321
+0405806000,Cardona,Rizal,Mun,2nd,51493
+0405807000,Jala-Jala,Rizal,Mun,3rd,34901
+0405808000,Rodriguez,Rizal,Mun,1st,451383
+0405809000,Morong,Rizal,Mun,1st,72262
+0405810000,Pililla,Rizal,Mun,1st,72503
+0405811000,San Mateo,Rizal,Mun,1st,276449
+0405812000,Tanay,Rizal,Mun,1st,145597
+0405813000,Taytay,Rizal,Mun,1st,397111
+0405814000,Teresa,Rizal,Mun,1st,67454
+0431200000,City of Lucena,,City,1st,280331
+0500501000,Bacacay,Albay,Mun,1st,72298
+0500502000,Camalig,Albay,Mun,1st,73087
+0500503000,Daraga,Albay,Mun,1st,138000
+0500504000,Guinobatan,Albay,Mun,1st,84420
+0500505000,Jovellar,Albay,Mun,4th,17538
+0500506000,City of Legazpi,Albay,City,1st,210616
+0500507000,Libon,Albay,Mun,1st,72135
+0500508000,City of Ligao,Albay,City,3rd,119779
+0500509000,Malilipot,Albay,Mun,1st,41066
+0500510000,Malinao,Albay,Mun,2nd,49570
+0500511000,Manito,Albay,Mun,2nd,26425
+0500512000,Oas,Albay,Mun,1st,64890
+0500513000,Pio Duran,Albay,Mun,1st,48713
+0500514000,Polangui,Albay,Mun,1st,89344
+0500515000,Rapu-Rapu,Albay,Mun,2nd,36281
+0500516000,Santo Domingo,Albay,Mun,2nd,37586
+0500517000,City of Tabaco,Albay,City,3rd,140779
+0500518000,Tiwi,Albay,Mun,1st,56871
+0501601000,Basud,Camarines Norte,Mun,1st,43388
+0501602000,Capalonga,Camarines Norte,Mun,1st,32800
+0501603000,Daet,Camarines Norte,Mun,1st,106465
+0501604000,San Lorenzo Ruiz,Camarines Norte,Mun,5th,15072
+0501605000,Jose Panganiban,Camarines Norte,Mun,1st,60626
+0501606000,Labo,Camarines Norte,Mun,1st,108319
+0501607000,Mercedes,Camarines Norte,Mun,1st,53702
+0501608000,Paracale,Camarines Norte,Mun,1st,58391
+0501609000,San Vicente,Camarines Norte,Mun,4th,11774
+0501610000,Santa Elena,Camarines Norte,Mun,1st,42585
+0501611000,Talisay,Camarines Norte,Mun,4th,26371
+0501612000,Vinzons,Camarines Norte,Mun,2nd,45173
+0501701000,Baao,Camarines Sur,Mun,1st,61357
+0501702000,Balatan,Camarines Sur,Mun,3rd,31069
+0501703000,Bato,Camarines Sur,Mun,2nd,52021
+0501704000,Bombon,Camarines Sur,Mun,4th,17346
+0501705000,Buhi,Camarines Sur,Mun,1st,78104
+0501706000,Bula,Camarines Sur,Mun,1st,75943
+0501707000,Cabusao,Camarines Sur,Mun,4th,18882
+0501708000,Calabanga,Camarines Sur,Mun,1st,88918
+0501709000,Camaligan,Camarines Sur,Mun,4th,25218
+0501710000,Canaman,Camarines Sur,Mun,3rd,35766
+0501711000,Caramoan,Camarines Sur,Mun,1st,50433
+0501712000,Del Gallego,Camarines Sur,Mun,3rd,26029
+0501713000,Gainza,Camarines Sur,Mun,5th,11652
+0501714000,Garchitorena,Camarines Sur,Mun,2nd,29408
+0501715000,Goa,Camarines Sur,Mun,1st,71651
+0501716000,City of Iriga,Camarines Sur,City,3rd,115306
+0501717000,Lagonoy,Camarines Sur,Mun,1st,57044
+0501718000,Libmanan,Camarines Sur,Mun,1st,113254
+0501719000,Lupi,Camarines Sur,Mun,2nd,33474
+0501720000,Magarao,Camarines Sur,Mun,4th,28197
+0501721000,Milaor,Camarines Sur,Mun,3rd,33680
+0501722000,Minalabac,Camarines Sur,Mun,1st,51841
+0501723000,Nabua,Camarines Sur,Mun,1st,86458
+0501724000,City of Naga,Camarines Sur,City,1st,210545
+0501725000,Ocampo,Camarines Sur,Mun,2nd,49535
+0501726000,Pamplona,Camarines Sur,Mun,3rd,38556
+0501727000,Pasacao,Camarines Sur,Mun,1st,50708
+0501728000,Pili,Camarines Sur,Mun,1st,101668
+0501729000,Presentacion,Camarines Sur,Mun,3rd,23323
+0501730000,Ragay,Camarines Sur,Mun,1st,58843
+0501731000,Sagñay,Camarines Sur,Mun,2nd,37087
+0501732000,San Fernando,Camarines Sur,Mun,2nd,39206
+0501733000,San Jose,Camarines Sur,Mun,3rd,44688
+0501734000,Sipocot,Camarines Sur,Mun,1st,65286
+0501735000,Siruma,Camarines Sur,Mun,4th,19168
+0501736000,Tigaon,Camarines Sur,Mun,1st,61790
+0501737000,Tinambac,Camarines Sur,Mun,1st,69860
+0502001000,Bagamanoc,Catanduanes,Mun,4th,10403
+0502002000,Baras,Catanduanes,Mun,4th,12992
+0502003000,Bato,Catanduanes,Mun,4th,21325
+0502004000,Caramoran,Catanduanes,Mun,2nd,30124
+0502005000,Gigmoto,Catanduanes,Mun,4th,8348
+0502006000,Pandan,Catanduanes,Mun,4th,20796
+0502007000,Panganiban,Catanduanes,Mun,4th,8947
+0502008000,San Andres,Catanduanes,Mun,2nd,37157
+0502009000,San Miguel,Catanduanes,Mun,4th,14578
+0502010000,Viga,Catanduanes,Mun,3rd,21364
+0502011000,Virac,Catanduanes,Mun,1st,75135
+0504101000,Aroroy,Masbate,Mun,1st,89154
+0504102000,Baleno,Masbate,Mun,2nd,28787
+0504103000,Balud,Masbate,Mun,2nd,40236
+0504104000,Batuan,Masbate,Mun,4th,15614
+0504105000,Cataingan,Masbate,Mun,1st,51165
+0504106000,Cawayan,Masbate,Mun,1st,68510
+0504107000,Claveria,Masbate,Mun,1st,40733
+0504108000,Dimasalang,Masbate,Mun,3rd,25054
+0504109000,Esperanza,Masbate,Mun,4th,18021
+0504110000,Mandaon,Masbate,Mun,1st,44177
+0504111000,City of Masbate,Masbate,City,3rd,104011
+0504112000,Milagros,Masbate,Mun,1st,57362
+0504113000,Mobo,Masbate,Mun,2nd,41199
+0504114000,Monreal,Masbate,Mun,3rd,25843
+0504115000,Palanas,Masbate,Mun,3rd,28133
+0504116000,Pio V. Corpus,Masbate,Mun,4th,23641
+0504117000,Placer,Masbate,Mun,1st,56658
+0504118000,San Fernando,Masbate,Mun,4th,22006
+0504119000,San Jacinto,Masbate,Mun,3rd,29458
+0504120000,San Pascual,Masbate,Mun,1st,44641
+0504121000,Uson,Masbate,Mun,1st,56410
+0506202000,Barcelona,Sorsogon,Mun,4th,21911
+0506203000,Bulan,Sorsogon,Mun,1st,106919
+0506204000,Bulusan,Sorsogon,Mun,3rd,24152
+0506205000,Casiguran,Sorsogon,Mun,3rd,36464
+0506206000,Castilla,Sorsogon,Mun,1st,61308
+0506207000,Donsol,Sorsogon,Mun,1st,51781
+0506208000,Gubat,Sorsogon,Mun,1st,61095
+0506209000,Irosin,Sorsogon,Mun,1st,59540
+0506210000,Juban,Sorsogon,Mun,2nd,35978
+0506211000,Magallanes,Sorsogon,Mun,2nd,38072
+0506212000,Matnog,Sorsogon,Mun,1st,42444
+0506213000,Pilar,Sorsogon,Mun,1st,76908
+0506214000,Prieto Diaz,Sorsogon,Mun,4th,23424
+0506215000,Santa Magdalena,Sorsogon,Mun,4th,17400
+0506216000,City of Sorsogon,Sorsogon,City,2nd,187670
+0600401000,Altavas,Aklan,Mun,3rd,26181
+0600402000,Balete,Aklan,Mun,3rd,30310
+0600403000,Banga,Aklan,Mun,2nd,41188
+0600404000,Batan,Aklan,Mun,3rd,33932
+0600405000,Buruanga,Aklan,Mun,4th,19878
+0600406000,Ibajay,Aklan,Mun,1st,53399
+0600407000,Kalibo,Aklan,Mun,1st,93218
+0600408000,Lezo,Aklan,Mun,4th,16200
+0600409000,Libacao,Aklan,Mun,2nd,28525
+0600410000,Madalag,Aklan,Mun,3rd,19043
+0600411000,Makato,Aklan,Mun,3rd,30650
+0600412000,Malay,Aklan,Mun,1st,64723
+0600413000,Malinao,Aklan,Mun,3rd,24971
+0600414000,Nabas,Aklan,Mun,2nd,41568
+0600415000,New Washington,Aklan,Mun,2nd,49204
+0600416000,Numancia,Aklan,Mun,3rd,37428
+0600417000,Tangalan,Aklan,Mun,4th,24004
+0600601000,Anini-Y,Antique,Mun,4th,22713
+0600602000,Barbaza,Antique,Mun,3rd,24925
+0600603000,Belison,Antique,Mun,5th,14433
+0600604000,Bugasong,Antique,Mun,2nd,36060
+0600605000,Caluya,Antique,Mun,1st,42895
+0600606000,Culasi,Antique,Mun,1st,46442
+0600607000,Tobias Fornier,Antique,Mun,3rd,34411
+0600608000,Hamtic,Antique,Mun,2nd,54455
+0600609000,Laua-An,Antique,Mun,3rd,28177
+0600610000,Libertad,Antique,Mun,4th,18685
+0600611000,Pandan,Antique,Mun,2nd,37325
+0600612000,Patnongon,Antique,Mun,2nd,40070
+0600613000,San Jose,Antique,Mun,1st,69522
+0600614000,San Remigio,Antique,Mun,1st,36170
+0600615000,Sebaste,Antique,Mun,3rd,19365
+0600616000,Sibalom,Antique,Mun,1st,67155
+0600617000,Tibiao,Antique,Mun,2nd,29608
+0600618000,Valderrama,Antique,Mun,2nd,20762
+0601901000,Cuartero,Capiz,Mun,3rd,28650
+0601902000,Dao,Capiz,Mun,3rd,34555
+0601903000,Dumalag,Capiz,Mun,3rd,30872
+0601904000,Dumarao,Capiz,Mun,1st,51633
+0601905000,Ivisan,Capiz,Mun,3rd,32853
+0601906000,Jamindan,Capiz,Mun,1st,40472
+0601907000,Ma-Ayon,Capiz,Mun,2nd,42997
+0601908000,Mambusao,Capiz,Mun,2nd,41768
+0601909000,Panay,Capiz,Mun,2nd,50946
+0601910000,Panitan,Capiz,Mun,2nd,44246
+0601911000,Pilar,Capiz,Mun,2nd,48789
+0601912000,Pontevedra,Capiz,Mun,1st,51956
+0601913000,President Roxas,Capiz,Mun,3rd,32436
+0601914000,City of Roxas,Capiz,City,2nd,185236
+0601915000,Sapi-An,Capiz,Mun,3rd,27377
+0601916000,Sigma,Capiz,Mun,3rd,32628
+0601917000,Tapaz,Capiz,Mun,1st,57684
+0603001000,Ajuy,Iloilo,Mun,1st,54100
+0603002000,Alimodian,Iloilo,Mun,2nd,39814
+0603003000,Anilao,Iloilo,Mun,3rd,30612
+0603004000,Badiangan,Iloilo,Mun,4th,27088
+0603005000,Balasan,Iloilo,Mun,2nd,35193
+0603006000,Banate,Iloilo,Mun,2nd,33790
+0603007000,Barotac Nuevo,Iloilo,Mun,1st,59184
+0603008000,Barotac Viejo,Iloilo,Mun,1st,49736
+0603009000,Batad,Iloilo,Mun,4th,22174
+0603010000,Bingawan,Iloilo,Mun,4th,16247
+0603012000,Cabatuan,Iloilo,Mun,1st,62717
+0603013000,Calinog,Iloilo,Mun,1st,63896
+0603014000,Carles,Iloilo,Mun,1st,74177
+0603015000,Concepcion,Iloilo,Mun,1st,45737
+0603016000,Dingle,Iloilo,Mun,1st,46032
+0603017000,Dueñas,Iloilo,Mun,3rd,34941
+0603018000,Dumangas,Iloilo,Mun,1st,75239
+0603019000,Estancia,Iloilo,Mun,1st,54882
+0603020000,Guimbal,Iloilo,Mun,3rd,35129
+0603021000,Igbaras,Iloilo,Mun,2nd,32442
+0603023000,Janiuay,Iloilo,Mun,1st,67509
+0603025000,Lambunao,Iloilo,Mun,1st,80724
+0603026000,Leganes,Iloilo,Mun,2nd,36542
+0603027000,Lemery,Iloilo,Mun,3rd,32836
+0603028000,Leon,Iloilo,Mun,1st,52777
+0603029000,Maasin,Iloilo,Mun,2nd,38761
+0603030000,Miagao,Iloilo,Mun,1st,68163
+0603031000,Mina,Iloilo,Mun,4th,24145
+0603032000,New Lucena,Iloilo,Mun,4th,24785
+0603034000,Oton,Iloilo,Mun,1st,99920
+0603035000,City of Passi,Iloilo,City,3rd,90313
+0603036000,Pavia,Iloilo,Mun,1st,74594
+0603037000,Pototan,Iloilo,Mun,1st,78919
+0603038000,San Dionisio,Iloilo,Mun,2nd,39423
+0603039000,San Enrique,Iloilo,Mun,2nd,37381
+0603040000,San Joaquin,Iloilo,Mun,1st,52773
+0603041000,San Miguel,Iloilo,Mun,3rd,31093
+0603042000,San Rafael,Iloilo,Mun,4th,18293
+0603043000,Santa Barbara,Iloilo,Mun,1st,68467
+0603044000,Sara,Iloilo,Mun,1st,55476
+0603045000,Tigbauan,Iloilo,Mun,1st,65657
+0603046000,Tubungan,Iloilo,Mun,4th,23083
+0603047000,Zarraga,Iloilo,Mun,3rd,27852
+0607901000,Buenavista,Guimaras,Mun,1st,54352
+0607902000,Jordan,Guimaras,Mun,2nd,40647
+0607903000,Nueva Valencia,Guimaras,Mun,2nd,43822
+0607904000,San Lorenzo,Guimaras,Mun,3rd,30266
+0607905000,Sibunag,Guimaras,Mun,3rd,23787
+0631000000,City of Iloilo,,City,1st,473728
+0701201000,Alburquerque,Bohol,Mun,4th,11489
+0701202000,Alicia,Bohol,Mun,3rd,24663
+0701203000,Anda,Bohol,Mun,4th,17835
+0701204000,Antequera,Bohol,Mun,4th,14881
+0701205000,Baclayon,Bohol,Mun,4th,22754
+0701206000,Balilihan,Bohol,Mun,3rd,19747
+0701207000,Batuan,Bohol,Mun,4th,14423
+0701208000,Bilar,Bohol,Mun,4th,18877
+0701209000,Buenavista,Bohol,Mun,1st,31095
+0701210000,Calape,Bohol,Mun,2nd,33022
+0701211000,Candijay,Bohol,Mun,3rd,30142
+0701212000,Carmen,Bohol,Mun,1st,50249
+0701213000,Catigbian,Bohol,Mun,3rd,23812
+0701214000,Clarin,Bohol,Mun,4th,21318
+0701215000,Corella,Bohol,Mun,4th,9889
+0701216000,Cortes,Bohol,Mun,4th,18976
+0701217000,Dagohoy,Bohol,Mun,4th,20068
+0701218000,Danao,Bohol,Mun,3rd,20299
+0701219000,Dauis,Bohol,Mun,1st,53864
+0701220000,Dimiao,Bohol,Mun,4th,14894
+0701221000,Duero,Bohol,Mun,4th,19136
+0701222000,Garcia Hernandez,Bohol,Mun,3rd,24450
+0701223000,Guindulman,Bohol,Mun,2nd,34660
+0701224000,Inabanga,Bohol,Mun,1st,49133
+0701225000,Jagna,Bohol,Mun,2nd,36674
+0701226000,Getafe,Bohol,Mun,2nd,33485
+0701227000,Lila,Bohol,Mun,4th,11450
+0701228000,Loay,Bohol,Mun,4th,17957
+0701229000,Loboc,Bohol,Mun,3rd,17338
+0701230000,Loon,Bohol,Mun,1st,43857
+0701231000,Mabini,Bohol,Mun,3rd,28224
+0701232000,Maribojoc,Bohol,Mun,3rd,22268
+0701233000,Panglao,Bohol,Mun,1st,41760
+0701234000,Pilar,Bohol,Mun,3rd,28860
+0701235000,President Carlos P. Garcia,Bohol,Mun,3rd,23858
+0701236000,Sagbayan,Bohol,Mun,3rd,25329
+0701237000,San Isidro,Bohol,Mun,5th,10228
+0701238000,San Miguel,Bohol,Mun,2nd,26124
+0701239000,Sevilla,Bohol,Mun,4th,11425
+0701240000,Sierra Bullones,Bohol,Mun,2nd,26154
+0701241000,Sikatuna,Bohol,Mun,5th,7031
+0701242000,City of Tagbilaran,Bohol,City,2nd,106120
+0701243000,Talibon,Bohol,Mun,1st,71450
+0701244000,Trinidad,Bohol,Mun,1st,37191
+0701245000,Tubigon,Bohol,Mun,1st,49275
+0701246000,Ubay,Bohol,Mun,1st,82179
+0701247000,Valencia,Bohol,Mun,3rd,28535
+0701248000,Bien Unido,Bohol,Mun,4th,26278
+0702201000,Alcantara,Cebu,Mun,4th,17490
+0702202000,Alcoy,Cebu,Mun,4th,19207
+0702203000,Alegria,Cebu,Mun,3rd,26520
+0702204000,Aloguinsan,Cebu,Mun,3rd,34990
+0702205000,Argao,Cebu,Mun,1st,78111
+0702206000,Asturias,Cebu,Mun,1st,54777
+0702207000,Badian,Cebu,Mun,1st,44626
+0702208000,Balamban,Cebu,Mun,1st,98170
+0702209000,Bantayan,Cebu,Mun,1st,87394
+0702210000,Barili,Cebu,Mun,1st,82427
+0702211000,City of Bogo,Cebu,City,4th,90187
+0702212000,Boljoon,Cebu,Mun,4th,17153
+0702213000,Borbon,Cebu,Mun,2nd,40097
+0702214000,City of Carcar,Cebu,City,3rd,140308
+0702215000,Carmen,Cebu,Mun,1st,60230
+0702216000,Catmon,Cebu,Mun,2nd,34608
+0702218000,Compostela,Cebu,Mun,1st,58178
+0702219000,Consolacion,Cebu,Mun,1st,153931
+0702220000,Cordova,Cebu,Mun,1st,72915
+0702221000,Daanbantayan,Cebu,Mun,1st,95080
+0702222000,Dalaguete,Cebu,Mun,1st,75937
+0702223000,Danao City,Cebu,City,2nd,161307
+0702224000,Dumanjug,Cebu,Mun,1st,59954
+0702225000,Ginatilan,Cebu,Mun,4th,17184
+0702227000,Liloan,Cebu,Mun,1st,158387
+0702228000,Madridejos,Cebu,Mun,1st,42828
+0702229000,Malabuyoc,Cebu,Mun,4th,20378
+0702231000,Medellin,Cebu,Mun,1st,62163
+0702232000,Minglanilla,Cebu,Mun,1st,155934
+0702233000,Moalboal,Cebu,Mun,1st,37993
+0702234000,City of Naga,Cebu,City,3rd,138727
+0702235000,Oslob,Cebu,Mun,1st,29378
+0702236000,Pilar,Cebu,Mun,5th,12454
+0702237000,Pinamungajan,Cebu,Mun,1st,76568
+0702238000,Poro,Cebu,Mun,3rd,26908
+0702239000,Ronda,Cebu,Mun,4th,21179
+0702240000,Samboan,Cebu,Mun,4th,20736
+0702241000,San Fernando,Cebu,Mun,1st,76110
+0702242000,San Francisco,Cebu,Mun,1st,61092
+0702243000,San Remigio,Cebu,Mun,1st,67850
+0702244000,Santa Fe,Cebu,Mun,3rd,34834
+0702245000,Santander,Cebu,Mun,4th,18669
+0702246000,Sibonga,Cebu,Mun,1st,54610
+0702247000,Sogod,Cebu,Mun,2nd,40746
+0702248000,Tabogon,Cebu,Mun,2nd,42066
+0702249000,Tabuelan,Cebu,Mun,2nd,29662
+0702250000,City of Talisay,Cebu,City,1st,263832
+0702251000,City of Toledo,Cebu,City,1st,206692
+0702252000,Tuburan,Cebu,Mun,1st,68307
+0702253000,Tudela,Cebu,Mun,4th,11638
+0730600000,City of Cebu,,City,1st,965332
+0731100000,City of Lapu-Lapu,,City,1st,497813
+0731300000,City of Mandaue,,City,1st,364482
+0802601000,Arteche,Eastern Samar,Mun,4th*,16648
+0802602000,Balangiga,Eastern Samar,Mun,3rd,14473
+0802603000,Balangkayan,Eastern Samar,Mun,4th,10014
+0802604000,City of Borongan,Eastern Samar,City,2nd,71431
+0802605000,Can-Avid,Eastern Samar,Mun,2nd,21942
+0802606000,Dolores,Eastern Samar,Mun,1st,45314
+0802607000,General Macarthur,Eastern Samar,Mun,4th,14606
+0802608000,Giporlos,Eastern Samar,Mun,4th,12974
+0802609000,Guiuan,Eastern Samar,Mun,1st,52749
+0802610000,Hernani,Eastern Samar,Mun,5th,8296
+0802611000,Jipapad,Eastern Samar,Mun,4th,8726
+0802612000,Lawaan,Eastern Samar,Mun,4th,13063
+0802613000,Llorente,Eastern Samar,Mun,1st,18909
+0802614000,Maslog,Eastern Samar,Mun,4th,5438
+0802615000,Maydolong,Eastern Samar,Mun,2nd,15456
+0802616000,Mercedes,Eastern Samar,Mun,5th,6114
+0802617000,Oras,Eastern Samar,Mun,2nd,35997
+0802618000,Quinapondan,Eastern Samar,Mun,4th,14624
+0802619000,Salcedo,Eastern Samar,Mun,3rd,21335
+0802620000,San Julian,Eastern Samar,Mun,4th,14509
+0802621000,San Policarpo,Eastern Samar,Mun,4th,15597
+0802622000,Sulat,Eastern Samar,Mun,4th,15776
+0802623000,Taft,Eastern Samar,Mun,3rd,18692
+0803701000,Abuyog,Leyte,Mun,1st,61854
+0803702000,Alangalang,Leyte,Mun,1st,59063
+0803703000,Albuera,Leyte,Mun,1st,47333
+0803705000,Babatngon,Leyte,Mun,3rd,29587
+0803706000,Barugo,Leyte,Mun,3rd,35402
+0803707000,Bato,Leyte,Mun,2nd,39275
+0803708000,City of Baybay,Leyte,City,1st,114708
+0803710000,Burauen,Leyte,Mun,1st,54635
+0803713000,Calubian,Leyte,Mun,3rd,31990
+0803714000,Capoocan,Leyte,Mun,2nd,34388
+0803715000,Carigara,Leyte,Mun,1st,56060
+0803717000,Dagami,Leyte,Mun,2nd,36700
+0803718000,Dulag,Leyte,Mun,2nd,50728
+0803719000,Hilongos,Leyte,Mun,1st,66774
+0803720000,Hindang,Leyte,Mun,4th,21520
+0803721000,Inopacan,Leyte,Mun,4th,21629
+0803722000,Isabel,Leyte,Mun,1st,46858
+0803723000,Jaro,Leyte,Mun,1st,44643
+0803724000,Javier,Leyte,Mun,3rd,27759
+0803725000,Julita,Leyte,Mun,4th,16053
+0803726000,Kananga,Leyte,Mun,1st,60885
+0803728000,La Paz,Leyte,Mun,4th,19797
+0803729000,Leyte,Leyte,Mun,2nd,40622
+0803730000,Macarthur,Leyte,Mun,4th,22256
+0803731000,Mahaplag,Leyte,Mun,3rd,28424
+0803733000,Matag-Ob,Leyte,Mun,4th,18618
+0803734000,Matalom,Leyte,Mun,2nd,32604
+0803735000,Mayorga,Leyte,Mun,4th,18713
+0803736000,Merida,Leyte,Mun,3rd,32373
+0803738000,Ormoc City,Leyte,City,1st,238545
+0803739000,Palo,Leyte,Mun,1st,80291
+0803740000,Palompon,Leyte,Mun,1st,59486
+0803741000,Pastrana,Leyte,Mun,4th,20327
+0803742000,San Isidro,Leyte,Mun,3rd,30792
+0803743000,San Miguel,Leyte,Mun,3rd,20322
+0803744000,Santa Fe,Leyte,Mun,4th,22889
+0803745000,Tabango,Leyte,Mun,3rd,33888
+0803746000,Tabontabon,Leyte,Mun,5th,12157
+0803748000,Tanauan,Leyte,Mun,1st,60212
+0803749000,Tolosa,Leyte,Mun,4th,22016
+0803750000,Tunga,Leyte,Mun,5th,8301
+0803751000,Villaba,Leyte,Mun,2nd,42981
+0804801000,Allen,Northern Samar,Mun,4th,26527
+0804802000,Biri,Northern Samar,Mun,5th,11005
+0804803000,Bobon,Northern Samar,Mun,3rd,27266
+0804804000,Capul,Northern Samar,Mun,5th,12127
+0804805000,Catarman,Northern Samar,Mun,1st,97738
+0804806000,Catubig,Northern Samar,Mun,2nd,32688
+0804807000,Gamay,Northern Samar,Mun,3rd,21546
+0804808000,Laoang,Northern Samar,Mun,1st,60980
+0804809000,Lapinig,Northern Samar,Mun,5th,11908
+0804810000,Las Navas,Northern Samar,Mun,2nd,37425
+0804811000,Lavezares,Northern Samar,Mun,3rd,29801
+0804812000,Mapanas,Northern Samar,Mun,4th,14858
+0804813000,Mondragon,Northern Samar,Mun,1st,43116
+0804814000,Palapag,Northern Samar,Mun,2nd,34954
+0804815000,Pambujan,Northern Samar,Mun,2nd,34174
+0804816000,Rosario,Northern Samar,Mun,5th,11726
+0804817000,San Antonio,Northern Samar,Mun,5th,8904
+0804818000,San Isidro,Northern Samar,Mun,2nd,26068
+0804819000,San Jose,Northern Samar,Mun,4th,18301
+0804820000,San Roque,Northern Samar,Mun,3rd,29993
+0804821000,San Vicente,Northern Samar,Mun,5th,7308
+0804822000,Silvino Lobos,Northern Samar,Mun,3rd,15512
+0804823000,Victoria,Northern Samar,Mun,4th,16085
+0804824000,Lope De Vega,Northern Samar,Mun,3rd,15779
+0806001000,Almagro,Samar,Mun,5th,8571
+0806002000,Basey,Samar,Mun,1st,57645
+0806003000,City of Calbayog,Samar,City,1st,187848
+0806004000,Calbiga,Samar,Mun,2nd,23309
+0806005000,City of Catbalogan,Samar,City,3rd,107896
+0806006000,Daram,Samar,Mun,2nd,41932
+0806007000,Gandara,Samar,Mun,1st,36826
+0806008000,Hinabangan,Samar,Mun,2nd,13791
+0806009000,Jiabong,Samar,Mun,4th,19482
+0806010000,Marabut,Samar,Mun,4th,18168
+0806011000,Matuguinao,Samar,Mun,4th,7708
+0806012000,Motiong,Samar,Mun,4th,15887
+0806013000,Pinabacdao,Samar,Mun,3rd,18639
+0806014000,San Jose De Buan,Samar,Mun,3rd,7939
+0806015000,San Sebastian,Samar,Mun,5th,9110
+0806016000,Santa Margarita,Samar,Mun,3rd,27012
+0806017000,Santa Rita,Samar,Mun,1st,42397
+0806018000,Santo Niño,Samar,Mun,5th,13088
+0806019000,Talalora,Samar,Mun,5th,8530
+0806020000,Tarangnan,Samar,Mun,3rd,26013
+0806021000,Villareal,Samar,Mun,3rd,27909
+0806022000,Paranas,Samar,Mun,1st,35281
+0806023000,Zumarraga,Samar,Mun,4th,16051
+0806024000,Tagapul-An,Samar,Mun,5th,9139
+0806025000,San Jorge,Samar,Mun,3rd,17863
+0806026000,Pagsanghan,Samar,Mun,5th,8145
+0806401000,Anahawan,Southern Leyte,Mun,5th,8766
+0806402000,Bontoc,Southern Leyte,Mun,3rd,32082
+0806403000,Hinunangan,Southern Leyte,Mun,2nd,30384
+0806404000,Hinundayan,Southern Leyte,Mun,4th,13042
+0806405000,Libagon,Southern Leyte,Mun,4th,16146
+0806406000,Liloan,Southern Leyte,Mun,3rd,23787
+0806407000,City of Maasin,Southern Leyte,City,3rd,85486
+0806408000,Macrohon,Southern Leyte,Mun,3rd,27276
+0806409000,Malitbog,Southern Leyte,Mun,4th,21691
+0806410000,Padre Burgos,Southern Leyte,Mun,5th,11515
+0806411000,Pintuyan,Southern Leyte,Mun,5th,10930
+0806412000,Saint Bernard,Southern Leyte,Mun,3rd,28131
+0806413000,San Francisco,Southern Leyte,Mun,4th,12897
+0806414000,San Juan,Southern Leyte,Mun,4th,15036
+0806415000,San Ricardo,Southern Leyte,Mun,5th,10385
+0806416000,Silago,Southern Leyte,Mun,4th,14677
+0806417000,Sogod,Southern Leyte,Mun,1st,48815
+0806418000,Tomas Oppus,Southern Leyte,Mun,4th,16846
+0806419000,Limasawa,Southern Leyte,Mun,5th,6480
+0807801000,Almeria,Biliran,Mun,4th,18716
+0807802000,Biliran,Biliran,Mun,4th,18721
+0807803000,Cabucgayan,Biliran,Mun,4th,21923
+0807804000,Caibiran,Biliran,Mun,4th,24444
+0807805000,Culaba,Biliran,Mun,4th,13563
+0807806000,Kawayan,Biliran,Mun,4th,21422
+0807807000,Maripipi,Biliran,Mun,5th,6070
+0807808000,Naval,Biliran,Mun,1st,59236
+0831600000,City of Tacloban,,City,1st,259353
+0906601000,Indanan,Sulu,Mun,1st,105384
+0906602000,Jolo,Sulu,Mun,1st,152067
+0906603000,Kalingalan Caluang,Sulu,Mun,3rd,42845
+0906604000,Luuk,Sulu,Mun,3rd,44741
+0906605000,Maimbung,Sulu,Mun,2nd,85681
+0906606000,Hadji Panglima Tahil,Sulu,Mun,5th,8441
+0906607000,Old Panamao,Sulu,Mun,2nd,53903
+0906608000,Pangutaran,Sulu,Mun,2nd,41575
+0906609000,Parang,Sulu,Mun,1st,83092
+0906610000,Pata,Sulu,Mun,4th,27974
+0906611000,Patikul,Sulu,Mun,1st,92600
+0906612000,Siasi,Sulu,Mun,1st,100076
+0906613000,Talipao,Sulu,Mun,1st,107901
+0906614000,Tapul,Sulu,Mun,4th,21830
+0906615000,Tongkil,Sulu,Mun,2nd,39202
+0906616000,Panglima Estino,Sulu,Mun,3rd,37157
+0906617000,Lugus,Sulu,Mun,4th,35412
+0906618000,Pandami,Sulu,Mun,3rd,35369
+0906619000,Omar,Sulu,Mun,4th,30847
+0907201000,City of Dapitan,Zamboanga del Norte,City,2nd,87699
+0907202000,City of Dipolog,Zamboanga del Norte,City,2nd,136528
+0907203000,Katipunan,Zamboanga del Norte,Mun,1st,43427
+0907204000,La Libertad,Zamboanga del Norte,Mun,5th,7874
+0907205000,Labason,Zamboanga del Norte,Mun,2nd,44615
+0907206000,Liloy,Zamboanga del Norte,Mun,2nd,41881
+0907207000,Manukan,Zamboanga del Norte,Mun,1st,35669
+0907208000,Mutia,Zamboanga del Norte,Mun,4th,12197
+0907209000,Piñan,Zamboanga del Norte,Mun,3rd,19184
+0907210000,Polanco,Zamboanga del Norte,Mun,1st,40485
+0907211000,Pres. Manuel A. Roxas,Zamboanga del Norte,Mun,1st,38649
+0907212000,Rizal,Zamboanga del Norte,Mun,4th,15347
+0907213000,Salug,Zamboanga del Norte,Mun,2nd,33060
+0907214000,Sergio Osmeña Sr.,Zamboanga del Norte,Mun,1st,31187
+0907215000,Siayan,Zamboanga del Norte,Mun,1st,40937
+0907216000,Sibuco,Zamboanga del Norte,Mun,1st,37883
+0907217000,Sibutad,Zamboanga del Norte,Mun,4th,18199
+0907218000,Sindangan,Zamboanga del Norte,Mun,1st,104514
+0907219000,Siocon,Zamboanga del Norte,Mun,1st,51239
+0907220000,Sirawai,Zamboanga del Norte,Mun,2nd,39836
+0907221000,Tampilisan,Zamboanga del Norte,Mun,3rd,24653
+0907222000,Jose Dalman,Zamboanga del Norte,Mun,3rd,27951
+0907223000,Gutalac,Zamboanga del Norte,Mun,1st,37512
+0907224000,Baliguian,Zamboanga del Norte,Mun,1st,25585
+0907225000,Godod,Zamboanga del Norte,Mun,3rd,18040
+0907226000,Leon T. Postigo,Zamboanga del Norte,Mun,2nd,29535
+0907227000,Kalawit,Zamboanga del Norte,Mun,3rd,23381
+0907302000,Aurora,Zamboanga del Sur,Mun,1st,52746
+0907303000,Bayog,Zamboanga del Sur,Mun,1st,32687
+0907305000,Dimataling,Zamboanga del Sur,Mun,3rd,33156
+0907306000,Dinas,Zamboanga del Sur,Mun,2nd,35409
+0907307000,Dumalinao,Zamboanga del Sur,Mun,2nd,34188
+0907308000,Dumingag,Zamboanga del Sur,Mun,1st,48495
+0907311000,Kumalarang,Zamboanga del Sur,Mun,2nd,30815
+0907312000,Labangan,Zamboanga del Sur,Mun,2nd,45343
+0907313000,Lapuyan,Zamboanga del Sur,Mun,2nd,28686
+0907315000,Mahayag,Zamboanga del Sur,Mun,1st,48695
+0907317000,Margosatubig,Zamboanga del Sur,Mun,2nd,36025
+0907318000,Midsalip,Zamboanga del Sur,Mun,2nd,35643
+0907319000,Molave,Zamboanga del Sur,Mun,1st,52540
+0907322000,City of Pagadian,Zamboanga del Sur,City,1st,206483
+0907323000,Ramon Magsaysay,Zamboanga del Sur,Mun,3rd,28419
+0907324000,San Miguel,Zamboanga del Sur,Mun,3rd,20037
+0907325000,San Pablo,Zamboanga del Sur,Mun,3rd,26166
+0907327000,Tabina,Zamboanga del Sur,Mun,3rd,24591
+0907328000,Tambulig,Zamboanga del Sur,Mun,2nd,37400
+0907330000,Tukuran,Zamboanga del Sur,Mun,2nd,42683
+0907333000,Lakewood,Zamboanga del Sur,Mun,3rd,23599
+0907337000,Josefina,Zamboanga del Sur,Mun,4th,11190
+0907338000,Pitogo,Zamboanga del Sur,Mun,3rd,28375
+0907340000,Sominot,Zamboanga del Sur,Mun,4th,17247
+0907341000,Vincenzo A. Sagun,Zamboanga del Sur,Mun,4th,22619
+0907343000,Guipos,Zamboanga del Sur,Mun,4th,22173
+0907344000,Tigbao,Zamboanga del Sur,Mun,4th,19716
+0908301000,Alicia,Zamboanga Sibugay,Mun,2nd,39484
+0908302000,Buug,Zamboanga Sibugay,Mun,2nd,38730
+0908303000,Diplahan,Zamboanga Sibugay,Mun,1st,32423
+0908304000,Imelda,Zamboanga Sibugay,Mun,3rd,29652
+0908305000,Ipil,Zamboanga Sibugay,Mun,1st,96363
+0908306000,Kabasalan,Zamboanga Sibugay,Mun,1st,48366
+0908307000,Mabuhay,Zamboanga Sibugay,Mun,3rd,24296
+0908308000,Malangas,Zamboanga Sibugay,Mun,1st,33194
+0908309000,Naga,Zamboanga Sibugay,Mun,1st,42270
+0908310000,Olutanga,Zamboanga Sibugay,Mun,2nd,34124
+0908311000,Payao,Zamboanga Sibugay,Mun,2nd,33156
+0908312000,Roseller Lim,Zamboanga Sibugay,Mun,1st,44735
+0908313000,Siay,Zamboanga Sibugay,Mun,1st,43233
+0908314000,Talusan,Zamboanga Sibugay,Mun,4th,17925
+0908315000,Titay,Zamboanga Sibugay,Mun,1st,55534
+0908316000,Tungawan,Zamboanga Sibugay,Mun,1st,48013
+0931700000,City of Zamboanga,,City,1st,1018849
+0990101000,City of Isabela,,City,3rd,151297
+1001301000,Baungon,Bukidnon,Mun,1st,39151
+1001302000,Damulog,Bukidnon,Mun,2nd,38564
+1001303000,Dangcagan,Bukidnon,Mun,1st,27128
+1001304000,Don Carlos,Bukidnon,Mun,1st,73592
+1001305000,Impasug-ong,Bukidnon,Mun,1st,55901
+1001306000,Kadingilan,Bukidnon,Mun,2nd,35432
+1001307000,Kalilangan,Bukidnon,Mun,1st,44108
+1001308000,Kibawe,Bukidnon,Mun,1st,43491
+1001309000,Kitaotao,Bukidnon,Mun,1st,57364
+1001310000,Lantapan,Bukidnon,Mun,1st,68777
+1001311000,Libona,Bukidnon,Mun,1st,51555
+1001312000,City of Malaybalay,Bukidnon,City,1st,195046
+1001313000,Malitbog,Bukidnon,Mun,1st,28666
+1001314000,Manolo Fortich,Bukidnon,Mun,1st,118075
+1001315000,Maramag,Bukidnon,Mun,1st,109864
+1001316000,Pangantucan,Bukidnon,Mun,1st,60162
+1001317000,Quezon,Bukidnon,Mun,1st,114521
+1001318000,San Fernando,Bukidnon,Mun,1st,65494
+1001319000,Sumilao,Bukidnon,Mun,2nd,31094
+1001320000,Talakag,Bukidnon,Mun,1st,81932
+1001321000,City of Valencia,Bukidnon,City,1st,223620
+1001322000,Cabanglasan,Bukidnon,Mun,2nd,38365
+1001801000,Catarman,Camiguin,Mun,4th,18186
+1001802000,Guinsiliban,Camiguin,Mun,5th,6827
+1001803000,Mahinog,Camiguin,Mun,4th,14905
+1001804000,Mambajao,Camiguin,Mun,2nd,41782
+1001805000,Sagay,Camiguin,Mun,5th,13192
+1003501000,Bacolod,Lanao del Norte,Mun,3rd,24963
+1003502000,Baloi,Lanao del Norte,Mun,1st,74003
+1003503000,Baroy,Lanao del Norte,Mun,4th,24763
+1003505000,Kapatagan,Lanao del Norte,Mun,1st,72762
+1003506000,Sultan Naga Dimaporo,Lanao del Norte,Mun,1st,65656
+1003507000,Kauswagan,Lanao del Norte,Mun,1st,25515
+1003508000,Kolambugan,Lanao del Norte,Mun,3rd,28545
+1003509000,Lala,Lanao del Norte,Mun,1st,75015
+1003510000,Linamon,Lanao del Norte,Mun,4th,21385
+1003511000,Magsaysay,Lanao del Norte,Mun,3rd,20581
+1003512000,Maigo,Lanao del Norte,Mun,3rd,23400
+1003513000,Matungao,Lanao del Norte,Mun,4th,16404
+1003514000,Munai,Lanao del Norte,Mun,2nd,36449
+1003515000,Nunungan,Lanao del Norte,Mun,1st,19036
+1003516000,Pantao Ragat,Lanao del Norte,Mun,3rd,32557
+1003517000,Poona Piagapo,Lanao del Norte,Mun,2nd,30666
+1003518000,Salvador,Lanao del Norte,Mun,3rd,34053
+1003519000,Sapad,Lanao del Norte,Mun,4th,24826
+1003520000,Tagoloan,Lanao del Norte,Mun,4th,16204
+1003521000,Tangcal,Lanao del Norte,Mun,4th,17247
+1003522000,Tubod,Lanao del Norte,Mun,1st,50395
+1003523000,Pantar,Lanao del Norte,Mun,4th,27300
+1004201000,Aloran,Misamis Occidental,Mun,3rd,28095
+1004202000,Baliangao,Misamis Occidental,Mun,4th,18500
+1004203000,Bonifacio,Misamis Occidental,Mun,2nd,34942
+1004204000,Calamba,Misamis Occidental,Mun,3rd,23808
+1004205000,Clarin,Misamis Occidental,Mun,2nd,39867
+1004206000,Concepcion,Misamis Occidental,Mun,5th,6608
+1004207000,Jimenez,Misamis Occidental,Mun,2nd,29265
+1004208000,Lopez Jaena,Misamis Occidental,Mun,3rd,25806
+1004209000,City of Oroquieta,Misamis Occidental,City,3rd,71373
+1004210000,City of Ozamiz,Misamis Occidental,City,2nd,143620
+1004211000,Panaon,Misamis Occidental,Mun,4th,10891
+1004212000,Plaridel,Misamis Occidental,Mun,1st,40321
+1004213000,Sapang Dalaga,Misamis Occidental,Mun,4th,21006
+1004214000,Sinacaban,Misamis Occidental,Mun,4th,20176
+1004215000,City of Tangub,Misamis Occidental,City,3rd,68419
+1004216000,Tudela,Misamis Occidental,Mun,3rd,29082
+1004217000,Don Victoriano Chiongbian,Misamis Occidental,Mun,3rd,10214
+1004301000,Alubijid,Misamis Oriental,Mun,1st,35411
+1004302000,Balingasag,Misamis Oriental,Mun,1st,76877
+1004303000,Balingoan,Misamis Oriental,Mun,4th,11896
+1004304000,Binuangan,Misamis Oriental,Mun,5th,8293
+1004306000,Claveria,Misamis Oriental,Mun,1st,52718
+1004307000,City of El Salvador,Misamis Oriental,City,4th,62126
+1004308000,City of Gingoog,Misamis Oriental,City,1st,138895
+1004309000,Gitagum,Misamis Oriental,Mun,2nd,19269
+1004310000,Initao,Misamis Oriental,Mun,1st,34445
+1004311000,Jasaan,Misamis Oriental,Mun,1st,58098
+1004312000,Kinoguitan,Misamis Oriental,Mun,4th,15763
+1004313000,Lagonglong,Misamis Oriental,Mun,4th,25072
+1004314000,Laguindingan,Misamis Oriental,Mun,2nd,27688
+1004315000,Libertad,Misamis Oriental,Mun,4th,13461
+1004316000,Lugait,Misamis Oriental,Mun,3rd*,20946
+1004317000,Magsaysay,Misamis Oriental,Mun,2nd,37084
+1004318000,Manticao,Misamis Oriental,Mun,2nd,30968
+1004319000,Medina,Misamis Oriental,Mun,2nd,36692
+1004320000,Naawan,Misamis Oriental,Mun,3rd,23562
+1004321000,Opol,Misamis Oriental,Mun,1st,66836
+1004322000,Salay,Misamis Oriental,Mun,2nd,31128
+1004323000,Sugbongcogon,Misamis Oriental,Mun,5th,11156
+1004324000,Tagoloan,Misamis Oriental,Mun,1st,80424
+1004325000,Talisayan,Misamis Oriental,Mun,3rd,26801
+1004326000,Villanueva,Misamis Oriental,Mun,1st,42456
+1030500000,City of Cagayan De Oro,,City,1st,741617
+1030900000,City of Iligan,,City,1st,368132
+1102301000,Asuncion,Davao del Norte,Mun,1st,62929
+1102303000,Carmen,Davao del Norte,Mun,1st,85423
+1102305000,Kapalong,Davao del Norte,Mun,1st,80731
+1102314000,New Corella,Davao del Norte,Mun,1st,60454
+1102315000,City of Panabo,Davao del Norte,City,1st,211242
+1102317000,Island Garden City of Samal,Davao del Norte,City,2nd,119701
+1102318000,Santo Tomas,Davao del Norte,Mun,1st,131100
+1102319000,City of Tagum,Davao del Norte,City,1st,300042
+1102322000,Talaingod,Davao del Norte,Mun,1st,28665
+1102323000,Braulio E. Dujali,Davao del Norte,Mun,3rd,36092
+1102324000,San Isidro,Davao del Norte,Mun,3rd,27552
+1102401000,Bansalan,Davao del Sur,Mun,1st,64816
+1102403000,City of Digos,Davao del Sur,City,1st,192063
+1102404000,Hagonoy,Davao del Sur,Mun,1st,58689
+1102406000,Kiblawan,Davao del Sur,Mun,1st,53757
+1102407000,Magsaysay,Davao del Sur,Mun,1st,57936
+1102408000,Malalag,Davao del Sur,Mun,1st,40280
+1102410000,Matanao,Davao del Sur,Mun,1st,62773
+1102411000,Padada,Davao del Sur,Mun,2nd,29888
+1102412000,Santa Cruz,Davao del Sur,Mun,1st,104793
+1102414000,Sulop,Davao del Sur,Mun,2nd,40134
+1102501000,Baganga,Davao Oriental,Mun,1st,59796
+1102502000,Banaybanay,Davao Oriental,Mun,1st,46231
+1102503000,Boston,Davao Oriental,Mun,2nd,15074
+1102504000,Caraga,Davao Oriental,Mun,1st,39630
+1102505000,Cateel,Davao Oriental,Mun,1st,45623
+1102506000,Governor Generoso,Davao Oriental,Mun,1st,63695
+1102507000,Lupon,Davao Oriental,Mun,1st,68717
+1102508000,Manay,Davao Oriental,Mun,1st,39271
+1102509000,City of Mati,Davao Oriental,City,1st,148672
+1102510000,San Isidro,Davao Oriental,Mun,2nd,35984
+1102511000,Tarragona,Davao Oriental,Mun,2nd,27349
+1108201000,Compostela,Davao de Oro,Mun,1st,89224
+1108202000,Laak,Davao de Oro,Mun,1st,83632
+1108203000,Mabini,Davao de Oro,Mun,1st,43971
+1108204000,Maco,Davao de Oro,Mun,1st,87680
+1108205000,Maragusan,Davao de Oro,Mun,1st,67759
+1108206000,Mawab,Davao de Oro,Mun,1st,41050
+1108207000,Monkayo,Davao de Oro,Mun,1st,96405
+1108208000,Montevista,Davao de Oro,Mun,1st,46581
+1108209000,Nabunturan,Davao de Oro,Mun,1st,85949
+1108210000,New Bataan,Davao de Oro,Mun,1st,50212
+1108211000,Pantukan,Davao de Oro,Mun,1st,91312
+1108601000,Don Marcelino,Davao Occidental,Mun,1st,45681
+1108602000,Jose Abad Santos,Davao Occidental,Mun,1st,72552
+1108603000,Malita,Davao Occidental,Mun,1st,118438
+1108604000,Santa Maria,Davao Occidental,Mun,1st,58886
+1108605000,Sarangani,Davao Occidental,Mun,4th,22041
+1130700000,City of Davao,,City,1st,1848947
+1204701000,Alamada,Cotabato,Mun,1st,71523
+1204702000,Carmen,Cotabato,Mun,1st,79741
+1204703000,Kabacan,Cotabato,Mun,1st,77945
+1204704000,City of Kidapawan,Cotabato,City,1st,160864
+1204705000,Libungan,Cotabato,Mun,1st,57776
+1204706000,Magpet,Cotabato,Mun,1st,55255
+1204707000,Makilala,Cotabato,Mun,1st,88522
+1204708000,Matalam,Cotabato,Mun,1st,81610
+1204709000,Midsayap,Cotabato,Mun,1st,115735
+1204710000,M'Lang,Cotabato,Mun,1st,98646
+1204711000,Pigkawayan,Cotabato,Mun,1st,53593
+1204712000,Pikit,Cotabato,Mun,1st,67220
+1204713000,President Roxas,Cotabato,Mun,1st,51245
+1204714000,Tulunan,Cotabato,Mun,1st,61901
+1204715000,Antipas,Cotabato,Mun,1st,26946
+1204716000,Banisilan,Cotabato,Mun,1st,48013
+1204717000,Aleosan,Cotabato,Mun,1st,38023
+1204718000,Arakan,Cotabato,Mun,1st,51584
+1206302000,Banga,South Cotabato,Mun,1st,91536
+1206306000,City of Koronadal,South Cotabato,City,1st,201844
+1206311000,Norala,South Cotabato,Mun,2nd,48499
+1206312000,Polomolok,South Cotabato,Mun,1st,176671
+1206313000,Surallah,South Cotabato,Mun,1st,91412
+1206314000,Tampakan,South Cotabato,Mun,1st,42304
+1206315000,Tantangan,South Cotabato,Mun,2nd,48570
+1206316000,T'Boli,South Cotabato,Mun,1st,105296
+1206317000,Tupi,South Cotabato,Mun,1st,78599
+1206318000,Santo Niño,South Cotabato,Mun,2nd,41026
+1206319000,Lake Sebu,South Cotabato,Mun,1st,84252
+1206501000,Bagumbayan,Sultan Kudarat,Mun,1st,69830
+1206502000,Columbio,Sultan Kudarat,Mun,1st,33337
+1206503000,Esperanza,Sultan Kudarat,Mun,1st,73822
+1206504000,Isulan,Sultan Kudarat,Mun,1st,101455
+1206505000,Kalamansig,Sultan Kudarat,Mun,1st,52257
+1206506000,Lebak,Sultan Kudarat,Mun,1st,93312
+1206507000,Lutayan,Sultan Kudarat,Mun,1st,65425
+1206508000,Lambayong,Sultan Kudarat,Mun,1st,81288
+1206509000,Palimbang,Sultan Kudarat,Mun,1st,83633
+1206510000,President Quirino,Sultan Kudarat,Mun,2nd,44344
+1206511000,City of Tacurong,Sultan Kudarat,City,3rd,116945
+1206512000,Sen. Ninoy Aquino,Sultan Kudarat,Mun,1st,48003
+1208001000,Alabel,Sarangani,Mun,1st,90120
+1208002000,Glan,Sarangani,Mun,1st,117017
+1208003000,Kiamba,Sarangani,Mun,1st,68745
+1208004000,Maasim,Sarangani,Mun,1st,67907
+1208005000,Maitum,Sarangani,Mun,1st,46120
+1208006000,Malapatan,Sarangani,Mun,1st,82577
+1208007000,Malungon,Sarangani,Mun,1st,108429
+1230800000,City of General Santos,,City,1st,722059
+1380100000,City of Caloocan,,City,1st,1712945
+1380200000,City of Las Piñas,,City,1st,615549
+1380300000,City of Makati,,City,1st,309770
+1380400000,City of Malabon,,City,1st,389929
+1380500000,City of Mandaluyong,,City,1st,465902
+1380600000,City of Manila,,City,1st,1902590
+1380700000,City of Marikina,,City,1st,471323
+1380800000,City of Muntinlupa,,City,1st,552225
+1380900000,City of Navotas,,City,1st,252878
+1381000000,City of Parañaque,,City,1st,703245
+1381100000,Pasay City,,City,1st,453186
+1381200000,City of Pasig,,City,1st,853050
+1381300000,Quezon City,,City,1st,3084270
+1381400000,City of San Juan,,City,1st,134312
+1381500000,City of Taguig,,City,1st,1308085
+1381600000,City of Valenzuela,,City,1st,725173
+1381701000,Pateros,,Mun,1st,67319
+1400101000,Bangued,Abra,Mun,1st,48331
+1400102000,Boliney,Abra,Mun,3rd,3778
+1400103000,Bucay,Abra,Mun,3rd,17775
+1400104000,Bucloc,Abra,Mun,4th,2264
+1400105000,Daguioman,Abra,Mun,4th,1773
+1400106000,Danglas,Abra,Mun,3rd,4372
+1400107000,Dolores,Abra,Mun,3rd,11967
+1400108000,La Paz,Abra,Mun,4th,16014
+1400109000,Lacub,Abra,Mun,2nd,3649
+1400110000,Lagangilang,Abra,Mun,3rd,14577
+1400111000,Lagayan,Abra,Mun,4th,5154
+1400112000,Langiden,Abra,Mun,4th,3457
+1400113000,Licuan-Baay,Abra,Mun,3rd,4301
+1400114000,Luba,Abra,Mun,1st,6402
+1400115000,Malibcong,Abra,Mun,3rd,4167
+1400116000,Manabo,Abra,Mun,3rd,11087
+1400117000,Peñarrubia,Abra,Mun,4th,7003
+1400118000,Pidigan,Abra,Mun,3rd,12058
+1400119000,Pilar,Abra,Mun,1st,10498
+1400120000,Sallapadan,Abra,Mun,4th,6328
+1400121000,San Isidro,Abra,Mun,2nd,4771
+1400122000,San Juan,Abra,Mun,4th,10777
+1400123000,San Quintin,Abra,Mun,3rd,5963
+1400124000,Tayum,Abra,Mun,1st,14808
+1400125000,Tineg,Abra,Mun,1st,5059
+1400126000,Tubo,Abra,Mun,2nd,4941
+1400127000,Villaviciosa,Abra,Mun,1st,5674
+1401101000,Atok,Benguet,Mun,3rd,19346
+1401103000,Bakun,Benguet,Mun,3rd,15399
+1401104000,Bokod,Benguet,Mun,2nd,16071
+1401105000,Buguias,Benguet,Mun,1st,45703
+1401106000,Itogon,Benguet,Mun,1st,59736
+1401107000,Kabayan,Benguet,Mun,3rd,15841
+1401108000,Kapangan,Benguet,Mun,3rd,20048
+1401109000,Kibungan,Benguet,Mun,3rd,16884
+1401110000,La Trinidad,Benguet,Mun,1st,142925
+1401111000,Mankayan,Benguet,Mun,2nd*,38647
+1401112000,Sablan,Benguet,Mun,4th,12436
+1401113000,Tuba,Benguet,Mun,1st,49268
+1401114000,Tublay,Benguet,Mun,4th,20886
+1402701000,Banaue,Ifugao,Mun,3rd,20143
+1402702000,Hungduan,Ifugao,Mun,3rd,8970
+1402703000,Kiangan,Ifugao,Mun,3rd,17849
+1402704000,Lagawe,Ifugao,Mun,3rd,19124
+1402705000,Lamut,Ifugao,Mun,2nd,26520
+1402706000,Mayoyao,Ifugao,Mun,3rd,15525
+1402707000,Alfonso Lista,Ifugao,Mun,1st,34810
+1402708000,Aguinaldo,Ifugao,Mun,1st,20924
+1402709000,Hingyon,Ifugao,Mun,5th,9966
+1402710000,Tinoc,Ifugao,Mun,3rd,18749
+1402711000,Asipulo,Ifugao,Mun,4th,16088
+1403201000,Balbalan,Kalinga,Mun,1st,13332
+1403206000,Lubuagan,Kalinga,Mun,4th,8660
+1403208000,Pasil,Kalinga,Mun,4th,10690
+1403209000,Pinukpuk,Kalinga,Mun,1st,35033
+1403211000,Rizal,Kalinga,Mun,3rd,20491
+1403213000,City of Tabuk,Kalinga,City,1st,122771
+1403214000,Tanudan,Kalinga,Mun,3rd,11103
+1403215000,Tinglayan,Kalinga,Mun,3rd,13311
+1404401000,Barlig,Mountain Province,Mun,4th,4363
+1404402000,Bauko,Mountain Province,Mun,2nd,31470
+1404403000,Besao,Mountain Province,Mun,4th,6315
+1404404000,Bontoc,Mountain Province,Mun,1st,23466
+1404405000,Natonin,Mountain Province,Mun,3rd,8906
+1404406000,Paracelis,Mountain Province,Mun,1st,30143
+1404407000,Sabangan,Mountain Province,Mun,4th,8556
+1404408000,Sadanga,Mountain Province,Mun,5th,7781
+1404409000,Sagada,Mountain Province,Mun,4th,10702
+1404410000,Tadian,Mountain Province,Mun,3rd,18073
+1408101000,Calanasan,Apayao,Mun,1st,12176
+1408102000,Conner,Apayao,Mun,1st,28360
+1408103000,Flora,Apayao,Mun,2nd,18271
+1408104000,Kabugao,Apayao,Mun,1st,16425
+1408105000,Luna,Apayao,Mun,1st,21630
+1408106000,Pudtol,Apayao,Mun,2nd,15676
+1408107000,Santa Marcela,Apayao,Mun,4th,14049
+1430300000,City of Baguio,,City,1st,368426
+1600201000,Buenavista,Agusan del Norte,Mun,1st,70691
+1600203000,City of Cabadbaran,Agusan del Norte,City,3rd,82343
+1600204000,Carmen,Agusan del Norte,Mun,3rd,23304
+1600205000,Jabonga,Agusan del Norte,Mun,2nd,25937
+1600206000,Kitcharao,Agusan del Norte,Mun,3rd,22671
+1600207000,Las Nieves,Agusan del Norte,Mun,1st,32402
+1600208000,Magallanes,Agusan del Norte,Mun,4th,22780
+1600209000,Nasipit,Agusan del Norte,Mun,1st,46382
+1600210000,Santiago,Agusan del Norte,Mun,1st,33877
+1600211000,Tubay,Agusan del Norte,Mun,1st,26463
+1600212000,Remedios T. Romualdez,Agusan del Norte,Mun,4th,17250
+1600301000,City of Bayugan,Agusan del Sur,City,1st,110313
+1600302000,Bunawan,Agusan del Sur,Mun,1st,50999
+1600303000,Esperanza,Agusan del Sur,Mun,1st,59065
+1600304000,La Paz,Agusan del Sur,Mun,1st,29096
+1600305000,Loreto,Agusan del Sur,Mun,1st,43761
+1600306000,Prosperidad,Agusan del Sur,Mun,1st,90162
+1600307000,Rosario,Agusan del Sur,Mun,1st,51207
+1600308000,San Francisco,Agusan del Sur,Mun,1st,79718
+1600309000,San Luis,Agusan del Sur,Mun,1st,36264
+1600310000,Santa Josefa,Agusan del Sur,Mun,1st,24667
+1600311000,Talacogon,Agusan del Sur,Mun,1st,37744
+1600312000,Trento,Agusan del Sur,Mun,1st,51179
+1600313000,Veruela,Agusan del Sur,Mun,1st,43085
+1600314000,Sibagat,Agusan del Sur,Mun,1st,33271
+1606701000,Alegria,Surigao del Norte,Mun,4th,17846
+1606702000,Bacuag,Surigao del Norte,Mun,4th,17076
+1606704000,Burgos,Surigao del Norte,Mun,5th,4399
+1606706000,Claver,Surigao del Norte,Mun,1st,39882
+1606707000,Dapa,Surigao del Norte,Mun,2nd,31392
+1606708000,Del Carmen,Surigao del Norte,Mun,3rd,20786
+1606710000,General Luna,Surigao del Norte,Mun,3rd,25208
+1606711000,Gigaquit,Surigao del Norte,Mun,3rd,22949
+1606714000,Mainit,Surigao del Norte,Mun,3rd,29205
+1606715000,Malimono,Surigao del Norte,Mun,4th,19442
+1606716000,Pilar,Surigao del Norte,Mun,4th,11135
+1606717000,Placer,Surigao del Norte,Mun,3rd,30442
+1606718000,San Benito,Surigao del Norte,Mun,5th,5880
+1606719000,San Francisco,Surigao del Norte,Mun,4th,16004
+1606720000,San Isidro,Surigao del Norte,Mun,5th,8813
+1606721000,Santa Monica,Surigao del Norte,Mun,5th,9757
+1606722000,Sison,Surigao del Norte,Mun,4th,14826
+1606723000,Socorro,Surigao del Norte,Mun,3rd,28436
+1606724000,City of Surigao,Surigao del Norte,City,2nd,177333
+1606725000,Tagana-An,Surigao del Norte,Mun,3rd,18158
+1606727000,Tubod,Surigao del Norte,Mun,4th,16675
+1606801000,Barobo,Surigao del Sur,Mun,1st,53729
+1606802000,Bayabas,Surigao del Sur,Mun,4th,9016
+1606803000,City of Bislig,Surigao del Sur,City,2nd,99872
+1606804000,Cagwait,Surigao del Sur,Mun,2nd,22305
+1606805000,Cantilan,Surigao del Sur,Mun,1st,34233
+1606806000,Carmen,Surigao del Sur,Mun,4th,11859
+1606807000,Carrascal,Surigao del Sur,Mun,1st,25672
+1606808000,Cortes,Surigao del Sur,Mun,4th,18023
+1606809000,Hinatuan,Surigao del Sur,Mun,1st,44475
+1606810000,Lanuza,Surigao del Sur,Mun,3rd,13750
+1606811000,Lianga,Surigao del Sur,Mun,2nd,34213
+1606812000,Lingig,Surigao del Sur,Mun,1st,35203
+1606813000,Madrid,Surigao del Sur,Mun,3rd,16872
+1606814000,Marihatag,Surigao del Sur,Mun,2nd,19730
+1606815000,San Agustin,Surigao del Sur,Mun,2nd,23612
+1606816000,San Miguel,Surigao del Sur,Mun,1st,41942
+1606817000,Tagbina,Surigao del Sur,Mun,1st,41157
+1606818000,Tago,Surigao del Sur,Mun,1st,40097
+1606819000,City of Tandag,Surigao del Sur,City,3rd,63098
+1608501000,Basilisa,Dinagat Islands,Mun,3rd,27238
+1608502000,Cagdianao,Dinagat Islands,Mun,1st,18679
+1608503000,Dinagat,Dinagat Islands,Mun,4th,10820
+1608504000,Libjo,Dinagat Islands,Mun,3rd,18157
+1608505000,Loreto,Dinagat Islands,Mun,2nd,9940
+1608506000,San Jose,Dinagat Islands,Mun,4th,26735
+1608507000,Tubajon,Dinagat Islands,Mun,4th,8964
+1630400000,City of Butuan,,City,1st,385530
+1704001000,Boac,Marinduque,Mun,1st,54365
+1704002000,Buenavista,Marinduque,Mun,4th,24136
+1704003000,Gasan,Marinduque,Mun,2nd,35315
+1704004000,Mogpog,Marinduque,Mun,2nd,32577
+1704005000,Santa Cruz,Marinduque,Mun,1st,51594
+1704006000,Torrijos,Marinduque,Mun,2nd,28535
+1705101000,Abra De Ilog,Occidental Mindoro,Mun,1st,31910
+1705102000,Calintaan,Occidental Mindoro,Mun,1st,31088
+1705103000,Looc,Occidental Mindoro,Mun,4th,9426
+1705104000,Lubang,Occidental Mindoro,Mun,4th,18761
+1705105000,Magsaysay,Occidental Mindoro,Mun,1st,40987
+1705106000,Mamburao,Occidental Mindoro,Mun,1st,44554
+1705107000,Paluan,Occidental Mindoro,Mun,1st,19461
+1705108000,Rizal,Occidental Mindoro,Mun,2nd,40319
+1705109000,Sablayan,Occidental Mindoro,Mun,1st,91406
+1705110000,San Jose,Occidental Mindoro,Mun,1st,143495
+1705111000,Santa Cruz,Occidental Mindoro,Mun,1st,40010
+1705201000,Baco,Oriental Mindoro,Mun,1st,40159
+1705202000,Bansud,Oriental Mindoro,Mun,1st,44396
+1705203000,Bongabong,Oriental Mindoro,Mun,1st,77540
+1705204000,Bulalacao,Oriental Mindoro,Mun,1st,46439
+1705205000,City of Calapan,Oriental Mindoro,City,2nd,148558
+1705206000,Gloria,Oriental Mindoro,Mun,1st,52296
+1705207000,Mansalay,Oriental Mindoro,Mun,1st,60597
+1705208000,Naujan,Oriental Mindoro,Mun,1st,109122
+1705209000,Pinamalayan,Oriental Mindoro,Mun,1st,90420
+1705210000,Pola,Oriental Mindoro,Mun,2nd,35771
+1705211000,Puerto Galera,Oriental Mindoro,Mun,1st,42301
+1705212000,Roxas,Oriental Mindoro,Mun,1st,58428
+1705213000,San Teodoro,Oriental Mindoro,Mun,2nd,19650
+1705214000,Socorro,Oriental Mindoro,Mun,2nd,41612
+1705215000,Victoria,Oriental Mindoro,Mun,1st,52215
+1705301000,Aborlan,Palawan,Mun,1st,39972
+1705302000,Agutaya,Palawan,Mun,5th,13351
+1705303000,Araceli,Palawan,Mun,3rd,14554
+1705304000,Balabac,Palawan,Mun,1st,42662
+1705305000,Bataraza,Palawan,Mun,1st,87384
+1705306000,Brooke's Point,Palawan,Mun,1st,76715
+1705307000,Busuanga,Palawan,Mun,1st,26974
+1705308000,Cagayancillo,Palawan,Mun,5th,7164
+1705309000,Coron,Palawan,Mun,1st,69439
+1705310000,Cuyo,Palawan,Mun,3rd,24702
+1705311000,Dumaran,Palawan,Mun,1st,23795
+1705312000,El Nido,Palawan,Mun,1st,51367
+1705313000,Linapacan,Palawan,Mun,3rd,16782
+1705314000,Magsaysay,Palawan,Mun,4th,13273
+1705315000,Narra,Palawan,Mun,1st,80572
+1705317000,Quezon,Palawan,Mun,1st,68532
+1705318000,Roxas,Palawan,Mun,1st,69729
+1705319000,San Vicente,Palawan,Mun,1st,33768
+1705320000,Taytay,Palawan,Mun,1st,85258
+1705321000,Kalayaan,Palawan,Mun,4th,406
+1705322000,Culion,Palawan,Mun,1st,23985
+1705323000,Dr. Jose P. Rizal,Palawan,Mun,1st,59040
+1705324000,Sofronio Española,Palawan,Mun,1st,39371
+1705901000,Alcantara,Romblon,Mun,4th,16417
+1705902000,Banton,Romblon,Mun,5th,5848
+1705903000,Cajidiocan,Romblon,Mun,3rd,23488
+1705904000,Calatrava,Romblon,Mun,4th,11254
+1705905000,Concepcion,Romblon,Mun,5th,3427
+1705906000,Corcuera,Romblon,Mun,5th,9021
+1705907000,Looc,Romblon,Mun,3rd,21964
+1705908000,Magdiwang,Romblon,Mun,4th,15170
+1705909000,Odiongan,Romblon,Mun,1st,48133
+1705910000,Romblon,Romblon,Mun,2nd,39004
+1705911000,San Agustin,Romblon,Mun,3rd,23698
+1705912000,San Andres,Romblon,Mun,4th,16350
+1705913000,San Fernando,Romblon,Mun,3rd,23660
+1705914000,San Jose,Romblon,Mun,5th,11626
+1705915000,Santa Fe,Romblon,Mun,4th,17578
+1705916000,Ferrol,Romblon,Mun,5th,7826
+1705917000,Santa Maria,Romblon,Mun,5th,8360
+1731500000,City of Puerto Princesa,,City,1st,316384
+1804502000,City of Bago,Negros Occidental,City,1st,192993
+1804503000,Binalbagan,Negros Occidental,Mun,1st,72594
+1804504000,City of Cadiz,Negros Occidental,City,1st,161558
+1804505000,Calatrava,Negros Occidental,Mun,1st,83813
+1804506000,Candoni,Negros Occidental,Mun,3rd,22083
+1804507000,Cauayan,Negros Occidental,Mun,1st,110899
+1804508000,Enrique B. Magalona,Negros Occidental,Mun,1st,65730
+1804509000,City of Escalante,Negros Occidental,City,3rd,97050
+1804510000,City of Himamaylan,Negros Occidental,City,2nd,117286
+1804511000,Hinigaran,Negros Occidental,Mun,1st,90403
+1804512000,Hinoba-an,Negros Occidental,Mun,1st,64364
+1804513000,Ilog,Negros Occidental,Mun,1st,63444
+1804514000,Isabela,Negros Occidental,Mun,1st,65399
+1804515000,City of Kabankalan,Negros Occidental,City,1st,210893
+1804516000,City of La Carlota,Negros Occidental,City,4th,67740
+1804517000,La Castellana,Negros Occidental,Mun,1st,82500
+1804518000,Manapla,Negros Occidental,Mun,1st,55882
+1804519000,Moises Padilla,Negros Occidental,Mun,2nd,44864
+1804520000,Murcia,Negros Occidental,Mun,1st,90123
+1804521000,Pontevedra,Negros Occidental,Mun,1st,54941
+1804522000,Pulupandan,Negros Occidental,Mun,3rd,31942
+1804523000,City of Sagay,Negros Occidental,City,2nd,152543
+1804524000,City of San Carlos,Negros Occidental,City,1st,133175
+1804525000,San Enrique,Negros Occidental,Mun,4th,24424
+1804526000,City of Silay,Negros Occidental,City,3rd,136802
+1804527000,City of Sipalay,Negros Occidental,City,3rd,73847
+1804528000,City of Talisay,Negros Occidental,City,3rd,109204
+1804529000,Toboso,Negros Occidental,Mun,2nd,44973
+1804530000,Valladolid,Negros Occidental,Mun,2nd,40487
+1804531000,City of Victorias,Negros Occidental,City,4th,90290
+1804532000,Salvador Benedicto,Negros Occidental,Mun,3rd,28231
+1804601000,Amlan,Negros Oriental,Mun,3rd,26566
+1804602000,Ayungon,Negros Oriental,Mun,1st,50688
+1804603000,Bacong,Negros Oriental,Mun,2nd,43889
+1804604000,City of Bais,Negros Oriental,City,3rd,88050
+1804605000,Basay,Negros Oriental,Mun,3rd,30018
+1804606000,City of Bayawan,Negros Oriental,City,1st,126744
+1804607000,Bindoy,Negros Oriental,Mun,2nd,41543
+1804608000,City of Canlaon,Negros Oriental,City,4th,62785
+1804609000,Dauin,Negros Oriental,Mun,2nd,30921
+1804610000,City of Dumaguete,Negros Oriental,City,2nd,142171
+1804611000,City of Guihulngan,Negros Oriental,City,2nd,106576
+1804612000,Jimalalud,Negros Oriental,Mun,3rd,32996
+1804613000,La Libertad,Negros Oriental,Mun,2nd,42721
+1804614000,Mabinay,Negros Oriental,Mun,1st,85770
+1804615000,Manjuyod,Negros Oriental,Mun,1st,46461
+1804616000,Pamplona,Negros Oriental,Mun,2nd,41209
+1804617000,San Jose,Negros Oriental,Mun,4th,22870
+1804618000,Santa Catalina,Negros Oriental,Mun,1st,80382
+1804619000,Siaton,Negros Oriental,Mun,1st,84169
+1804620000,Sibulan,Negros Oriental,Mun,1st,69092
+1804621000,City of Tanjay,Negros Oriental,City,3rd,84593
+1804622000,Tayasan,Negros Oriental,Mun,2nd,39005
+1804623000,Valencia,Negros Oriental,Mun,1st,39986
+1804624000,Vallehermoso,Negros Oriental,Mun,2nd,42421
+1804625000,Zamboanguita,Negros Oriental,Mun,3rd,30412
+1806101000,Enrique Villanueva,Siquijor,Mun,5th,6965
+1806102000,Larena,Siquijor,Mun,4th,14933
+1806103000,Lazi,Siquijor,Mun,4th,23092
+1806104000,Maria,Siquijor,Mun,4th,15146
+1806105000,San Juan,Siquijor,Mun,4th,17291
+1806106000,Siquijor,Siquijor,Mun,3rd,30215
+1830200000,City of Bacolod,,City,1st,624787
+1900702000,City of Lamitan,Basilan,City,3rd,116652
+1900703000,Lantawan,Basilan,Mun,2nd,48777
+1900704000,Maluso,Basilan,Mun,2nd,66817
+1900705000,Sumisip,Basilan,Mun,1st,55778
+1900706000,Tipo-Tipo,Basilan,Mun,4th*,32734
+1900707000,Tuburan,Basilan,Mun,2nd,30027
+1900708000,Akbar,Basilan,Mun,4th,27911
+1900709000,Al-Barka,Basilan,Mun,4th,30318
+1900710000,Hadji Mohammad Ajul,Basilan,Mun,4th,32806
+1900711000,Ungkaya Pukan,Basilan,Mun,4th,31041
+1900712000,Hadji Muhtamad,Basilan,Mun,5th,30122
+1900713000,Tabuan-Lasa,Basilan,Mun,4th,38964
+1903601000,Bacolod-Kalawi,Lanao del Sur,Mun,1st,24381
+1903602000,Balabagan,Lanao del Sur,Mun,2nd,31227
+1903603000,Balindong,Lanao del Sur,Mun,2nd,40047
+1903604000,Bayang,Lanao del Sur,Mun,3rd,30227
+1903605000,Binidayan,Lanao del Sur,Mun,3rd,27031
+1903606000,Bubong,Lanao del Sur,Mun,1st,28733
+1903607000,Butig,Lanao del Sur,Mun,2nd,25394
+1903609000,Ganassi,Lanao del Sur,Mun,2nd,33897
+1903610000,Kapai,Lanao del Sur,Mun,2nd,21630
+1903611000,Lumba-Bayabao,Lanao del Sur,Mun,1st,50959
+1903612000,Lumbatan,Lanao del Sur,Mun,4th,24988
+1903613000,Madalum,Lanao del Sur,Mun,1st,30044
+1903614000,Madamba,Lanao del Sur,Mun,3rd,24886
+1903615000,Malabang,Lanao del Sur,Mun,1st,58377
+1903616000,Marantao,Lanao del Sur,Mun,1st,46233
+1903617000,City of Marawi,Lanao del Sur,City,3rd,259993
+1903618000,Masiu,Lanao del Sur,Mun,3rd,36803
+1903619000,Mulondo,Lanao del Sur,Mun,2nd,23159
+1903620000,Pagayawan,Lanao del Sur,Mun,3rd,15659
+1903621000,Piagapo,Lanao del Sur,Mun,2nd,40558
+1903622000,Poona Bayabao,Lanao del Sur,Mun,2nd,33307
+1903623000,Pualas,Lanao del Sur,Mun,3rd,18020
+1903624000,Ditsaan-Ramain,Lanao del Sur,Mun,2nd,26918
+1903625000,Saguiaran,Lanao del Sur,Mun,3rd,28807
+1903626000,Tamparan,Lanao del Sur,Mun,3rd,37190
+1903627000,Taraka,Lanao del Sur,Mun,2nd,29558
+1903628000,Tubaran,Lanao del Sur,Mun,2nd,17567
+1903629000,Tugaya,Lanao del Sur,Mun,3rd,26283
+1903630000,Wao,Lanao del Sur,Mun,1st,51081
+1903631000,Marogong,Lanao del Sur,Mun,2nd,33595
+1903632000,Calanogas,Lanao del Sur,Mun,4th,17585
+1903633000,Buadiposo-Buntong,Lanao del Sur,Mun,3rd,23283
+1903634000,Maguing,Lanao del Sur,Mun,1st,37292
+1903635000,Picong,Lanao del Sur,Mun,3rd,19296
+1903636000,Lumbayanague,Lanao del Sur,Mun,3rd,21469
+1903637000,Amai Manabilang,Lanao del Sur,Mun,1st,14837
+1903638000,Tagoloan II,Lanao del Sur,Mun,3rd,12843
+1903639000,Kapatagan,Lanao del Sur,Mun,2nd,23228
+1903640000,Sultan Dumalondong,Lanao del Sur,Mun,5th,12984
+1903641000,Lumbaca-Unayan,Lanao del Sur,Mun,5th,8768
+1907001000,Panglima Sugala,Tawi-Tawi,Mun,1st,52657
+1907002000,Bongao,Tawi-Tawi,Mun,1st,131887
+1907003000,Mapun,Tawi-Tawi,Mun,3rd,29218
+1907004000,Simunul,Tawi-Tawi,Mun,2nd,35616
+1907005000,Sitangkai,Tawi-Tawi,Mun,1st,42172
+1907006000,South Ubian,Tawi-Tawi,Mun,2nd,31942
+1907007000,Tandubas,Tawi-Tawi,Mun,1st,34702
+1907008000,Turtle Islands,Tawi-Tawi,Mun,5th,7665
+1907009000,Languyan,Tawi-Tawi,Mun,1st,41587
+1907010000,Sapa-Sapa,Tawi-Tawi,Mun,2nd,37129
+1907011000,Sibutu,Tawi-Tawi,Mun,3rd,38070
+1908701000,Barira,Maguindanao del Norte,Mun,2nd,43301
+1908702000,Buldon,Maguindanao del Norte,Mun,1st,45676
+1908703000,City of Cotabato,Maguindanao del Norte,City,1st,383383
+1908704000,Datu Blah T. Sinsuat,Maguindanao del Norte,Mun,3rd,32088
+1908705000,Datu Odin Sinsuat,Maguindanao del Norte,Mun,1st,152907
+1908706000,Kabuntalan,Maguindanao del Norte,Mun,4th,31863
+1908707000,Matanog,Maguindanao del Norte,Mun,3rd,41146
+1908708000,Northern Kabuntalan,Maguindanao del Norte,Mun,4th,30332
+1908709000,Parang,Maguindanao del Norte,Mun,1st,123209
+1908710000,Sultan Kudarat,Maguindanao del Norte,Mun,1st,124965
+1908711000,Sultan Mastura,Maguindanao del Norte,Mun,3rd,30828
+1908712000,Talitay,Maguindanao del Norte,Mun,4th,19750
+1908713000,Upi,Maguindanao del Norte,Mun,1st,65363
+1908801000,Ampatuan,Maguindanao del Sur,Mun,2nd,31560
+1908802000,Buluan,Maguindanao del Sur,Mun,1st,60931
+1908803000,Datu Abdullah Sangki,Maguindanao del Sur,Mun,2nd,35274
+1908804000,Datu Anggal Midtimbang,Maguindanao del Sur,Mun,4th,35243
+1908805000,Datu Hoffer Ampatuan,Maguindanao del Sur,Mun,4th,27678
+1908806000,Datu Paglas,Maguindanao del Sur,Mun,3rd,38446
+1908807000,Datu Piang,Maguindanao del Sur,Mun,2nd,31063
+1908808000,Datu Salibo,Maguindanao del Sur,Mun,4th,21295
+1908809000,Datu Saudi Ampatuan,Maguindanao del Sur,Mun,4th,33374
+1908810000,Datu Unsay,Maguindanao del Sur,Mun,4th,17186
+1908811000,Gen. S.K. Pendatun,Maguindanao del Sur,Mun,2nd,33710
+1908812000,Guindulungan,Maguindanao del Sur,Mun,4th,28471
+1908813000,Mamasapano,Maguindanao del Sur,Mun,4th,32831
+1908814000,Mangudadatu,Maguindanao del Sur,Mun,3rd,28511
+1908815000,Pagagawan,Maguindanao del Sur,Mun,2nd,42181
+1908816000,Pagalungan,Maguindanao del Sur,Mun,1st,49326
+1908817000,Paglat,Maguindanao del Sur,Mun,4th,21317
+1908818000,Pandag,Maguindanao del Sur,Mun,4th,29244
+1908819000,Rajah Buayan,Maguindanao del Sur,Mun,4th,31329
+1908820000,Shariff Aguak,Maguindanao del Sur,Mun,2nd,37437
+1908821000,Shariff Saydona Mustapha,Maguindanao del Sur,Mun,4th,29707
+1908822000,South Upi,Maguindanao del Sur,Mun,2nd,50018
+1908823000,Sultan Sa Barongis,Maguindanao del Sur,Mun,3rd*,27929
+1908824000,Talayan,Maguindanao del Sur,Mun,3rd,39182
+1999901000,Kapalawan,,Mun,,29191
+1999902000,Old Kaabakan,,Mun,,16181
+1999903000,Kadayangan,,Mun,,26099
+1999904000,Nabalawag,,Mun,,25500
+1999905000,Pahamuddin,,Mun,,19262
+1999906000,Malidegao,,Mun,,36427
+1999907000,Ligawasan,,Mun,,28322
+1999908000,Tugunan,,Mun,,33721
