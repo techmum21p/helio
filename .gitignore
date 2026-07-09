@@ -26,3 +26,11 @@ frontend/
 # Misc
 *.log
 .DS_Store
+
+# DB backups (local safety copies, not for the repo)
+data/*.bak*
+data/helio.db.bak*
+
+# Large re-downloadable raw sources (fetch_psa_data.py / fetch_land_area.py re-fetch these)
+data/raw/psgc_sysdata.rda
+data/raw/ph_adm3_boundaries_simplified.geojson

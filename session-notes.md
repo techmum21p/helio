@@ -1,6 +1,63 @@
-> Last updated: 2026-06-05 | Session 7
+> Last updated: 2026-07-07 | Session 8
 
 # Helio — Solar Lead Intelligence Platform Session Notes
+
+---
+
+## Session 8 — DB Audit, Duplicate Municipality Fix, Bulk Province Run Script (2026-07-07)
+
+### Branch
+`main`
+
+### DB Audit Findings (`data/helio.db`)
+- 68 runs total (67 `done`, 1 stale `running`), 862 `run_results`, 64 reports, 722 `web_intel_cache` rows.
+- `geo_scores.solar_irradiance` is fully populated (0 NULLs / 1,622 rows) — GEE precompute had actually already been run; prior memory saying it was pending was stale and has been corrected.
+- Province coverage: only 51 of 85 provinces had a completed run as of this session. 35 provinces never run (Abra, Cebu, Cotabato, Davao Oriental/de Oro/del Norte/del Sur, Dinagat Islands, Eastern Samar, Ifugao, Iloilo, Occidental/Oriental Mindoro, Palawan, Pampanga, Pangasinan, Quirino, Romblon, Samar, Sarangani, Siquijor, Sorsogon, South Cotabato, Southern Leyte, Special Geographic Area, Sultan Kudarat, Sulu, Surigao del Norte/del Sur, Tarlac, Tawi-Tawi, Zambales, Zamboanga Sibugay/del Norte/del Sur).
+
+### Duplicate Municipality Rows Bug (`agents/db_store.py`)
+- **Bug**: `municipalities` table had no `UNIQUE` constraint on `(name, province)`. `complete_run()` used `INSERT OR IGNORE INTO municipalities (name, province, ...)` expecting dedup, but without the constraint `OR IGNORE` was a no-op — every run silently inserted a fresh duplicate row per municipality touched. Table had grown to 2,428 rows for only 1,622 real municipalities (806 orphan duplicates, worst case Camiguin municipalities ×6 rows each).
+- **Verified safe to delete**: confirmed via join that all `run_results` and `web_intel_cache` rows pointed only at the canonical (`geo_scores`-linked) row — 0 references to the duplicate rows.
+- **Fix applied**:
+  1. Backed up DB to `data/helio.db.bak-20260707` before any changes.
+  2. `DELETE FROM municipalities WHERE id NOT IN (SELECT municipality_id FROM geo_scores)` — removed the 806 orphans.
+  3. Added `CREATE UNIQUE INDEX idx_municipalities_name_province ON municipalities(name, province)` to the live DB and to `_create_schema()` in `agents/db_store.py` so fresh DBs and future runs get the constraint (making `INSERT OR IGNORE` actually work going forward).
+- Post-fix: 1,622 municipality rows (matches reference `ph_locations.db` exactly), 0 rows with NULL lat/lon.
+
+### Stale Stuck Run Cleanup
+- `runs` row `7bca67a6` (Capiz, created 2026-06-04) was stuck in `status='running'` for a month with 0 `run_results` — an abandoned/crashed attempt. Capiz was successfully re-run twice afterward under different run_ids (`c9b8709a`, `a86f0e3e`), so no data was lost. Marked `status='failed'` with an explanatory `error` message rather than deleted.
+
+### Bulk Province Run Script (new)
+- Added `scripts/run_all_provinces.py` — iterates provinces missing a `done` run and calls the same `create_run` → `run_pipeline` → `complete_run`/`fail_run` path `app.py` uses, so results land in `data/helio.db` and show up in the Streamlit app immediately.
+- Resumable: re-checks `runs.status='done'` per province before running, safe to Ctrl+C and restart.
+- Flags: `--dry-run` (list only, no API calls), `--delay N` (seconds between provinces, default 5), `--provinces "Cebu,Iloilo"` (run a specific subset instead of all missing ones).
+- Must run with `PYTHONPATH=.` — e.g. `PYTHONPATH=. python scripts/run_all_provinces.py`.
+- Dry-run verified: correctly lists 35 missing provinces.
+- ⚠️ **Needs to be run**: user plans to run this tomorrow (2026-07-08) to build the complete national dataset across all 85 provinces. Watch Tavily/Google Places API quota across a run this size — consider `--delay` bump or splitting into batches via `--provinces` if rate-limited.
+
+### Real PSA Income + Population Data Integration
+- **Goal**: replace hash-based synthetic income class (45% of geo_score weight) and population (20% weight) with real PSA data — previously ~65% of geo_score weight was fabricated.
+- **PSA's own site blocks scraping**: `psa.gov.ph` returns 403 (Cloudflare) on direct `.xlsx` downloads — not automatable.
+- **Source used instead**: `yng-me/psgc` (GitHub, MIT license) — an R package bundling real PSA PSGC publication data (income classification + census population for 2015/2020/2024). Extracted its `R/sysdata.rda` in pure Python via the `rdata` library — no R install needed.
+- **New**: `scripts/fetch_psa_data.py` — downloads/caches `data/raw/psgc_sysdata.rda`, extracts the Q1 2026 release + 2024 population, writes `data/raw/psa_income_population.csv` (psgc_code, name, province, income_classification, population_2024). `--refresh` flag re-downloads.
+- **Bug found + fixed**: PSGC code layout is 2-digit region + 3-digit province + 3-digit muni + 2-digit barangay. First draft used `psgc_code[:4]` for province prefix (one digit short) — silently collided provinces within the same region (Aklan and Antique, both region 06, both got prefix `0600`, corrupting province attribution for every municipality in region 06+). Fixed to `psgc_code[:5]`.
+- **`scripts/precompute_geo_scores.py`** (`_get_all_municipalities()`) now loads the PSA CSV via new `_load_psa_lookup()` / `_match_psa_record()`, exact-matches by (name, province), rapidfuzz fallback (cutoff 85) within-province, else falls back to the old hash-based synthetic. **Match rate: 1,599/1,622 (98.6%)**. The 23 unmatched are `barangay`-package quirks (Manila's districts modeled as pseudo-municipalities, BARMM "Special Geographic Area" barangays, "City of Isabela (Not a Province)") — not real PSA gaps.
+- **Near-miss caught**: `upsert_to_db()` was unconditionally overwriting `municipalities.lat/lon` with hash-based placeholder coords on every precompute run — would have clobbered the real Nominatim-geocoded coordinates fixed earlier (session 6/7 and this session's dedup). Fixed: lat/lon now only set on INSERT (new rows); UPDATE path (existing rows) leaves lat/lon untouched.
+- **Ran the full precompute** with real data — all 1,622 `geo_scores` rows recomputed. Verified after: row count still 1,622, 0 NULL lat/lon, `City of Biñan` kept its real coords (14.3388, 121.0842).
+- **Interesting real finding**: 46% of municipalities (749/1,622) are now PSA-classified "1st class" income — verified against raw CSV, not a bug. Likely reflects RA 11964's 2023+ income-bracket reclassification.
+- `data/helio.db.bak-20260707-pre-psa` — second backup, taken before the precompute run.
+- New dependency: `rdata>=0.11.2` in `requirements.txt`.
+- ⚠️ **Still synthetic**: `area_km2` — PSA source has no land-area column, so `pop_density` = real population ÷ fake area.
+
+#### Files changed (session 8)
+- `agents/db_store.py` — added `UNIQUE(name, province)` index to `municipalities` schema
+- `scripts/run_all_provinces.py` — new bulk-run script
+- `scripts/fetch_psa_data.py` — new, downloads/extracts real PSA income+population data
+- `scripts/precompute_geo_scores.py` — consumes PSA CSV for real demographics; fixed lat/lon clobber bug
+- `requirements.txt` — added `rdata>=0.11.2`
+- `data/raw/psgc_sysdata.rda`, `data/raw/psa_income_population.csv` — new, fetched PSA data
+- `data/helio.db` — deduped (806 rows removed), stale run marked failed, geo_scores recomputed with real PSA data
+- `data/helio.db.bak-20260707` — pre-dedup backup
+- `data/helio.db.bak-20260707-pre-psa` — pre-PSA-precompute backup
 
 ---
 
