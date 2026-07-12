@@ -86,6 +86,8 @@ def test_round_cap_forces_final_answer(monkeypatch):
     reply, _ = chatbot_mod.chat("q", [], run_id="")
     assert reply == "best effort answer"
     assert len(fake.calls) == 6
+    # forced final-answer call must not offer tools, so the model can't dodge with another tool_use
+    assert "tools" not in fake.calls[5]
 
 
 def test_gateway_failure_falls_back_to_rag(monkeypatch):

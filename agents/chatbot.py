@@ -232,7 +232,7 @@ def _agent_loop(messages: list) -> str:
                         "Answer now using only the data already gathered. Do not request more tools."})
         response = client.messages.create(
             model=config.CHATBOT_MODEL, max_tokens=4000,
-            system=SYSTEM_PROMPT, tools=TOOLS, messages=working,
+            system=SYSTEM_PROMPT, messages=working,
         )
     text = "".join(b.text for b in response.content if getattr(b, "type", "") == "text")
     return text or "I gathered data but couldn't finish composing an answer — please try rephrasing."
