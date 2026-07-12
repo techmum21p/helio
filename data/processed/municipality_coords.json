@@ -487,10 +487,6 @@
     13.5803594,
     124.2312028
   ],
-  "City of Isabela (Not a Province)::City of Isabela": [
-    16.719960283805374,
-    122.05161271807927
-  ],
   "City of Manila::Binondo": [
     14.5999164,
     120.9740253
@@ -542,10 +538,6 @@
   "City of Manila::Santa Cruz": [
     14.5999016,
     120.9803328
-  ],
-  "City of Manila::Tondo I/II": [
-    12.785884671375594,
-    122.67740779823563
   ],
   "Davao Occidental::Don Marcelino": [
     6.1978508,
@@ -706,10 +698,6 @@
   "Ilocos Sur::Cervantes": [
     16.989946,
     120.7354563
-  ],
-  "Ilocos Sur::City of Candon": [
-    17.27579162094004,
-    120.0928442677549
   ],
   "Ilocos Sur::City of Vigan": [
     17.5755487,
@@ -1783,10 +1771,6 @@
     8.4233368,
     123.6032778
   ],
-  "Misamis Occidental::Don Victoriano Chiongbian": [
-    8.4530116679183,
-    123.57425948136911
-  ],
   "Misamis Occidental::Jimenez": [
     8.3343655,
     123.8400281
@@ -2115,10 +2099,6 @@
     9.3054777,
     123.3080446
   ],
-  "Negros Oriental::City of Guihulngan": [
-    9.395773101889475,
-    123.21597069660072
-  ],
   "Negros Oriental::City of Tanjay": [
     9.5164507,
     123.1566353
@@ -2334,5 +2314,4313 @@
   "Nueva Vizcaya::Villaverde": [
     16.6050644,
     121.1836015
+  ],
+  "Palawan::Aborlan": [
+    9.4371009,
+    118.5484168
+  ],
+  "Occidental Mindoro::Abra De Ilog": [
+    13.4444905,
+    120.7288218
+  ],
+  "Bataan::Abucay": [
+    14.7213146,
+    120.5348704
+  ],
+  "Cagayan::Abulug": [
+    18.4434854,
+    121.4572732
+  ],
+  "Quezon::Agdangan": [
+    13.8759428,
+    121.9141841
+  ],
+  "Quirino::Aglipay": [
+    16.4907744,
+    121.585819
+  ],
+  "Pangasinan::Agno": [
+    16.1156627,
+    119.799026
+  ],
+  "Batangas::Agoncillo": [
+    13.9345056,
+    120.928582
+  ],
+  "Pangasinan::Aguilar": [
+    15.8890372,
+    120.2384199
+  ],
+  "Ifugao::Aguinaldo": [
+    16.9789872,
+    121.3268725
+  ],
+  "Palawan::Agutaya": [
+    11.1511823,
+    120.9394557
+  ],
+  "Iloilo::Ajuy": [
+    11.1713335,
+    123.0199077
+  ],
+  "Basilan::Akbar": [
+    6.6653464,
+    122.1954435
+  ],
+  "Basilan::Al-Barka": [
+    6.4176022,
+    122.2646479
+  ],
+  "Quezon::Alabat": [
+    14.1057926,
+    122.0147195
+  ],
+  "Sarangani::Alabel": [
+    6.1027828,
+    125.2920305
+  ],
+  "Cotabato::Alamada": [
+    7.3797893,
+    124.5565375
+  ],
+  "Bohol::Alburquerque": [
+    9.6103538,
+    123.9569048
+  ],
+  "Cagayan::Alcala": [
+    17.9024399,
+    121.6541034
+  ],
+  "Pangasinan::Alcala": [
+    15.8443487,
+    120.5213759
+  ],
+  "Cebu::Alcantara": [
+    9.970227,
+    123.4029243
+  ],
+  "Romblon::Alcantara": [
+    12.2581899,
+    122.0543489
+  ],
+  "Cebu::Alcoy": [
+    9.7087266,
+    123.5073652
+  ],
+  "Cebu::Alegria": [
+    9.7293873,
+    123.3396747
+  ],
+  "Surigao del Norte::Alegria": [
+    9.4642197,
+    125.576103
+  ],
+  "Cotabato::Aleosan": [
+    7.1585808,
+    124.5774001
+  ],
+  "Ifugao::Alfonso Lista": [
+    16.9204087,
+    121.4889137
+  ],
+  "Bohol::Alicia": [
+    9.8984336,
+    124.4407729
+  ],
+  "Zamboanga Sibugay::Alicia": [
+    7.5068011,
+    122.9406969
+  ],
+  "Iloilo::Alimodian": [
+    10.8167199,
+    122.4317369
+  ],
+  "Batangas::Alitagtag": [
+    13.8649051,
+    121.0059795
+  ],
+  "Cagayan::Allacapan": [
+    18.225865,
+    121.5560253
+  ],
+  "Samar::Almagro": [
+    11.9115831,
+    124.2863622
+  ],
+  "Biliran::Almeria": [
+    11.620278,
+    124.381667
+  ],
+  "Cebu::Aloguinsan": [
+    10.2225279,
+    123.5485072
+  ],
+  "Aklan::Altavas": [
+    11.5375818,
+    122.4871569
+  ],
+  "Cagayan::Amulung": [
+    17.8363234,
+    121.7231165
+  ],
+  "Southern Leyte::Anahawan": [
+    10.2751362,
+    125.2551968
+  ],
+  "Tarlac::Anao": [
+    15.7286873,
+    120.6266345
+  ],
+  "Bohol::Anda": [
+    9.7440884,
+    124.5754446
+  ],
+  "Pangasinan::Anda": [
+    16.2896313,
+    119.9496392
+  ],
+  "Bulacan::Angat": [
+    14.927794,
+    121.02914
+  ],
+  "Rizal::Angono": [
+    14.5258481,
+    121.1529683
+  ],
+  "Iloilo::Anilao": [
+    10.9789447,
+    122.7511638
+  ],
+  "Antique::Anini-Y": [
+    10.4311288,
+    121.9260528
+  ],
+  "Bohol::Antequera": [
+    9.7809304,
+    123.8981433
+  ],
+  "Cotabato::Antipas": [
+    7.2475903,
+    125.0550521
+  ],
+  "Pampanga::Apalit": [
+    14.9499127,
+    120.7588043
+  ],
+  "Cagayan::Aparri": [
+    18.3573529,
+    121.6374711
+  ],
+  "Palawan::Araceli": [
+    10.5535521,
+    119.9891472
+  ],
+  "Cotabato::Arakan": [
+    7.3521621,
+    125.1282103
+  ],
+  "Pampanga::Arayat": [
+    15.1504805,
+    120.772694
+  ],
+  "Cebu::Argao": [
+    9.8813917,
+    123.6085598
+  ],
+  "Eastern Samar::Arteche": [
+    12.2695499,
+    125.371313
+  ],
+  "Pangasinan::Asingan": [
+    16.0037829,
+    120.6702443
+  ],
+  "Ifugao::Asipulo": [
+    16.7207431,
+    121.0687313
+  ],
+  "Cebu::Asturias": [
+    10.5677403,
+    123.7160037
+  ],
+  "Davao del Norte::Asuncion": [
+    7.5382999,
+    125.753854
+  ],
+  "Quezon::Atimonan": [
+    13.9989442,
+    121.9208446
+  ],
+  "Benguet::Atok": [
+    16.6274644,
+    120.766785
+  ],
+  "Zamboanga del Sur::Aurora": [
+    7.9486062,
+    123.5859831
+  ],
+  "Camarines Sur::Baao": [
+    13.4531948,
+    123.3663867
+  ],
+  "Albay::Bacacay": [
+    13.2926072,
+    123.7912494
+  ],
+  "Bohol::Baclayon": [
+    9.6221823,
+    123.9131571
+  ],
+  "Oriental Mindoro::Baco": [
+    13.3581031,
+    121.0963319
+  ],
+  "Pampanga::Bacolor": [
+    14.9965611,
+    120.6513934
+  ],
+  "Surigao del Norte::Bacuag": [
+    9.6084227,
+    125.6382344
+  ],
+  "Cebu::Badian": [
+    9.870125,
+    123.3989791
+  ],
+  "Iloilo::Badiangan": [
+    10.9863355,
+    122.5367496
+  ],
+  "Bataan::Bagac": [
+    14.596782,
+    120.3923303
+  ],
+  "Davao Oriental::Baganga": [
+    7.5747096,
+    126.5616073
+  ],
+  "Cagayan::Baggao": [
+    17.9341539,
+    121.7716914
+  ],
+  "Sultan Kudarat::Bagumbayan": [
+    6.5334125,
+    124.5637805
+  ],
+  "Benguet::Bakun": [
+    16.7916546,
+    120.6615711
+  ],
+  "Palawan::Balabac": [
+    7.9864527,
+    117.0647312
+  ],
+  "Bulacan::Balagtas": [
+    14.8177897,
+    120.9064492
+  ],
+  "Cebu::Balamban": [
+    10.504834,
+    123.713133
+  ],
+  "Eastern Samar::Balangiga": [
+    11.1074484,
+    125.387454
+  ],
+  "Eastern Samar::Balangkayan": [
+    11.4728053,
+    125.5108257
+  ],
+  "Iloilo::Balasan": [
+    11.472018,
+    123.0887179
+  ],
+  "Camarines Sur::Balatan": [
+    13.3168967,
+    123.240288
+  ],
+  "Batangas::Balayan": [
+    13.9381793,
+    120.7294945
+  ],
+  "Aurora::Baler": [
+    15.759086,
+    121.5627247
+  ],
+  "Aklan::Balete": [
+    11.5555978,
+    122.3800007
+  ],
+  "Batangas::Balete": [
+    14.0179936,
+    121.0946529
+  ],
+  "Zamboanga del Norte::Baliguian": [
+    7.8097453,
+    122.1451356
+  ],
+  "Bohol::Balilihan": [
+    9.756499,
+    123.9728153
+  ],
+  "Cagayan::Ballesteros": [
+    18.4092973,
+    121.5146602
+  ],
+  "Pangasinan::Balungao": [
+    15.8977234,
+    120.67179
+  ],
+  "Tarlac::Bamban": [
+    15.2733238,
+    120.5672692
+  ],
+  "Iloilo::Banate": [
+    11.0013359,
+    122.8186296
+  ],
+  "Ifugao::Banaue": [
+    16.9117713,
+    121.0613769
+  ],
+  "Davao Oriental::Banaybanay": [
+    6.9668999,
+    126.0107563
+  ],
+  "Aklan::Banga": [
+    11.6390926,
+    122.332917
+  ],
+  "South Cotabato::Banga": [
+    6.4232286,
+    124.7761628
+  ],
+  "Abra::Bangued": [
+    17.5964869,
+    120.61785
+  ],
+  "Pangasinan::Bani": [
+    16.1839974,
+    119.8618795
+  ],
+  "Cotabato::Banisilan": [
+    7.5040807,
+    124.6946327
+  ],
+  "Davao del Sur::Bansalan": [
+    6.7869339,
+    125.2108071
+  ],
+  "Oriental Mindoro::Bansud": [
+    12.8640556,
+    121.4555057
+  ],
+  "Cebu::Bantayan": [
+    11.1666905,
+    123.7188816
+  ],
+  "Romblon::Banton": [
+    12.9459465,
+    122.0960131
+  ],
+  "Rizal::Baras": [
+    14.5218512,
+    121.2658068
+  ],
+  "Antique::Barbaza": [
+    11.1953194,
+    122.037732
+  ],
+  "Sorsogon::Barcelona": [
+    12.8682088,
+    124.1418908
+  ],
+  "Cebu::Barili": [
+    10.116537,
+    123.5093986
+  ],
+  "Surigao del Sur::Barobo": [
+    8.5365118,
+    126.1206907
+  ],
+  "Iloilo::Barotac Nuevo": [
+    10.893967,
+    122.7033863
+  ],
+  "Iloilo::Barotac Viejo": [
+    11.043514,
+    122.8514783
+  ],
+  "Batanes::Basco": [
+    20.4490442,
+    121.9683455
+  ],
+  "Samar::Basey": [
+    11.2799579,
+    125.0692113
+  ],
+  "Dinagat Islands::Basilisa": [
+    9.9981678,
+    125.5098276
+  ],
+  "Pangasinan::Basista": [
+    15.8531127,
+    120.4031042
+  ],
+  "Camarines Norte::Basud": [
+    14.06904,
+    122.9627842
+  ],
+  "Iloilo::Batad": [
+    11.4180961,
+    123.1099182
+  ],
+  "Aklan::Batan": [
+    11.5869107,
+    122.4962482
+  ],
+  "Batangas::Batangas City": [
+    13.7552594,
+    121.0590753
+  ],
+  "Palawan::Bataraza": [
+    8.6733047,
+    117.6286933
+  ],
+  "Camarines Sur::Bato": [
+    13.3572515,
+    123.3677422
+  ],
+  "Bohol::Batuan": [
+    9.7840762,
+    124.1491353
+  ],
+  "Batangas::Bauan": [
+    13.7899158,
+    121.0077783
+  ],
+  "Bukidnon::Baungon": [
+    8.3126139,
+    124.6872041
+  ],
+  "Pangasinan::Bautista": [
+    15.8104339,
+    120.4761471
+  ],
+  "Surigao del Sur::Bayabas": [
+    8.9674102,
+    126.2828165
+  ],
+  "Pangasinan::Bayambang": [
+    15.8093238,
+    120.4570409
+  ],
+  "Zamboanga del Sur::Bayog": [
+    7.8498431,
+    123.0430506
+  ],
+  "Antique::Belison": [
+    10.8374618,
+    121.9621456
+  ],
+  "Bohol::Bien Unido": [
+    10.1359429,
+    124.3795975
+  ],
+  "Bohol::Bilar": [
+    9.7069602,
+    124.1044253
+  ],
+  "Biliran::Biliran": [
+    11.4665736,
+    124.4740971
+  ],
+  "Pangasinan::Binalonan": [
+    16.0444475,
+    120.5917707
+  ],
+  "Rizal::Binangonan": [
+    14.4647563,
+    121.1923358
+  ],
+  "Iloilo::Bingawan": [
+    11.233264,
+    122.5669641
+  ],
+  "Pangasinan::Binmaley": [
+    16.0289195,
+    120.2684844
+  ],
+  "Bulacan::Bocaue": [
+    14.7954178,
+    120.9253578
+  ],
+  "Benguet::Bokod": [
+    16.4912514,
+    120.8301004
+  ],
+  "Pangasinan::Bolinao": [
+    16.3886595,
+    119.8932117
+  ],
+  "Abra::Boliney": [
+    17.3788876,
+    120.8210306
+  ],
+  "Cebu::Boljoon": [
+    9.6289389,
+    123.4800179
+  ],
+  "Camarines Sur::Bombon": [
+    13.6858046,
+    123.1989068
+  ],
+  "Oriental Mindoro::Bongabong": [
+    12.7480016,
+    121.4892292
+  ],
+  "Tawi-Tawi::Bongao": [
+    5.0289741,
+    119.7713119
+  ],
+  "Southern Leyte::Bontoc": [
+    10.35439,
+    124.9706062
+  ],
+  "Cebu::Borbon": [
+    10.8379222,
+    124.0305935
+  ],
+  "Davao Oriental::Boston": [
+    7.8703434,
+    126.3764259
+  ],
+  "Zambales::Botolan": [
+    15.2889971,
+    120.0247358
+  ],
+  "Davao del Norte::Braulio E. Dujali": [
+    7.448674,
+    125.6895921
+  ],
+  "Palawan::Brooke's Point": [
+    8.7736019,
+    117.8389787
+  ],
+  "Abra::Bucay": [
+    17.5387139,
+    120.7187769
+  ],
+  "Abra::Bucloc": [
+    17.4414002,
+    120.8578596
+  ],
+  "Agusan del Norte::Buenavista": [
+    8.9744864,
+    125.4090875
+  ],
+  "Bohol::Buenavista": [
+    10.0808818,
+    124.1117182
+  ],
+  "Quezon::Buenavista": [
+    13.7376773,
+    122.4673918
+  ],
+  "Pangasinan::Bugallon": [
+    15.9540627,
+    120.2149613
+  ],
+  "Antique::Bugasong": [
+    11.0441473,
+    122.0646896
+  ],
+  "Cagayan::Buguey": [
+    18.2882302,
+    121.832126
+  ],
+  "Benguet::Buguias": [
+    16.8003159,
+    120.8217796
+  ],
+  "Camarines Sur::Buhi": [
+    13.4342347,
+    123.5171171
+  ],
+  "Camarines Sur::Bula": [
+    13.4684706,
+    123.2778241
+  ],
+  "Bulacan::Bulacan": [
+    14.8414965,
+    120.8387409
+  ],
+  "Oriental Mindoro::Bulalacao": [
+    12.3261931,
+    121.3437406
+  ],
+  "Sorsogon::Bulan": [
+    12.6689078,
+    123.8769586
+  ],
+  "Sorsogon::Bulusan": [
+    12.7517375,
+    124.1352434
+  ],
+  "Agusan del Sur::Bunawan": [
+    8.1787968,
+    125.9942065
+  ],
+  "Quezon::Burdeos": [
+    14.8435644,
+    121.9693383
+  ],
+  "Pangasinan::Burgos": [
+    16.0593938,
+    119.8649284
+  ],
+  "Surigao del Norte::Burgos": [
+    10.0181311,
+    126.0742822
+  ],
+  "Aklan::Buruanga": [
+    11.8444711,
+    121.8882356
+  ],
+  "Bulacan::Bustos": [
+    14.9535178,
+    120.9188433
+  ],
+  "Palawan::Busuanga": [
+    12.1318372,
+    119.9370716
+  ],
+  "Zamboanga Sibugay::Buug": [
+    7.7309445,
+    123.0598716
+  ],
+  "Zambales::Cabangan": [
+    15.1589463,
+    120.0554631
+  ],
+  "Bukidnon::Cabanglasan": [
+    8.0773336,
+    125.2987545
+  ],
+  "Quirino::Cabarroguis": [
+    16.5096214,
+    121.527583
+  ],
+  "Iloilo::Cabatuan": [
+    10.8798603,
+    122.4819482
+  ],
+  "Biliran::Cabucgayan": [
+    11.4729535,
+    124.5749974
+  ],
+  "Camarines Sur::Cabusao": [
+    13.7260501,
+    123.1138377
+  ],
+  "Palawan::Cagayancillo": [
+    9.577868,
+    121.1993551
+  ],
+  "Dinagat Islands::Cagdianao": [
+    9.9238959,
+    125.6698325
+  ],
+  "Surigao del Sur::Cagwait": [
+    8.9182742,
+    126.2982546
+  ],
+  "Biliran::Caibiran": [
+    11.5723202,
+    124.5813362
+  ],
+  "Rizal::Cainta": [
+    14.5780161,
+    121.1163072
+  ],
+  "Romblon::Cajidiocan": [
+    12.3687233,
+    122.6865217
+  ],
+  "Camarines Sur::Calabanga": [
+    13.708545,
+    123.2157561
+  ],
+  "Apayao::Calanasan": [
+    18.2550984,
+    121.0437208
+  ],
+  "Bohol::Calape": [
+    9.8905133,
+    123.8718668
+  ],
+  "Pangasinan::Calasiao": [
+    16.0089487,
+    120.3571939
+  ],
+  "Batangas::Calatagan": [
+    13.8329908,
+    120.6326233
+  ],
+  "Romblon::Calatrava": [
+    12.618963,
+    122.0707595
+  ],
+  "Quezon::Calauag": [
+    13.9582696,
+    122.2931203
+  ],
+  "Cagayan::Calayan": [
+    19.2612602,
+    121.4756285
+  ],
+  "Samar::Calbiga": [
+    11.6274469,
+    125.0170454
+  ],
+  "Iloilo::Calinog": [
+    11.1225175,
+    122.5380249
+  ],
+  "Occidental Mindoro::Calintaan": [
+    12.5713842,
+    120.9409823
+  ],
+  "Bulacan::Calumpit": [
+    14.9151703,
+    120.7662073
+  ],
+  "Antique::Caluya": [
+    11.9318954,
+    121.5464906
+  ],
+  "Cagayan::Camalaniugan": [
+    18.273536,
+    121.6757107
+  ],
+  "Albay::Camalig": [
+    13.1815738,
+    123.6552668
+  ],
+  "Camarines Sur::Camaligan": [
+    13.6210464,
+    123.1639475
+  ],
+  "Tarlac::Camiling": [
+    15.6864622,
+    120.414656
+  ],
+  "Eastern Samar::Can-Avid": [
+    11.9968852,
+    125.4485155
+  ],
+  "Camarines Sur::Canaman": [
+    13.6475888,
+    123.1705562
+  ],
+  "Pampanga::Candaba": [
+    15.0923632,
+    120.8272514
+  ],
+  "Quezon::Candelaria": [
+    13.9289015,
+    121.4246794
+  ],
+  "Zambales::Candelaria": [
+    15.6271348,
+    119.9301322
+  ],
+  "Bohol::Candijay": [
+    9.8177901,
+    124.4962471
+  ],
+  "Surigao del Sur::Cantilan": [
+    9.3357754,
+    125.9770212
+  ],
+  "Camarines Norte::Capalonga": [
+    14.3310366,
+    122.4924688
+  ],
+  "Tarlac::Capas": [
+    15.3360344,
+    120.589583
+  ],
+  "Davao Oriental::Caraga": [
+    7.328232,
+    126.5653582
+  ],
+  "Camarines Sur::Caramoan": [
+    13.7681398,
+    123.8624978
+  ],
+  "Rizal::Cardona": [
+    14.4849786,
+    121.2310927
+  ],
+  "Iloilo::Carles": [
+    11.5735531,
+    123.133556
+  ],
+  "Agusan del Norte::Carmen": [
+    8.9902238,
+    125.2957173
+  ],
+  "Bohol::Carmen": [
+    9.824334,
+    124.1983784
+  ],
+  "Cebu::Carmen": [
+    10.5873302,
+    124.0180859
+  ],
+  "Cotabato::Carmen": [
+    7.2045108,
+    124.795371
+  ],
+  "Davao del Norte::Carmen": [
+    7.3556822,
+    125.7044546
+  ],
+  "Surigao del Sur::Carmen": [
+    9.230898,
+    126.015255
+  ],
+  "Surigao del Sur::Carrascal": [
+    9.3688403,
+    125.9495398
+  ],
+  "Aurora::Casiguran": [
+    16.2770406,
+    122.1233258
+  ],
+  "Sorsogon::Casiguran": [
+    12.8719998,
+    124.0067371
+  ],
+  "Sorsogon::Castilla": [
+    12.9539515,
+    123.8751711
+  ],
+  "Zambales::Castillejos": [
+    14.9320671,
+    120.2005402
+  ],
+  "Quezon::Catanauan": [
+    13.5929805,
+    122.3223125
+  ],
+  "Davao Oriental::Cateel": [
+    7.7901142,
+    126.4537908
+  ],
+  "Bohol::Catigbian": [
+    9.8593137,
+    124.0053953
+  ],
+  "Cebu::Catmon": [
+    10.723822,
+    124.0137974
+  ],
+  "Rizal::City of Antipolo": [
+    14.5871972,
+    121.1759246
+  ],
+  "Bataan::City of Balanga": [
+    14.6795669,
+    120.5409693
+  ],
+  "Bulacan::City of Baliwag": [
+    15.0136243,
+    120.8902416
+  ],
+  "Agusan del Sur::City of Bayugan": [
+    8.7226205,
+    125.7347276
+  ],
+  "Surigao del Sur::City of Bislig": [
+    8.2130815,
+    126.3156173
+  ],
+  "Cebu::City of Bogo": [
+    11.0515546,
+    124.0035463
+  ],
+  "Eastern Samar::City of Borongan": [
+    11.6027401,
+    125.4371254
+  ],
+  "Agusan del Norte::City of Cabadbaran": [
+    9.1232854,
+    125.5322317
+  ],
+  "Batangas::City of Calaca": [
+    13.9338465,
+    120.8140254
+  ],
+  "Oriental Mindoro::City of Calapan": [
+    13.4145513,
+    121.179543
+  ],
+  "Samar::City of Calbayog": [
+    12.0669632,
+    124.5946664
+  ],
+  "Cebu::City of Carcar": [
+    10.1061659,
+    123.6437537
+  ],
+  "Samar::City of Catbalogan": [
+    11.7753308,
+    124.883118
+  ],
+  "Pangasinan::City of Dagupan": [
+    15.9828945,
+    120.5158916
+  ],
+  "Zamboanga del Norte::City of Dapitan": [
+    8.6549449,
+    123.4243754
+  ],
+  "Davao del Sur::City of Digos": [
+    6.7440957,
+    125.3555319
+  ],
+  "Zamboanga del Norte::City of Dipolog": [
+    8.5863596,
+    123.3448798
+  ],
+  "Camarines Sur::City of Iriga": [
+    13.4222626,
+    123.4129406
+  ],
+  "Cotabato::City of Kidapawan": [
+    7.0095784,
+    125.0905037
+  ],
+  "South Cotabato::City of Koronadal": [
+    6.5004041,
+    124.8435437
+  ],
+  "Basilan::City of Lamitan": [
+    6.6575615,
+    122.1449694
+  ],
+  "Albay::City of Ligao": [
+    13.3559868,
+    123.7088972
+  ],
+  "Batangas::City of Lipa": [
+    13.7590105,
+    121.0578902
+  ],
+  "Southern Leyte::City of Maasin": [
+    10.1325061,
+    124.8385147
+  ],
+  "Bukidnon::City of Malaybalay": [
+    8.1550421,
+    125.1305726
+  ],
+  "Bulacan::City of Malolos": [
+    14.843759,
+    120.8113694
+  ],
+  "Davao Oriental::City of Mati": [
+    6.9521657,
+    126.2166758
+  ],
+  "Bulacan::City of Meycauayan": [
+    14.7345008,
+    120.9571635
+  ],
+  "Camarines Sur::City of Naga": [
+    13.6240122,
+    123.1850318
+  ],
+  "Cebu::City of Naga": [
+    10.2026038,
+    123.7514158
+  ],
+  "Zamboanga del Sur::City of Pagadian": [
+    7.8249717,
+    123.4365816
+  ],
+  "Davao del Norte::City of Panabo": [
+    7.29987,
+    125.6807086
+  ],
+  "Iloilo::City of Passi": [
+    11.1043309,
+    122.6438583
+  ],
+  "Pampanga::City of San Fernando": [
+    15.0283014,
+    120.6938038
+  ],
+  "Bulacan::City of San Jose Del Monte": [
+    14.8101978,
+    121.0474088
+  ],
+  "Sorsogon::City of Sorsogon": [
+    12.9812012,
+    124.0246203
+  ],
+  "Batangas::City of Sto. Tomas": [
+    14.1078443,
+    121.1453304
+  ],
+  "Surigao del Norte::City of Surigao": [
+    9.7905028,
+    125.4935697
+  ],
+  "Albay::City of Tabaco": [
+    13.3593077,
+    123.7302007
+  ],
+  "Sultan Kudarat::City of Tacurong": [
+    6.6935316,
+    124.6756671
+  ],
+  "Bohol::City of Tagbilaran": [
+    9.653952,
+    123.8496085
+  ],
+  "Davao del Norte::City of Tagum": [
+    7.4470784,
+    125.8094853
+  ],
+  "Cebu::City of Talisay": [
+    10.2531988,
+    123.8703135
+  ],
+  "Batangas::City of Tanauan": [
+    14.0874476,
+    121.1013452
+  ],
+  "Surigao del Sur::City of Tandag": [
+    9.0799833,
+    126.1974606
+  ],
+  "Tarlac::City of Tarlac": [
+    15.4861218,
+    120.5893473
+  ],
+  "Quezon::City of Tayabas": [
+    14.0263471,
+    121.5918364
+  ],
+  "Cebu::City of Toledo": [
+    10.3760429,
+    123.6343276
+  ],
+  "Pangasinan::City of Urdaneta": [
+    15.9759995,
+    120.5668992
+  ],
+  "Bukidnon::City of Valencia": [
+    7.9028844,
+    125.0898033
+  ],
+  "Bohol::Clarin": [
+    9.9626104,
+    124.0244228
+  ],
+  "Surigao del Norte::Claver": [
+    9.5730277,
+    125.7326841
+  ],
+  "Cagayan::Claveria": [
+    18.6051605,
+    121.080641
+  ],
+  "Sultan Kudarat::Columbio": [
+    6.6850678,
+    124.9614497
+  ],
+  "Cebu::Compostela": [
+    10.4537864,
+    124.0127027
+  ],
+  "Davao de Oro::Compostela": [
+    7.6675008,
+    126.0856272
+  ],
+  "Iloilo::Concepcion": [
+    11.2147066,
+    123.1087513
+  ],
+  "Romblon::Concepcion": [
+    12.9131289,
+    121.7204032
+  ],
+  "Tarlac::Concepcion": [
+    15.3248528,
+    120.6553857
+  ],
+  "Apayao::Conner": [
+    17.7961379,
+    121.3224766
+  ],
+  "Cebu::Consolacion": [
+    10.3757788,
+    123.9569898
+  ],
+  "Romblon::Corcuera": [
+    12.7840784,
+    122.0474912
+  ],
+  "Cebu::Cordova": [
+    10.2521909,
+    123.9494748
+  ],
+  "Bohol::Corella": [
+    9.6876964,
+    123.921306
+  ],
+  "Palawan::Coron": [
+    11.9985507,
+    120.2051611
+  ],
+  "Bohol::Cortes": [
+    9.7218266,
+    123.8788576
+  ],
+  "Surigao del Sur::Cortes": [
+    9.2755786,
+    126.1908659
+  ],
+  "Batangas::Cuenca": [
+    13.9007178,
+    121.0500822
+  ],
+  "Biliran::Culaba": [
+    11.6555955,
+    124.540621
+  ],
+  "Antique::Culasi": [
+    11.4257994,
+    122.0561023
+  ],
+  "Palawan::Culion": [
+    11.8905322,
+    120.0220973
+  ],
+  "Palawan::Cuyo": [
+    10.8551218,
+    121.008475
+  ],
+  "Cebu::Daanbantayan": [
+    11.2503512,
+    123.999128
+  ],
+  "Camarines Norte::Daet": [
+    14.112333,
+    122.9556967
+  ],
+  "Bohol::Dagohoy": [
+    9.8963715,
+    124.2711696
+  ],
+  "Abra::Daguioman": [
+    17.4586787,
+    120.9258712
+  ],
+  "Cebu::Dalaguete": [
+    9.7619073,
+    123.5334094
+  ],
+  "Bukidnon::Damulog": [
+    7.4848894,
+    124.942479
+  ],
+  "Bohol::Danao": [
+    9.9469702,
+    124.2206172
+  ],
+  "Cebu::Danao City": [
+    10.5180007,
+    124.0283744
+  ],
+  "Bukidnon::Dangcagan": [
+    7.6101262,
+    125.004269
+  ],
+  "Abra::Danglas": [
+    17.6931235,
+    120.6644456
+  ],
+  "Surigao del Norte::Dapa": [
+    9.7577166,
+    126.0528849
+  ],
+  "Samar::Daram": [
+    11.6349892,
+    124.7957703
+  ],
+  "Pangasinan::Dasol": [
+    15.9902346,
+    119.8811438
+  ],
+  "Bohol::Dauis": [
+    9.6252513,
+    123.8651747
+  ],
+  "Surigao del Norte::Del Carmen": [
+    9.8687641,
+    125.9705006
+  ],
+  "Camarines Sur::Del Gallego": [
+    13.9225812,
+    122.5938087
+  ],
+  "Quirino::Diffun": [
+    16.5935291,
+    121.5024247
+  ],
+  "Aurora::Dilasag": [
+    16.393824,
+    122.2114756
+  ],
+  "Zamboanga del Sur::Dimataling": [
+    7.5284648,
+    123.3648382
+  ],
+  "Bohol::Dimiao": [
+    9.6057125,
+    124.1623535
+  ],
+  "Dinagat Islands::Dinagat": [
+    10.161868,
+    125.5531897
+  ],
+  "Aurora::Dinalungan": [
+    16.1403381,
+    121.9575186
+  ],
+  "Bataan::Dinalupihan": [
+    14.8673996,
+    120.461031
+  ],
+  "Zamboanga del Sur::Dinas": [
+    7.61586,
+    123.3391016
+  ],
+  "Aurora::Dingalan": [
+    15.3894081,
+    121.3927168
+  ],
+  "Iloilo::Dingle": [
+    11.0000758,
+    122.6717839
+  ],
+  "Aurora::Dipaculao": [
+    15.8483803,
+    121.5367634
+  ],
+  "Zamboanga Sibugay::Diplahan": [
+    7.6915261,
+    122.9851526
+  ],
+  "Abra::Dolores": [
+    17.6485978,
+    120.7081646
+  ],
+  "Eastern Samar::Dolores": [
+    12.0374468,
+    125.4831175
+  ],
+  "Quezon::Dolores": [
+    14.0170009,
+    121.4016469
+  ],
+  "Bukidnon::Don Carlos": [
+    7.6807528,
+    124.9954728
+  ],
+  "Sorsogon::Donsol": [
+    12.9077161,
+    123.5986056
+  ],
+  "Bulacan::Doña Remedios Trinidad": [
+    14.9706036,
+    121.0647854
+  ],
+  "Palawan::Dr. Jose P. Rizal": [
+    9.0341825,
+    117.6425705
+  ],
+  "Bohol::Duero": [
+    9.7084523,
+    124.406042
+  ],
+  "Iloilo::Dueñas": [
+    11.0651622,
+    122.6182682
+  ],
+  "Zamboanga del Sur::Dumalinao": [
+    7.8173115,
+    123.3626378
+  ],
+  "Iloilo::Dumangas": [
+    10.8215809,
+    122.712398
+  ],
+  "Cebu::Dumanjug": [
+    10.0584038,
+    123.4351815
+  ],
+  "Palawan::Dumaran": [
+    10.5290452,
+    119.7692022
+  ],
+  "Zamboanga del Sur::Dumingag": [
+    8.1544879,
+    123.3448435
+  ],
+  "Palawan::El Nido": [
+    11.1800395,
+    119.390496
+  ],
+  "Cagayan::Enrile": [
+    17.5617622,
+    121.7007107
+  ],
+  "Siquijor::Enrique Villanueva": [
+    9.2762125,
+    123.6471289
+  ],
+  "Agusan del Sur::Esperanza": [
+    8.6788385,
+    125.646773
+  ],
+  "Sultan Kudarat::Esperanza": [
+    6.722561,
+    124.5205706
+  ],
+  "Iloilo::Estancia": [
+    11.4560924,
+    123.1510998
+  ],
+  "Romblon::Ferrol": [
+    12.3363938,
+    121.9394694
+  ],
+  "Apayao::Flora": [
+    18.2149218,
+    121.4191864
+  ],
+  "Pampanga::Floridablanca": [
+    14.9745982,
+    120.5277236
+  ],
+  "Camarines Sur::Gainza": [
+    13.6162259,
+    123.1402591
+  ],
+  "Samar::Gandara": [
+    12.0132823,
+    124.811448
+  ],
+  "Camarines Sur::Garchitorena": [
+    13.8818495,
+    123.6977233
+  ],
+  "Bohol::Garcia Hernandez": [
+    9.614319,
+    124.2954003
+  ],
+  "Cagayan::Gattaran": [
+    18.0603315,
+    121.6414943
+  ],
+  "Quezon::General Luna": [
+    13.688262,
+    122.1711441
+  ],
+  "Surigao del Norte::General Luna": [
+    9.7825836,
+    126.1563859
+  ],
+  "Eastern Samar::General Macarthur": [
+    11.2453437,
+    125.5397546
+  ],
+  "Quezon::General Nakar": [
+    14.7636785,
+    121.6352959
+  ],
+  "Tarlac::Gerona": [
+    15.6069315,
+    120.5985733
+  ],
+  "Bohol::Getafe": [
+    10.1497111,
+    124.1535145
+  ],
+  "Surigao del Norte::Gigaquit": [
+    9.5958188,
+    125.697637
+  ],
+  "Cebu::Ginatilan": [
+    9.5698839,
+    123.312431
+  ],
+  "Eastern Samar::Giporlos": [
+    11.1210881,
+    125.4489009
+  ],
+  "Sarangani::Glan": [
+    5.8226991,
+    125.2049049
+  ],
+  "Oriental Mindoro::Gloria": [
+    12.9688453,
+    121.4785283
+  ],
+  "Camarines Sur::Goa": [
+    13.6973443,
+    123.4885073
+  ],
+  "Zamboanga del Norte::Godod": [
+    8.0019148,
+    122.8438815
+  ],
+  "Cagayan::Gonzaga": [
+    18.2612024,
+    121.9966488
+  ],
+  "Davao Oriental::Governor Generoso": [
+    6.6535259,
+    126.0720099
+  ],
+  "Pampanga::Guagua": [
+    14.9654074,
+    120.6336297
+  ],
+  "Sorsogon::Gubat": [
+    12.9176112,
+    124.1231882
+  ],
+  "Bulacan::Guiguinto": [
+    14.8282023,
+    120.8786107
+  ],
+  "Iloilo::Guimbal": [
+    10.6615215,
+    122.3228567
+  ],
+  "Quezon::Guinayangan": [
+    13.8963821,
+    122.4521906
+  ],
+  "Bohol::Guindulman": [
+    9.7619221,
+    124.4879217
+  ],
+  "Zamboanga del Sur::Guipos": [
+    7.7292028,
+    123.321345
+  ],
+  "Eastern Samar::Guiuan": [
+    11.0306685,
+    125.7236686
+  ],
+  "Quezon::Gumaca": [
+    13.9221715,
+    122.0991276
+  ],
+  "Zamboanga del Norte::Gutalac": [
+    7.9809872,
+    122.4052632
+  ],
+  "Basilan::Hadji Mohammad Ajul": [
+    6.642755,
+    122.2732208
+  ],
+  "Basilan::Hadji Muhtamad": [
+    6.6622116,
+    121.5863621
+  ],
+  "Sulu::Hadji Panglima Tahil": [
+    6.1105436,
+    120.9665742
+  ],
+  "Bulacan::Hagonoy": [
+    14.8355035,
+    120.7335206
+  ],
+  "Davao del Sur::Hagonoy": [
+    6.6884647,
+    125.2972001
+  ],
+  "Antique::Hamtic": [
+    10.7003591,
+    121.9808152
+  ],
+  "Bataan::Hermosa": [
+    14.8302478,
+    120.5086406
+  ],
+  "Eastern Samar::Hernani": [
+    11.3232473,
+    125.6190691
+  ],
+  "Samar::Hinabangan": [
+    11.7011085,
+    125.0662795
+  ],
+  "Surigao del Sur::Hinatuan": [
+    8.3656147,
+    126.3358067
+  ],
+  "Ifugao::Hingyon": [
+    16.852042,
+    121.0993328
+  ],
+  "Southern Leyte::Hinunangan": [
+    10.3940404,
+    125.2001942
+  ],
+  "Southern Leyte::Hinundayan": [
+    10.3513466,
+    125.2529731
+  ],
+  "Ifugao::Hungduan": [
+    16.8387827,
+    121.0057639
+  ],
+  "Zambales::Iba": [
+    15.3264614,
+    119.9801043
+  ],
+  "Batangas::Ibaan": [
+    13.8185462,
+    121.1332079
+  ],
+  "Aklan::Ibajay": [
+    11.8207622,
+    122.1617859
+  ],
+  "Iloilo::Igbaras": [
+    10.7166948,
+    122.2651213
+  ],
+  "Cagayan::Iguig": [
+    17.7501663,
+    121.7353806
+  ],
+  "Zamboanga Sibugay::Imelda": [
+    7.6418577,
+    122.9358144
+  ],
+  "Bukidnon::Impasug-ong": [
+    8.3039052,
+    125.000896
+  ],
+  "Bohol::Inabanga": [
+    10.0308864,
+    124.0656561
+  ],
+  "Sulu::Indanan": [
+    5.9728882,
+    120.9702286
+  ],
+  "Pangasinan::Infanta": [
+    15.8251315,
+    119.9056689
+  ],
+  "Quezon::Infanta": [
+    14.7464641,
+    121.6490904
+  ],
+  "Zamboanga Sibugay::Ipil": [
+    7.7821902,
+    122.5867388
+  ],
+  "Sorsogon::Irosin": [
+    12.7038417,
+    124.0320966
+  ],
+  "Davao del Norte::Island Garden City of Samal": [
+    7.0780265,
+    125.7120437
+  ],
+  "Sultan Kudarat::Isulan": [
+    6.6340869,
+    124.5971379
+  ],
+  "Batanes::Itbayat": [
+    20.7878139,
+    121.8414735
+  ],
+  "Benguet::Itogon": [
+    16.3598502,
+    120.6772166
+  ],
+  "Batanes::Ivana": [
+    20.3709221,
+    121.9145002
+  ],
+  "Agusan del Norte::Jabonga": [
+    9.3425441,
+    125.5163749
+  ],
+  "Bohol::Jagna": [
+    9.6501914,
+    124.3661633
+  ],
+  "Rizal::Jala-Jala": [
+    14.3536306,
+    121.3237656
+  ],
+  "Iloilo::Janiuay": [
+    10.949146,
+    122.5019623
+  ],
+  "Samar::Jiabong": [
+    11.7628314,
+    124.9501866
+  ],
+  "Eastern Samar::Jipapad": [
+    12.2860714,
+    125.2352904
+  ],
+  "Sulu::Jolo": [
+    6.0531173,
+    121.0007633
+  ],
+  "Quezon::Jomalig": [
+    14.6958792,
+    122.3306656
+  ],
+  "Zamboanga del Norte::Jose Dalman": [
+    8.441282,
+    123.0229259
+  ],
+  "Camarines Norte::Jose Panganiban": [
+    14.2903434,
+    122.691494
+  ],
+  "Zamboanga del Sur::Josefina": [
+    8.2148124,
+    123.5436197
+  ],
+  "Albay::Jovellar": [
+    13.0693487,
+    123.6002707
+  ],
+  "Sorsogon::Juban": [
+    12.8478899,
+    123.9890815
+  ],
+  "Cotabato::Kabacan": [
+    7.1082139,
+    124.8233384
+  ],
+  "Zamboanga Sibugay::Kabasalan": [
+    7.7974574,
+    122.7619459
+  ],
+  "Benguet::Kabayan": [
+    16.6234152,
+    120.8379622
+  ],
+  "Apayao::Kabugao": [
+    18.0246159,
+    121.184531
+  ],
+  "Bukidnon::Kadingilan": [
+    7.6002419,
+    124.9097879
+  ],
+  "Sultan Kudarat::Kalamansig": [
+    6.5545839,
+    124.050599
+  ],
+  "Zamboanga del Norte::Kalawit": [
+    7.9077809,
+    122.5239358
+  ],
+  "Palawan::Kalayaan": [
+    11.0537248,
+    114.2848128
+  ],
+  "Aklan::Kalibo": [
+    11.7088966,
+    122.3640225
+  ],
+  "Bukidnon::Kalilangan": [
+    7.7465169,
+    124.7476141
+  ],
+  "Sulu::Kalingalan Caluang": [
+    5.8890311,
+    121.30945
+  ],
+  "Davao del Norte::Kapalong": [
+    7.5855037,
+    125.7076466
+  ],
+  "Benguet::Kapangan": [
+    16.5760702,
+    120.6055431
+  ],
+  "Zamboanga del Norte::Katipunan": [
+    8.5124998,
+    123.2846423
+  ],
+  "Biliran::Kawayan": [
+    11.6799506,
+    124.357023
+  ],
+  "Sarangani::Kiamba": [
+    5.9879555,
+    124.6241575
+  ],
+  "Ifugao::Kiangan": [
+    16.7763746,
+    121.0868305
+  ],
+  "Bukidnon::Kibawe": [
+    7.5687481,
+    124.9856942
+  ],
+  "Davao del Sur::Kiblawan": [
+    6.6206059,
+    125.2542074
+  ],
+  "Benguet::Kibungan": [
+    16.6937113,
+    120.6532524
+  ],
+  "Bukidnon::Kitaotao": [
+    7.6389703,
+    125.0089657
+  ],
+  "Agusan del Norte::Kitcharao": [
+    9.4554207,
+    125.5755314
+  ],
+  "Zamboanga del Sur::Kumalarang": [
+    7.747914,
+    123.1439281
+  ],
+  "Zamboanga del Norte::La Libertad": [
+    8.4685946,
+    123.5257405
+  ],
+  "Abra::La Paz": [
+    17.6707707,
+    120.6836908
+  ],
+  "Agusan del Sur::La Paz": [
+    8.2795131,
+    125.8066975
+  ],
+  "Tarlac::La Paz": [
+    15.4411139,
+    120.7288994
+  ],
+  "Benguet::La Trinidad": [
+    16.449779,
+    120.5900851
+  ],
+  "Davao de Oro::Laak": [
+    7.8190082,
+    125.7921798
+  ],
+  "Zamboanga del Sur::Labangan": [
+    7.8633445,
+    123.5153101
+  ],
+  "Zamboanga del Norte::Labason": [
+    8.0650994,
+    122.5249426
+  ],
+  "Camarines Norte::Labo": [
+    14.1543524,
+    122.8285243
+  ],
+  "Pangasinan::Labrador": [
+    16.0254835,
+    120.1462065
+  ],
+  "Abra::Lacub": [
+    17.6644278,
+    120.9445433
+  ],
+  "Abra::Lagangilang": [
+    17.6126919,
+    120.7336564
+  ],
+  "Ifugao::Lagawe": [
+    16.7975666,
+    121.1235219
+  ],
+  "Abra::Lagayan": [
+    17.720826,
+    120.7059017
+  ],
+  "Camarines Sur::Lagonoy": [
+    13.7353849,
+    123.520948
+  ],
+  "South Cotabato::Lake Sebu": [
+    6.2260489,
+    124.7123413
+  ],
+  "Zamboanga del Sur::Lakewood": [
+    7.8545421,
+    123.1515109
+  ],
+  "Cagayan::Lal-Lo": [
+    18.2000513,
+    121.661997
+  ],
+  "Sultan Kudarat::Lambayong": [
+    6.7985631,
+    124.6345922
+  ],
+  "Iloilo::Lambunao": [
+    11.0553435,
+    122.4746304
+  ],
+  "Ifugao::Lamut": [
+    16.651511,
+    121.2186612
+  ],
+  "Abra::Langiden": [
+    17.575718,
+    120.5643653
+  ],
+  "Tawi-Tawi::Languyan": [
+    5.2675824,
+    120.0787785
+  ],
+  "Bukidnon::Lantapan": [
+    7.9983082,
+    125.0228905
+  ],
+  "Basilan::Lantawan": [
+    6.6387038,
+    121.8403078
+  ],
+  "Surigao del Sur::Lanuza": [
+    9.233675,
+    126.0603779
+  ],
+  "Pangasinan::Laoac": [
+    16.0480995,
+    120.5471064
+  ],
+  "Zamboanga del Sur::Lapuyan": [
+    7.6365859,
+    123.1981442
+  ],
+  "Siquijor::Larena": [
+    9.2488946,
+    123.5910019
+  ],
+  "Agusan del Norte::Las Nieves": [
+    8.7359578,
+    125.6015136
+  ],
+  "Cagayan::Lasam": [
+    18.0650426,
+    121.6012061
+  ],
+  "Antique::Laua-An": [
+    11.1429506,
+    122.0416027
+  ],
+  "Batangas::Laurel": [
+    14.0505406,
+    120.9332537
+  ],
+  "Eastern Samar::Lawaan": [
+    11.1403377,
+    125.3009712
+  ],
+  "Siquijor::Lazi": [
+    9.1284365,
+    123.6338696
+  ],
+  "Sultan Kudarat::Lebak": [
+    6.6336717,
+    124.0657013
+  ],
+  "Iloilo::Leganes": [
+    10.785528,
+    122.5888137
+  ],
+  "Batangas::Lemery": [
+    13.8834388,
+    120.9138215
+  ],
+  "Iloilo::Lemery": [
+    11.225827,
+    122.9274305
+  ],
+  "Iloilo::Leon": [
+    10.7806107,
+    122.3873916
+  ],
+  "Zamboanga del Norte::Leon T. Postigo": [
+    8.1500692,
+    122.9252642
+  ],
+  "Aklan::Lezo": [
+    11.6671058,
+    122.3286614
+  ],
+  "Batangas::Lian": [
+    14.037018,
+    120.6527473
+  ],
+  "Surigao del Sur::Lianga": [
+    8.6330237,
+    126.0934758
+  ],
+  "Aklan::Libacao": [
+    11.480692,
+    122.3024183
+  ],
+  "Southern Leyte::Libagon": [
+    10.2962647,
+    125.0509042
+  ],
+  "Antique::Libertad": [
+    11.769388,
+    121.9188237
+  ],
+  "Dinagat Islands::Libjo": [
+    10.1941944,
+    125.5316075
+  ],
+  "Camarines Sur::Libmanan": [
+    13.6960365,
+    123.0612123
+  ],
+  "Albay::Libon": [
+    13.2988701,
+    123.4360839
+  ],
+  "Bukidnon::Libona": [
+    8.3335275,
+    124.7484031
+  ],
+  "Cotabato::Libungan": [
+    7.2417,
+    124.5175504
+  ],
+  "Abra::Licuan-Baay": [
+    17.609076,
+    120.9047821
+  ],
+  "Bohol::Lila": [
+    9.5906941,
+    124.0953479
+  ],
+  "Cebu::Liloan": [
+    10.3998487,
+    123.998762
+  ],
+  "Southern Leyte::Liloan": [
+    10.1563177,
+    125.117794
+  ],
+  "Zamboanga del Norte::Liloy": [
+    8.1215661,
+    122.6737425
+  ],
+  "Southern Leyte::Limasawa": [
+    9.9251181,
+    125.0740924
+  ],
+  "Bataan::Limay": [
+    14.5625242,
+    120.5949559
+  ],
+  "Palawan::Linapacan": [
+    11.4911664,
+    119.8680499
+  ],
+  "Pangasinan::Lingayen": [
+    16.0206363,
+    120.2307093
+  ],
+  "Surigao del Sur::Lingig": [
+    8.0383384,
+    126.4122956
+  ],
+  "Eastern Samar::Llorente": [
+    11.4123071,
+    125.5455987
+  ],
+  "Bohol::Loay": [
+    9.6001121,
+    124.0103952
+  ],
+  "Batangas::Lobo": [
+    13.6476552,
+    121.2102789
+  ],
+  "Bohol::Loboc": [
+    9.6370754,
+    124.0308694
+  ],
+  "Occidental Mindoro::Looc": [
+    13.7197591,
+    120.2502443
+  ],
+  "Romblon::Looc": [
+    12.2601878,
+    121.9916272
+  ],
+  "Bohol::Loon": [
+    9.7997626,
+    123.7945228
+  ],
+  "Quezon::Lopez": [
+    13.8825115,
+    122.2611114
+  ],
+  "Agusan del Sur::Loreto": [
+    8.1858563,
+    125.8532977
+  ],
+  "Dinagat Islands::Loreto": [
+    10.3595571,
+    125.5788866
+  ],
+  "Abra::Luba": [
+    17.3173444,
+    120.694618
+  ],
+  "Occidental Mindoro::Lubang": [
+    13.8592951,
+    120.1227812
+  ],
+  "Pampanga::Lubao": [
+    14.9378136,
+    120.600497
+  ],
+  "Quezon::Lucban": [
+    14.114401,
+    121.55486
+  ],
+  "Sulu::Lugus": [
+    5.7020738,
+    120.8189755
+  ],
+  "Apayao::Luna": [
+    18.3329444,
+    121.35472
+  ],
+  "Camarines Sur::Lupi": [
+    13.790532,
+    122.9106882
+  ],
+  "Davao Oriental::Lupon": [
+    6.8977121,
+    126.0118409
+  ],
+  "Sultan Kudarat::Lutayan": [
+    6.5597164,
+    124.8581111
+  ],
+  "Sulu::Luuk": [
+    5.9680048,
+    121.3135327
+  ],
+  "Cotabato::M'Lang": [
+    6.9466236,
+    124.8788732
+  ],
+  "Sarangani::Maasim": [
+    5.8610055,
+    124.9967013
+  ],
+  "Iloilo::Maasin": [
+    10.8908217,
+    122.4332818
+  ],
+  "Pampanga::Mabalacat City": [
+    15.1836486,
+    120.5423934
+  ],
+  "Batangas::Mabini": [
+    13.7480896,
+    120.9407878
+  ],
+  "Bohol::Mabini": [
+    9.8650156,
+    124.5231626
+  ],
+  "Davao de Oro::Mabini": [
+    7.3084474,
+    125.8534216
+  ],
+  "Pangasinan::Mabini": [
+    16.0698586,
+    119.9394828
+  ],
+  "Zamboanga Sibugay::Mabuhay": [
+    7.417105,
+    122.8363678
+  ],
+  "Pampanga::Macabebe": [
+    14.9081836,
+    120.7149803
+  ],
+  "Quezon::Macalelon": [
+    13.7464216,
+    122.1381406
+  ],
+  "Davao de Oro::Maco": [
+    7.368797,
+    125.8556637
+  ],
+  "Southern Leyte::Macrohon": [
+    10.0766035,
+    124.9400612
+  ],
+  "Aklan::Madalag": [
+    11.5265494,
+    122.306494
+  ],
+  "Quirino::Maddela": [
+    16.3402627,
+    121.6831159
+  ],
+  "Surigao del Sur::Madrid": [
+    9.2617815,
+    125.9637534
+  ],
+  "Cebu::Madridejos": [
+    11.2962076,
+    123.7329261
+  ],
+  "Pampanga::Magalang": [
+    15.2140936,
+    120.6616332
+  ],
+  "Agusan del Norte::Magallanes": [
+    9.0237073,
+    125.5185124
+  ],
+  "Sorsogon::Magallanes": [
+    12.828538,
+    123.8344127
+  ],
+  "Camarines Sur::Magarao": [
+    13.6607081,
+    123.1851888
+  ],
+  "Romblon::Magdiwang": [
+    12.4913166,
+    122.5146837
+  ],
+  "Cotabato::Magpet": [
+    7.102802,
+    125.1247716
+  ],
+  "Davao del Sur::Magsaysay": [
+    6.7517369,
+    125.1504638
+  ],
+  "Occidental Mindoro::Magsaysay": [
+    12.3119932,
+    121.1473042
+  ],
+  "Palawan::Magsaysay": [
+    10.8653858,
+    121.0514638
+  ],
+  "Batanes::Mahatao": [
+    20.4164659,
+    121.948428
+  ],
+  "Zamboanga del Sur::Mahayag": [
+    8.129548,
+    123.4378612
+  ],
+  "Sulu::Maimbung": [
+    5.9327986,
+    121.0247434
+  ],
+  "Surigao del Norte::Mainit": [
+    9.537827,
+    125.5225869
+  ],
+  "Sarangani::Maitum": [
+    6.0610443,
+    124.4965878
+  ],
+  "Aklan::Makato": [
+    11.7116342,
+    122.2924728
+  ],
+  "Cotabato::Makilala": [
+    6.9595701,
+    125.0891183
+  ],
+  "Cebu::Malabuyoc": [
+    9.6506355,
+    123.3244023
+  ],
+  "Davao del Sur::Malalag": [
+    6.5918589,
+    125.4008825
+  ],
+  "Zamboanga Sibugay::Malangas": [
+    7.6321118,
+    123.0303669
+  ],
+  "Sarangani::Malapatan": [
+    5.9707512,
+    125.2882717
+  ],
+  "Pangasinan::Malasiqui": [
+    15.9199144,
+    120.4138181
+  ],
+  "Aklan::Malay": [
+    11.9000941,
+    121.9099
+  ],
+  "Abra::Malibcong": [
+    17.5631986,
+    120.9893255
+  ],
+  "Albay::Malilipot": [
+    13.3190483,
+    123.7392658
+  ],
+  "Surigao del Norte::Malimono": [
+    9.6182968,
+    125.401648
+  ],
+  "Aklan::Malinao": [
+    11.6437882,
+    122.3077295
+  ],
+  "Albay::Malinao": [
+    13.3974574,
+    123.7049776
+  ],
+  "Bukidnon::Malitbog": [
+    8.5351342,
+    124.8780687
+  ],
+  "Southern Leyte::Malitbog": [
+    10.16,
+    124.9991671
+  ],
+  "Sarangani::Malungon": [
+    6.3779668,
+    125.2726669
+  ],
+  "Basilan::Maluso": [
+    6.5462456,
+    121.8705722
+  ],
+  "Batangas::Malvar": [
+    14.0472848,
+    121.157631
+  ],
+  "Occidental Mindoro::Mamburao": [
+    13.2248144,
+    120.5959466
+  ],
+  "Abra::Manabo": [
+    17.4324164,
+    120.7044421
+  ],
+  "Pangasinan::Manaoag": [
+    16.0435664,
+    120.4873292
+  ],
+  "Davao Oriental::Manay": [
+    7.2109327,
+    126.5399142
+  ],
+  "Pangasinan::Mangaldan": [
+    16.0702806,
+    120.4037803
+  ],
+  "Pangasinan::Mangatarem": [
+    15.7885355,
+    120.2938639
+  ],
+  "Albay::Manito": [
+    13.1242602,
+    123.8677604
+  ],
+  "Benguet::Mankayan": [
+    16.8570882,
+    120.7931192
+  ],
+  "Bukidnon::Manolo Fortich": [
+    8.3678344,
+    124.8663083
+  ],
+  "Oriental Mindoro::Mansalay": [
+    12.5204987,
+    121.4389813
+  ],
+  "Zamboanga del Norte::Manukan": [
+    8.5161638,
+    123.0919375
+  ],
+  "Pangasinan::Mapandan": [
+    16.0269118,
+    120.4537476
+  ],
+  "Tawi-Tawi::Mapun": [
+    6.9753153,
+    118.513887
+  ],
+  "Samar::Marabut": [
+    11.1075601,
+    125.2124996
+  ],
+  "Davao de Oro::Maragusan": [
+    7.3176458,
+    126.1226535
+  ],
+  "Bukidnon::Maramag": [
+    7.7610686,
+    125.005158
+  ],
+  "Zamboanga del Sur::Margosatubig": [
+    7.5755699,
+    123.1659362
+  ],
+  "Siquijor::Maria": [
+    9.1962369,
+    123.6551893
+  ],
+  "Aurora::Maria Aurora": [
+    15.7982599,
+    121.4723121
+  ],
+  "Bohol::Maribojoc": [
+    9.7409309,
+    123.8429701
+  ],
+  "Surigao del Sur::Marihatag": [
+    8.8005575,
+    126.2985386
+  ],
+  "Bulacan::Marilao": [
+    14.7575956,
+    120.9484672
+  ],
+  "Biliran::Maripipi": [
+    11.7765231,
+    124.3485946
+  ],
+  "Bataan::Mariveles": [
+    14.4355997,
+    120.4903355
+  ],
+  "Pampanga::Masantol": [
+    14.8928667,
+    120.7052547
+  ],
+  "Zambales::Masinloc": [
+    15.5386413,
+    119.9496856
+  ],
+  "Eastern Samar::Maslog": [
+    12.1578533,
+    125.2471693
+  ],
+  "Batangas::Mataasnakahoy": [
+    13.9580322,
+    121.1139439
+  ],
+  "Cotabato::Matalam": [
+    7.0897351,
+    124.9022956
+  ],
+  "Davao del Sur::Matanao": [
+    6.709707,
+    125.2170514
+  ],
+  "Sorsogon::Matnog": [
+    12.5854588,
+    124.0847727
+  ],
+  "Samar::Matuguinao": [
+    12.1443682,
+    124.885257
+  ],
+  "Quezon::Mauban": [
+    14.1900544,
+    121.7314732
+  ],
+  "Davao de Oro::Mawab": [
+    7.5076424,
+    125.9207138
+  ],
+  "Tarlac::Mayantoc": [
+    15.6192819,
+    120.3779681
+  ],
+  "Eastern Samar::Maydolong": [
+    11.5010171,
+    125.5016828
+  ],
+  "Ifugao::Mayoyao": [
+    16.9726302,
+    121.2221837
+  ],
+  "Cebu::Medellin": [
+    11.1283811,
+    123.9615625
+  ],
+  "Camarines Norte::Mercedes": [
+    14.1094447,
+    123.0093071
+  ],
+  "Eastern Samar::Mercedes": [
+    11.0986331,
+    125.710348
+  ],
+  "Pampanga::Mexico": [
+    15.0643509,
+    120.720544
+  ],
+  "Iloilo::Miagao": [
+    10.6410895,
+    122.2355455
+  ],
+  "Zamboanga del Sur::Midsalip": [
+    8.0307675,
+    123.3171861
+  ],
+  "Cotabato::Midsayap": [
+    7.1894644,
+    124.5328759
+  ],
+  "Camarines Sur::Milaor": [
+    13.5979658,
+    123.1778842
+  ],
+  "Iloilo::Mina": [
+    10.9300742,
+    122.5742724
+  ],
+  "Camarines Sur::Minalabac": [
+    13.567455,
+    123.181428
+  ],
+  "Pampanga::Minalin": [
+    14.9678639,
+    120.6839544
+  ],
+  "Cebu::Minglanilla": [
+    10.2460294,
+    123.7960578
+  ],
+  "Cebu::Moalboal": [
+    9.9372185,
+    123.3921896
+  ],
+  "Zamboanga del Sur::Molave": [
+    8.0927689,
+    123.4849176
+  ],
+  "Tarlac::Moncada": [
+    15.7336884,
+    120.5726987
+  ],
+  "Davao de Oro::Monkayo": [
+    7.8239526,
+    126.0536908
+  ],
+  "Davao de Oro::Montevista": [
+    7.7030449,
+    125.9879183
+  ],
+  "Bataan::Morong": [
+    14.6779981,
+    120.2652634
+  ],
+  "Rizal::Morong": [
+    14.5151374,
+    121.2380858
+  ],
+  "Samar::Motiong": [
+    11.7782064,
+    124.9986798
+  ],
+  "Quezon::Mulanay": [
+    13.5217964,
+    122.4040192
+  ],
+  "Zamboanga del Norte::Mutia": [
+    8.4200174,
+    123.4762768
+  ],
+  "Aklan::Nabas": [
+    11.828728,
+    122.0924043
+  ],
+  "Camarines Sur::Nabua": [
+    13.4075246,
+    123.3730644
+  ],
+  "Davao de Oro::Nabunturan": [
+    7.6021804,
+    125.9687792
+  ],
+  "Zamboanga Sibugay::Naga": [
+    7.7953039,
+    122.6942596
+  ],
+  "Quirino::Nagtipunan": [
+    16.2177804,
+    121.6053532
+  ],
+  "Palawan::Narra": [
+    9.2685102,
+    118.4035463
+  ],
+  "Agusan del Norte::Nasipit": [
+    8.9884377,
+    125.3408268
+  ],
+  "Batangas::Nasugbu": [
+    14.0732603,
+    120.6326531
+  ],
+  "Pangasinan::Natividad": [
+    16.0427467,
+    120.7946807
+  ],
+  "Oriental Mindoro::Naujan": [
+    13.324239,
+    121.3030659
+  ],
+  "Biliran::Naval": [
+    11.56179,
+    124.3965267
+  ],
+  "Davao de Oro::New Bataan": [
+    7.5480137,
+    126.1371638
+  ],
+  "Davao del Norte::New Corella": [
+    7.5870947,
+    125.8239642
+  ],
+  "Iloilo::New Lucena": [
+    10.8776999,
+    122.596704
+  ],
+  "Aklan::New Washington": [
+    11.6508856,
+    122.4320224
+  ],
+  "South Cotabato::Norala": [
+    6.5202692,
+    124.660334
+  ],
+  "Bulacan::Norzagaray": [
+    14.905567,
+    121.0422641
+  ],
+  "Aklan::Numancia": [
+    11.704435,
+    122.3288949
+  ],
+  "Albay::Oas": [
+    13.2570425,
+    123.5001669
+  ],
+  "Bulacan::Obando": [
+    14.70989,
+    120.9365149
+  ],
+  "Camarines Sur::Ocampo": [
+    13.5581721,
+    123.3729397
+  ],
+  "Romblon::Odiongan": [
+    12.3997875,
+    121.9819686
+  ],
+  "Sulu::Old Panamao": [
+    5.9818846,
+    121.2140628
+  ],
+  "Zamboanga Sibugay::Olutanga": [
+    7.310729,
+    122.8451368
+  ],
+  "Sulu::Omar": [
+    6.0084369,
+    121.3877453
+  ],
+  "Bataan::Orani": [
+    14.8012181,
+    120.5362038
+  ],
+  "Eastern Samar::Oras": [
+    12.1410311,
+    125.4408359
+  ],
+  "Bataan::Orion": [
+    14.62157,
+    120.5772317
+  ],
+  "Cebu::Oslob": [
+    9.5204466,
+    123.4335205
+  ],
+  "Iloilo::Oton": [
+    10.693053,
+    122.4782709
+  ],
+  "Davao del Sur::Padada": [
+    6.6388664,
+    125.3419089
+  ],
+  "Quezon::Padre Burgos": [
+    13.915937,
+    121.8149517
+  ],
+  "Southern Leyte::Padre Burgos": [
+    10.0307729,
+    125.0167431
+  ],
+  "Batangas::Padre Garcia": [
+    13.8798754,
+    121.2138778
+  ],
+  "Quezon::Pagbilao": [
+    13.9716151,
+    121.6864374
+  ],
+  "Samar::Pagsanghan": [
+    11.9653658,
+    124.7212558
+  ],
+  "Zambales::Palauig": [
+    15.4336234,
+    119.9107718
+  ],
+  "Sultan Kudarat::Palimbang": [
+    6.2102983,
+    124.1883549
+  ],
+  "Occidental Mindoro::Paluan": [
+    13.4158295,
+    120.4626484
+  ],
+  "Cagayan::Pamplona": [
+    18.4641165,
+    121.3405544
+  ],
+  "Camarines Sur::Pamplona": [
+    13.5922305,
+    123.0826876
+  ],
+  "Sulu::Pandami": [
+    5.541792,
+    120.8013302
+  ],
+  "Antique::Pandan": [
+    11.7198989,
+    122.0945769
+  ],
+  "Bulacan::Pandi": [
+    14.8654061,
+    120.9572464
+  ],
+  "Bukidnon::Pangantucan": [
+    7.8297721,
+    124.8288119
+  ],
+  "Bohol::Panglao": [
+    9.5791851,
+    123.7452642
+  ],
+  "Sulu::Panglima Estino": [
+    5.9579396,
+    121.196327
+  ],
+  "Tawi-Tawi::Panglima Sugala": [
+    5.0722433,
+    119.8842215
+  ],
+  "Sulu::Pangutaran": [
+    6.3041267,
+    120.5718076
+  ],
+  "Tarlac::Paniqui": [
+    15.6686544,
+    120.5858177
+  ],
+  "Davao de Oro::Pantukan": [
+    7.1268151,
+    125.8971404
+  ],
+  "Quezon::Panukulan": [
+    14.9337995,
+    121.815067
+  ],
+  "Bulacan::Paombong": [
+    14.8363954,
+    120.7874997
+  ],
+  "Camarines Norte::Paracale": [
+    14.2796814,
+    122.7873162
+  ],
+  "Samar::Paranas": [
+    11.7716478,
+    125.0225953
+  ],
+  "Sulu::Parang": [
+    5.9138656,
+    120.9069555
+  ],
+  "Camarines Sur::Pasacao": [
+    13.5102072,
+    123.0411504
+  ],
+  "Sulu::Pata": [
+    5.8457184,
+    121.1445068
+  ],
+  "Sulu::Patikul": [
+    6.0889469,
+    121.1054959
+  ],
+  "Quezon::Patnanungan": [
+    14.7537047,
+    122.2184319
+  ],
+  "Antique::Patnongon": [
+    10.9143712,
+    121.9953401
+  ],
+  "Iloilo::Pavia": [
+    10.7748057,
+    122.5419293
+  ],
+  "Zamboanga Sibugay::Payao": [
+    7.5872537,
+    122.8018635
+  ],
+  "Quezon::Perez": [
+    14.1935057,
+    121.9243637
+  ],
+  "Cagayan::Peñablanca": [
+    17.6248562,
+    121.7844749
+  ],
+  "Abra::Peñarrubia": [
+    17.5530252,
+    120.6510042
+  ],
+  "Cagayan::Piat": [
+    17.7915986,
+    121.4771204
+  ],
+  "Abra::Pidigan": [
+    17.5704559,
+    120.5900124
+  ],
+  "Cotabato::Pigkawayan": [
+    7.2785835,
+    124.424275
+  ],
+  "Cotabato::Pikit": [
+    7.0537358,
+    124.6722475
+  ],
+  "Abra::Pilar": [
+    17.4150125,
+    120.5954887
+  ],
+  "Bataan::Pilar": [
+    14.6669245,
+    120.5528157
+  ],
+  "Bohol::Pilar": [
+    9.836587,
+    124.3336883
+  ],
+  "Cebu::Pilar": [
+    10.8066721,
+    124.5651739
+  ],
+  "Sorsogon::Pilar": [
+    12.9235719,
+    123.675399
+  ],
+  "Surigao del Norte::Pilar": [
+    9.8640525,
+    126.1003296
+  ],
+  "Camarines Sur::Pili": [
+    13.5562068,
+    123.2740809
+  ],
+  "Rizal::Pililla": [
+    14.4811791,
+    121.3075948
+  ],
+  "Samar::Pinabacdao": [
+    11.6134513,
+    124.9836777
+  ],
+  "Oriental Mindoro::Pinamalayan": [
+    13.0386691,
+    121.4801563
+  ],
+  "Cebu::Pinamungajan": [
+    10.2699726,
+    123.5840189
+  ],
+  "Southern Leyte::Pintuyan": [
+    9.9445582,
+    125.2483289
+  ],
+  "Albay::Pio Duran": [
+    13.0296985,
+    123.4431423
+  ],
+  "Quezon::Pitogo": [
+    13.783235,
+    122.08779
+  ],
+  "Zamboanga del Sur::Pitogo": [
+    7.4531641,
+    123.3126544
+  ],
+  "Zamboanga del Norte::Piñan": [
+    8.4816541,
+    123.4507182
+  ],
+  "Surigao del Norte::Placer": [
+    9.6566822,
+    125.6022941
+  ],
+  "Bulacan::Plaridel": [
+    14.8863156,
+    120.8598985
+  ],
+  "Quezon::Plaridel": [
+    13.9568473,
+    122.0172653
+  ],
+  "Oriental Mindoro::Pola": [
+    13.1435504,
+    121.4416056
+  ],
+  "Zamboanga del Norte::Polanco": [
+    8.531082,
+    123.3629972
+  ],
+  "Albay::Polangui": [
+    13.293769,
+    123.4843893
+  ],
+  "Quezon::Polillo": [
+    14.7144608,
+    121.9380942
+  ],
+  "South Cotabato::Polomolok": [
+    6.2202374,
+    125.0628101
+  ],
+  "Pampanga::Porac": [
+    15.0726482,
+    120.5430211
+  ],
+  "Cebu::Poro": [
+    10.628765,
+    124.4073439
+  ],
+  "Iloilo::Pototan": [
+    10.9421197,
+    122.6358296
+  ],
+  "Pangasinan::Pozorrubio": [
+    16.1102814,
+    120.5452288
+  ],
+  "Camarines Sur::Presentacion": [
+    13.7101578,
+    123.7456585
+  ],
+  "Bohol::President Carlos P. Garcia": [
+    10.1206578,
+    124.5531099
+  ],
+  "Sultan Kudarat::President Quirino": [
+    6.7002854,
+    124.7381005
+  ],
+  "Cotabato::President Roxas": [
+    7.1577578,
+    125.0513245
+  ],
+  "Sorsogon::Prieto Diaz": [
+    13.0404252,
+    124.1935375
+  ],
+  "Agusan del Sur::Prosperidad": [
+    8.6023961,
+    125.9116338
+  ],
+  "Apayao::Pudtol": [
+    18.2349362,
+    121.3725995
+  ],
+  "Oriental Mindoro::Puerto Galera": [
+    13.5017104,
+    120.9543353
+  ],
+  "Bulacan::Pulilan": [
+    14.9022688,
+    120.8487904
+  ],
+  "Tarlac::Pura": [
+    15.6236937,
+    120.6469386
+  ],
+  "Bukidnon::Quezon": [
+    7.7295754,
+    125.1018275
+  ],
+  "Palawan::Quezon": [
+    9.2377363,
+    117.9963805
+  ],
+  "Quezon::Quezon": [
+    14.0067037,
+    122.1827232
+  ],
+  "Eastern Samar::Quinapondan": [
+    11.1577552,
+    125.5212969
+  ],
+  "Camarines Sur::Ragay": [
+    13.8210634,
+    122.78763
+  ],
+  "Zamboanga del Sur::Ramon Magsaysay": [
+    8.0054675,
+    123.4867943
+  ],
+  "Tarlac::Ramos": [
+    15.6658597,
+    120.6397227
+  ],
+  "Albay::Rapu-Rapu": [
+    13.1856583,
+    124.1267772
+  ],
+  "Quezon::Real": [
+    14.6644775,
+    121.604365
+  ],
+  "Agusan del Norte::Remedios T. Romualdez": [
+    9.0537567,
+    125.5863115
+  ],
+  "Cagayan::Rizal": [
+    17.8457386,
+    121.3457201
+  ],
+  "Occidental Mindoro::Rizal": [
+    12.459039,
+    120.9642214
+  ],
+  "Zamboanga del Norte::Rizal": [
+    8.5247536,
+    123.5513072
+  ],
+  "Rizal::Rodriguez": [
+    14.7324642,
+    121.1453418
+  ],
+  "Romblon::Romblon": [
+    12.5771207,
+    122.2694085
+  ],
+  "Cebu::Ronda": [
+    10.0012191,
+    123.4092523
+  ],
+  "Pangasinan::Rosales": [
+    15.8924255,
+    120.6329883
+  ],
+  "Agusan del Sur::Rosario": [
+    8.3814612,
+    126.0018294
+  ],
+  "Batangas::Rosario": [
+    13.8454343,
+    121.2063502
+  ],
+  "Zamboanga Sibugay::Roseller Lim": [
+    7.6563848,
+    122.4631545
+  ],
+  "Oriental Mindoro::Roxas": [
+    12.5908562,
+    121.517018
+  ],
+  "Palawan::Roxas": [
+    10.3196268,
+    119.3430042
+  ],
+  "Benguet::Sablan": [
+    16.4972863,
+    120.4871756
+  ],
+  "Occidental Mindoro::Sablayan": [
+    12.8470382,
+    120.7799198
+  ],
+  "Batanes::Sabtang": [
+    20.3347734,
+    121.8722738
+  ],
+  "Bohol::Sagbayan": [
+    9.913182,
+    124.0932027
+  ],
+  "Quirino::Saguday": [
+    16.5400855,
+    121.5635618
+  ],
+  "Camarines Sur::Sagñay": [
+    13.6044805,
+    123.5216164
+  ],
+  "Southern Leyte::Saint Bernard": [
+    10.2794927,
+    125.1394863
+  ],
+  "Eastern Samar::Salcedo": [
+    11.1491251,
+    125.6632611
+  ],
+  "Abra::Sallapadan": [
+    17.4552536,
+    120.7599735
+  ],
+  "Zamboanga del Norte::Salug": [
+    8.1074204,
+    122.7576885
+  ],
+  "Bataan::Samal": [
+    14.7693766,
+    120.5421795
+  ],
+  "Cebu::Samboan": [
+    9.5283864,
+    123.3064515
+  ],
+  "Quezon::Sampaloc": [
+    14.1610171,
+    121.6382843
+  ],
+  "Romblon::San Agustin": [
+    12.5668684,
+    122.1336406
+  ],
+  "Surigao del Sur::San Agustin": [
+    8.7432343,
+    126.2212765
+  ],
+  "Quezon::San Andres": [
+    13.3230802,
+    122.6759497
+  ],
+  "Romblon::San Andres": [
+    12.519834,
+    122.0098173
+  ],
+  "Quezon::San Antonio": [
+    13.8962195,
+    121.2931059
+  ],
+  "Zambales::San Antonio": [
+    14.9488214,
+    120.0889405
+  ],
+  "Surigao del Norte::San Benito": [
+    9.9584758,
+    126.0060276
+  ],
+  "Tarlac::San Clemente": [
+    15.7121843,
+    120.3602147
+  ],
+  "Iloilo::San Dionisio": [
+    11.2711575,
+    123.0949468
+  ],
+  "Iloilo::San Enrique": [
+    11.0724172,
+    122.6558905
+  ],
+  "Pangasinan::San Fabian": [
+    16.1221224,
+    120.4032449
+  ],
+  "Zambales::San Felipe": [
+    15.0610588,
+    120.0702767
+  ],
+  "Bukidnon::San Fernando": [
+    7.9171095,
+    125.3286922
+  ],
+  "Camarines Sur::San Fernando": [
+    13.5644173,
+    123.1443199
+  ],
+  "Cebu::San Fernando": [
+    10.1629017,
+    123.7073793
+  ],
+  "Romblon::San Fernando": [
+    12.3027512,
+    122.6005655
+  ],
+  "Agusan del Sur::San Francisco": [
+    8.5050281,
+    125.9771179
+  ],
+  "Cebu::San Francisco": [
+    10.6459183,
+    124.3817679
+  ],
+  "Quezon::San Francisco": [
+    13.3469108,
+    122.5200663
+  ],
+  "Southern Leyte::San Francisco": [
+    10.0563138,
+    125.1580978
+  ],
+  "Surigao del Norte::San Francisco": [
+    9.7785695,
+    125.4219894
+  ],
+  "Bulacan::San Ildefonso": [
+    15.0781219,
+    120.9398068
+  ],
+  "Abra::San Isidro": [
+    17.4657415,
+    120.6028042
+  ],
+  "Bohol::San Isidro": [
+    9.8595624,
+    123.9562221
+  ],
+  "Davao Oriental::San Isidro": [
+    6.8344901,
+    126.0871802
+  ],
+  "Davao del Norte::San Isidro": [
+    7.7477335,
+    125.7262696
+  ],
+  "Surigao del Norte::San Isidro": [
+    9.9365296,
+    126.0869689
+  ],
+  "Pangasinan::San Jacinto": [
+    16.0735396,
+    120.4370716
+  ],
+  "Iloilo::San Joaquin": [
+    10.5867556,
+    122.142027
+  ],
+  "Samar::San Jorge": [
+    11.9789352,
+    124.8248769
+  ],
+  "Antique::San Jose": [
+    10.7440992,
+    121.9410266
+  ],
+  "Batangas::San Jose": [
+    13.8785511,
+    121.1041375
+  ],
+  "Camarines Sur::San Jose": [
+    13.6981652,
+    123.5181339
+  ],
+  "Dinagat Islands::San Jose": [
+    10.0084315,
+    125.5695546
+  ],
+  "Occidental Mindoro::San Jose": [
+    12.3539835,
+    121.0675039
+  ],
+  "Romblon::San Jose": [
+    12.0617208,
+    121.9589259
+  ],
+  "Tarlac::San Jose": [
+    15.4775949,
+    120.4639721
+  ],
+  "Samar::San Jose De Buan": [
+    12.0529566,
+    125.0254897
+  ],
+  "Abra::San Juan": [
+    17.684055,
+    120.7329137
+  ],
+  "Batangas::San Juan": [
+    13.8259866,
+    121.3964157
+  ],
+  "Siquijor::San Juan": [
+    9.1583523,
+    123.4934406
+  ],
+  "Southern Leyte::San Juan": [
+    10.2629046,
+    125.1729016
+  ],
+  "Eastern Samar::San Julian": [
+    11.7549638,
+    125.455276
+  ],
+  "Camarines Norte::San Lorenzo Ruiz": [
+    14.0368579,
+    122.8687332
+  ],
+  "Agusan del Sur::San Luis": [
+    8.4987859,
+    125.7373865
+  ],
+  "Aurora::San Luis": [
+    15.7191175,
+    121.5178817
+  ],
+  "Batangas::San Luis": [
+    13.8549295,
+    120.9162216
+  ],
+  "Pampanga::San Luis": [
+    15.0393531,
+    120.7908452
+  ],
+  "Pangasinan::San Manuel": [
+    16.0643792,
+    120.6681808
+  ],
+  "Tarlac::San Manuel": [
+    15.7992317,
+    120.6073025
+  ],
+  "Zambales::San Marcelino": [
+    14.97381,
+    120.1562867
+  ],
+  "Rizal::San Mateo": [
+    14.6951949,
+    121.1174024
+  ],
+  "Bohol::San Miguel": [
+    9.9863216,
+    124.3385695
+  ],
+  "Bulacan::San Miguel": [
+    15.1405274,
+    120.9770621
+  ],
+  "Iloilo::San Miguel": [
+    10.7814116,
+    122.465155
+  ],
+  "Surigao del Sur::San Miguel": [
+    8.932061,
+    126.038559
+  ],
+  "Zamboanga del Sur::San Miguel": [
+    7.6484779,
+    123.267382
+  ],
+  "Quezon::San Narciso": [
+    13.5656208,
+    122.566514
+  ],
+  "Zambales::San Narciso": [
+    15.0155166,
+    120.0793689
+  ],
+  "Batangas::San Nicolas": [
+    13.929865,
+    120.9521389
+  ],
+  "Pangasinan::San Nicolas": [
+    16.069384,
+    120.7619537
+  ],
+  "Zamboanga del Sur::San Pablo": [
+    7.707547,
+    123.4341981
+  ],
+  "Batangas::San Pascual": [
+    13.7878815,
+    121.0210565
+  ],
+  "Eastern Samar::San Policarpo": [
+    12.1797056,
+    125.5072461
+  ],
+  "Abra::San Quintin": [
+    17.5428676,
+    120.5183358
+  ],
+  "Pangasinan::San Quintin": [
+    15.9843124,
+    120.8131571
+  ],
+  "Bulacan::San Rafael": [
+    14.9581176,
+    120.9636529
+  ],
+  "Iloilo::San Rafael": [
+    11.1759039,
+    122.8283624
+  ],
+  "Antique::San Remigio": [
+    10.831508,
+    122.0887035
+  ],
+  "Cebu::San Remigio": [
+    11.0835479,
+    123.9366262
+  ],
+  "Southern Leyte::San Ricardo": [
+    9.9139621,
+    125.2764986
+  ],
+  "Samar::San Sebastian": [
+    11.7101392,
+    125.0175663
+  ],
+  "Pampanga::San Simon": [
+    14.9954506,
+    120.7791636
+  ],
+  "Oriental Mindoro::San Teodoro": [
+    13.4365332,
+    121.0199119
+  ],
+  "Camarines Norte::San Vicente": [
+    14.1065753,
+    122.8731792
+  ],
+  "Palawan::San Vicente": [
+    10.5270058,
+    119.2562819
+  ],
+  "Cagayan::Sanchez-Mira": [
+    18.5603984,
+    121.2342313
+  ],
+  "Cagayan::Santa Ana": [
+    18.4572501,
+    122.1421667
+  ],
+  "Pampanga::Santa Ana": [
+    15.0946937,
+    120.7659889
+  ],
+  "Iloilo::Santa Barbara": [
+    10.8272284,
+    122.5314745
+  ],
+  "Pangasinan::Santa Barbara": [
+    15.9999235,
+    120.4051274
+  ],
+  "Davao del Sur::Santa Cruz": [
+    6.8336118,
+    125.4152375
+  ],
+  "Occidental Mindoro::Santa Cruz": [
+    13.0739956,
+    120.7217953
+  ],
+  "Zambales::Santa Cruz": [
+    15.7626076,
+    119.910005
+  ],
+  "Camarines Norte::Santa Elena": [
+    14.1799094,
+    122.3923266
+  ],
+  "Cebu::Santa Fe": [
+    11.1537949,
+    123.8068632
+  ],
+  "Romblon::Santa Fe": [
+    12.1542954,
+    121.9953888
+  ],
+  "Tarlac::Santa Ignacia": [
+    15.6161567,
+    120.4359327
+  ],
+  "Agusan del Sur::Santa Josefa": [
+    7.9844761,
+    126.0288095
+  ],
+  "Sorsogon::Santa Magdalena": [
+    12.6463261,
+    124.1079114
+  ],
+  "Apayao::Santa Marcela": [
+    18.2874102,
+    121.4381253
+  ],
+  "Samar::Santa Margarita": [
+    12.0379945,
+    124.6577853
+  ],
+  "Bulacan::Santa Maria": [
+    14.8187993,
+    120.9607117
+  ],
+  "Pangasinan::Santa Maria": [
+    15.9809907,
+    120.7004137
+  ],
+  "Romblon::Santa Maria": [
+    12.3940106,
+    122.0944559
+  ],
+  "Surigao del Norte::Santa Monica": [
+    10.0188427,
+    126.0364378
+  ],
+  "Cagayan::Santa Praxedes": [
+    18.5634924,
+    120.9908099
+  ],
+  "Pampanga::Santa Rita": [
+    15.0001444,
+    120.6173052
+  ],
+  "Samar::Santa Rita": [
+    11.4513506,
+    124.9408762
+  ],
+  "Batangas::Santa Teresita": [
+    13.8694957,
+    120.9764564
+  ],
+  "Cagayan::Santa Teresita": [
+    18.2496114,
+    121.9092779
+  ],
+  "Cebu::Santander": [
+    9.4170689,
+    123.3351935
+  ],
+  "Agusan del Norte::Santiago": [
+    9.2654938,
+    125.5602995
+  ],
+  "Albay::Santo Domingo": [
+    13.2377089,
+    123.7780984
+  ],
+  "Cagayan::Santo Niño": [
+    17.8839124,
+    121.5692104
+  ],
+  "Samar::Santo Niño": [
+    11.9261705,
+    124.4487916
+  ],
+  "South Cotabato::Santo Niño": [
+    6.4285627,
+    124.6802919
+  ],
+  "Davao del Norte::Santo Tomas": [
+    7.532835,
+    125.6232185
+  ],
+  "Pangasinan::Santo Tomas": [
+    15.878228,
+    120.5860753
+  ],
+  "Tawi-Tawi::Sapa-Sapa": [
+    5.0901662,
+    120.2733204
+  ],
+  "Iloilo::Sara": [
+    11.2566801,
+    123.0143933
+  ],
+  "Quezon::Sariaya": [
+    13.9629837,
+    121.5243402
+  ],
+  "Pampanga::Sasmuan": [
+    14.9361811,
+    120.6226542
+  ],
+  "Antique::Sebaste": [
+    11.5896899,
+    122.0958588
+  ],
+  "Zamboanga del Norte::Sergio Osmeña Sr.": [
+    8.2956667,
+    123.5082447
+  ],
+  "Bohol::Sevilla": [
+    9.7032416,
+    124.0457161
+  ],
+  "Sulu::Siasi": [
+    5.5451683,
+    120.8151131
+  ],
+  "Zamboanga Sibugay::Siay": [
+    7.7096892,
+    122.8671803
+  ],
+  "Zamboanga del Norte::Siayan": [
+    8.2513869,
+    123.1142638
+  ],
+  "Agusan del Sur::Sibagat": [
+    8.81953,
+    125.6931276
+  ],
+  "Antique::Sibalom": [
+    10.7889049,
+    122.017534
+  ],
+  "Cebu::Sibonga": [
+    10.0173783,
+    123.6204663
+  ],
+  "Zamboanga del Norte::Sibuco": [
+    7.2924807,
+    122.0667351
+  ],
+  "Zamboanga del Norte::Sibutad": [
+    8.6126898,
+    123.4801814
+  ],
+  "Tawi-Tawi::Sibutu": [
+    4.8408032,
+    119.458997
+  ],
+  "Bohol::Sierra Bullones": [
+    9.8078938,
+    124.2913422
+  ],
+  "Bohol::Sikatuna": [
+    9.6878902,
+    123.9740416
+  ],
+  "Southern Leyte::Silago": [
+    10.5285405,
+    125.1623205
+  ],
+  "Tawi-Tawi::Simunul": [
+    4.8980374,
+    119.8218352
+  ],
+  "Zamboanga del Norte::Sindangan": [
+    8.2373562,
+    122.9986125
+  ],
+  "Zamboanga del Norte::Siocon": [
+    7.7064072,
+    122.1359108
+  ],
+  "Camarines Sur::Sipocot": [
+    13.766636,
+    122.9785788
+  ],
+  "Siquijor::Siquijor": [
+    9.2155864,
+    123.5138212
+  ],
+  "Zamboanga del Norte::Sirawai": [
+    7.5852175,
+    122.140523
+  ],
+  "Camarines Sur::Siruma": [
+    14.0205642,
+    123.2586653
+  ],
+  "Pangasinan::Sison": [
+    16.1726711,
+    120.5096939
+  ],
+  "Surigao del Norte::Sison": [
+    9.6589559,
+    125.5269216
+  ],
+  "Tawi-Tawi::Sitangkai": [
+    4.6625499,
+    119.3938939
+  ],
+  "Oriental Mindoro::Socorro": [
+    13.0552134,
+    121.406919
+  ],
+  "Surigao del Norte::Socorro": [
+    9.6184003,
+    125.9656786
+  ],
+  "Palawan::Sofronio Española": [
+    8.9636169,
+    118.0004439
+  ],
+  "Cebu::Sogod": [
+    10.7471948,
+    124.0044727
+  ],
+  "Southern Leyte::Sogod": [
+    10.384588,
+    124.9808027
+  ],
+  "Cagayan::Solana": [
+    17.6509356,
+    121.6909171
+  ],
+  "Zamboanga del Sur::Sominot": [
+    8.0412053,
+    123.3828885
+  ],
+  "Tawi-Tawi::South Ubian": [
+    5.1873927,
+    120.4955419
+  ],
+  "Pampanga::Sto. Tomas": [
+    14.9888039,
+    120.7090486
+  ],
+  "Pangasinan::Sual": [
+    16.0653569,
+    120.0962429
+  ],
+  "Zambales::Subic": [
+    14.8774796,
+    120.2344695
+  ],
+  "Eastern Samar::Sulat": [
+    11.8152123,
+    125.4530073
+  ],
+  "Davao del Sur::Sulop": [
+    6.5966959,
+    125.3449838
+  ],
+  "Bukidnon::Sumilao": [
+    8.3272712,
+    124.9780566
+  ],
+  "Basilan::Sumisip": [
+    6.4192786,
+    122.0341261
+  ],
+  "South Cotabato::Surallah": [
+    6.3754689,
+    124.7475942
+  ],
+  "South Cotabato::T'Boli": [
+    6.2138317,
+    124.8229251
+  ],
+  "Batangas::Taal": [
+    13.8800681,
+    120.923877
+  ],
+  "Zamboanga del Sur::Tabina": [
+    7.4632266,
+    123.4091717
+  ],
+  "Cebu::Tabogon": [
+    10.9398633,
+    124.0277378
+  ],
+  "Basilan::Tabuan-Lasa": [
+    6.3192339,
+    121.9291468
+  ],
+  "Cebu::Tabuelan": [
+    10.822884,
+    123.8723508
+  ],
+  "Eastern Samar::Taft": [
+    11.9049131,
+    125.4164158
+  ],
+  "Surigao del Norte::Tagana-An": [
+    9.6973759,
+    125.5826923
+  ],
+  "Samar::Tagapul-An": [
+    12.0478901,
+    124.1585829
+  ],
+  "Surigao del Sur::Tagbina": [
+    8.4573568,
+    126.1590719
+  ],
+  "Quezon::Tagkawayan": [
+    13.9656058,
+    122.5392058
+  ],
+  "Surigao del Sur::Tago": [
+    9.0194997,
+    126.2331544
+  ],
+  "Agusan del Sur::Talacogon": [
+    8.4486711,
+    125.7861565
+  ],
+  "Davao del Norte::Talaingod": [
+    7.6325607,
+    125.5751491
+  ],
+  "Bukidnon::Talakag": [
+    8.2323589,
+    124.6031485
+  ],
+  "Samar::Talalora": [
+    11.5309574,
+    124.835473
+  ],
+  "Bohol::Talibon": [
+    10.1508224,
+    124.3267808
+  ],
+  "Sulu::Talipao": [
+    5.9750727,
+    121.114474
+  ],
+  "Batangas::Talisay": [
+    14.0936564,
+    121.0205863
+  ],
+  "Camarines Norte::Talisay": [
+    14.1349581,
+    122.9237258
+  ],
+  "Zamboanga Sibugay::Talusan": [
+    7.426643,
+    122.8088179
+  ],
+  "Zamboanga del Sur::Tambulig": [
+    8.0692761,
+    123.536314
+  ],
+  "South Cotabato::Tampakan": [
+    6.4437607,
+    124.9269132
+  ],
+  "Zamboanga del Norte::Tampilisan": [
+    7.9759459,
+    122.6638655
+  ],
+  "Rizal::Tanay": [
+    14.4985359,
+    121.2856331
+  ],
+  "Tawi-Tawi::Tandubas": [
+    5.1349924,
+    120.3460023
+  ],
+  "Aklan::Tangalan": [
+    11.7770629,
+    122.2601806
+  ],
+  "South Cotabato::Tantangan": [
+    6.6191395,
+    124.748923
+  ],
+  "Sulu::Tapul": [
+    5.7051707,
+    120.8818507
+  ],
+  "Samar::Tarangnan": [
+    11.9027186,
+    124.747471
+  ],
+  "Davao Oriental::Tarragona": [
+    7.0497523,
+    126.4489837
+  ],
+  "Batangas::Taysan": [
+    13.7976856,
+    121.1889935
+  ],
+  "Palawan::Taytay": [
+    10.8250187,
+    119.5178766
+  ],
+  "Rizal::Taytay": [
+    14.5587089,
+    121.1359659
+  ],
+  "Pangasinan::Tayug": [
+    16.0275524,
+    120.7443637
+  ],
+  "Abra::Tayum": [
+    17.6179807,
+    120.6537449
+  ],
+  "Rizal::Teresa": [
+    14.5589166,
+    121.2080514
+  ],
+  "Quezon::Tiaong": [
+    13.9596673,
+    121.3222989
+  ],
+  "Antique::Tibiao": [
+    11.2886284,
+    122.0342615
+  ],
+  "Camarines Sur::Tigaon": [
+    13.6303411,
+    123.4965413
+  ],
+  "Zamboanga del Sur::Tigbao": [
+    7.8208072,
+    123.2235087
+  ],
+  "Iloilo::Tigbauan": [
+    10.6744469,
+    122.3761115
+  ],
+  "Camarines Sur::Tinambac": [
+    13.8183125,
+    123.3253366
+  ],
+  "Abra::Tineg": [
+    17.7219615,
+    120.8215933
+  ],
+  "Batangas::Tingloy": [
+    13.6608216,
+    120.8712711
+  ],
+  "Ifugao::Tinoc": [
+    16.6750633,
+    120.9369128
+  ],
+  "Basilan::Tipo-Tipo": [
+    6.5003043,
+    122.1205817
+  ],
+  "Zamboanga Sibugay::Titay": [
+    7.8692108,
+    122.5607307
+  ],
+  "Albay::Tiwi": [
+    13.4569196,
+    123.6796912
+  ],
+  "Antique::Tobias Fornier": [
+    10.5162619,
+    121.945127
+  ],
+  "Southern Leyte::Tomas Oppus": [
+    10.3050067,
+    124.9795399
+  ],
+  "Sulu::Tongkil": [
+    6.0710519,
+    121.7848726
+  ],
+  "Agusan del Sur::Trento": [
+    8.043508,
+    126.0633157
+  ],
+  "Bohol::Trinidad": [
+    10.0792217,
+    124.3430533
+  ],
+  "Cagayan::Tuao": [
+    17.7341301,
+    121.4555256
+  ],
+  "Benguet::Tuba": [
+    16.3924478,
+    120.5601478
+  ],
+  "Dinagat Islands::Tubajon": [
+    10.3200557,
+    125.5589422
+  ],
+  "Agusan del Norte::Tubay": [
+    9.1650676,
+    125.5226912
+  ],
+  "Bohol::Tubigon": [
+    9.9515287,
+    123.9618897
+  ],
+  "Benguet::Tublay": [
+    16.4748115,
+    120.6330048
+  ],
+  "Abra::Tubo": [
+    17.2583528,
+    120.724627
+  ],
+  "Surigao del Norte::Tubod": [
+    9.5551416,
+    125.5696945
+  ],
+  "Iloilo::Tubungan": [
+    10.7653357,
+    122.318261
+  ],
+  "Basilan::Tuburan": [
+    6.6101803,
+    122.1846186
+  ],
+  "Cebu::Tuburan": [
+    10.7285353,
+    123.8254215
+  ],
+  "Cebu::Tudela": [
+    10.6362844,
+    124.4700002
+  ],
+  "Cagayan::Tuguegarao City": [
+    17.6118858,
+    121.7300377
+  ],
+  "Zamboanga del Sur::Tukuran": [
+    7.8539612,
+    123.5793019
+  ],
+  "Cotabato::Tulunan": [
+    6.8300214,
+    124.8736479
+  ],
+  "Zamboanga Sibugay::Tungawan": [
+    7.6012214,
+    122.421282
+  ],
+  "South Cotabato::Tupi": [
+    6.3313349,
+    124.9511647
+  ],
+  "Tawi-Tawi::Turtle Islands": [
+    6.0731504,
+    118.3125904
+  ],
+  "Batangas::Tuy": [
+    14.0194625,
+    120.7304526
+  ],
+  "Bohol::Ubay": [
+    10.0540129,
+    124.4740811
+  ],
+  "Pangasinan::Umingan": [
+    15.9272139,
+    120.8407438
+  ],
+  "Basilan::Ungkaya Pukan": [
+    6.4951442,
+    122.1055864
+  ],
+  "Quezon::Unisan": [
+    13.8393046,
+    121.9763634
+  ],
+  "Pangasinan::Urbiztondo": [
+    15.8223901,
+    120.3293751
+  ],
+  "Batanes::Uyugan": [
+    20.3495326,
+    121.9380527
+  ],
+  "Antique::Valderrama": [
+    11.0018524,
+    122.129408
+  ],
+  "Bohol::Valencia": [
+    9.6081688,
+    124.2078576
+  ],
+  "Agusan del Sur::Veruela": [
+    8.0694171,
+    125.9552937
+  ],
+  "Oriental Mindoro::Victoria": [
+    13.1733849,
+    121.2787746
+  ],
+  "Tarlac::Victoria": [
+    15.5770813,
+    120.6812475
+  ],
+  "Samar::Villareal": [
+    11.5675325,
+    124.9281544
+  ],
+  "Pangasinan::Villasis": [
+    15.9015861,
+    120.5883085
+  ],
+  "Abra::Villaviciosa": [
+    17.4378456,
+    120.6256845
+  ],
+  "Zamboanga del Sur::Vincenzo A. Sagun": [
+    7.5150492,
+    123.1708909
+  ],
+  "Camarines Norte::Vinzons": [
+    14.1739546,
+    122.907596
+  ],
+  "Iloilo::Zarraga": [
+    10.8223786,
+    122.6095819
+  ],
+  "Samar::Zumarraga": [
+    11.6381908,
+    124.8403412
+  ],
+  "City of Angeles (Not a Province)::City of Angeles": [
+    15.1348084,
+    120.5906946
+  ],
+  "City of Bacolod (Not a Province)::City of Bacolod": [
+    10.6713,
+    122.9511
+  ],
+  "City of Baguio (Not a Province)::City of Baguio": [
+    16.411986,
+    120.5933878
+  ],
+  "City of Butuan (Not a Province)::City of Butuan": [
+    8.9477147,
+    125.5432054
+  ],
+  "City of Cagayan De Oro (Not a Province)::City of Cagayan De Oro": [
+    8.4855213,
+    124.6352454
+  ],
+  "City of Caloocan (Not a Province)::City of Caloocan": [
+    14.6513445,
+    120.9723835
+  ],
+  "City of Cebu (Not a Province)::City of Cebu": [
+    10.2934946,
+    123.9018183
+  ],
+  "City of Davao (Not a Province)::City of Davao": [
+    7.0648306,
+    125.6080623
+  ],
+  "City of General Santos (Not a Province)::City of General Santos": [
+    6.1122217,
+    125.1721893
+  ],
+  "City of Iligan (Not a Province)::City of Iligan": [
+    8.2281556,
+    124.2411508
+  ],
+  "City of Iloilo (Not a Province)::City of Iloilo": [
+    10.6932884,
+    122.5732604
+  ],
+  "City of Isabela (Not a Province)::City of Isabela": [
+    6.7053597,
+    121.9710604
+  ],
+  "City of Lapu-Lapu (Not a Province)::City of Lapu-Lapu": [
+    10.3103,
+    123.9494
+  ],
+  "City of Las Piñas (Not a Province)::City of Las Piñas": [
+    14.4809012,
+    120.9817861
+  ],
+  "City of Lucena (Not a Province)::City of Lucena": [
+    13.9357696,
+    121.6128612
+  ],
+  "City of Makati (Not a Province)::City of Makati": [
+    14.5632646,
+    121.0599362
+  ],
+  "City of Malabon (Not a Province)::City of Malabon": [
+    14.6538484,
+    120.9601897
+  ],
+  "City of Mandaluyong (Not a Province)::City of Mandaluyong": [
+    14.5774392,
+    121.0338973
+  ],
+  "City of Mandaue (Not a Province)::City of Mandaue": [
+    10.327363,
+    123.9345333
+  ],
+  "City of Marikina (Not a Province)::City of Marikina": [
+    14.6331084,
+    121.0993541
+  ],
+  "City of Muntinlupa (Not a Province)::City of Muntinlupa": [
+    14.3862491,
+    121.0429218
+  ],
+  "City of Navotas (Not a Province)::City of Navotas": [
+    14.6571862,
+    120.9479692
+  ],
+  "City of Olongapo (Not a Province)::City of Olongapo": [
+    14.8388848,
+    120.2843587
+  ],
+  "City of Parañaque (Not a Province)::City of Parañaque": [
+    14.4910175,
+    120.9897141
+  ],
+  "City of Pasig (Not a Province)::City of Pasig": [
+    14.5605166,
+    121.0764343
+  ],
+  "City of Puerto Princesa (Not a Province)::City of Puerto Princesa": [
+    9.7392,
+    118.7353
+  ],
+  "City of San Juan (Not a Province)::City of San Juan": [
+    14.6044363,
+    121.0299469
+  ],
+  "City of Tacloban (Not a Province)::City of Tacloban": [
+    11.2431609,
+    125.0082936
+  ],
+  "City of Taguig (Not a Province)::City of Taguig": [
+    14.4894066,
+    121.0538024
+  ],
+  "City of Valenzuela (Not a Province)::City of Valenzuela": [
+    14.6916903,
+    120.9694534
+  ],
+  "City of Zamboanga (Not a Province)::City of Zamboanga": [
+    6.9214,
+    122.079
+  ],
+  "Pasay City (Not a Province)::Pasay City": [
+    14.5436995,
+    120.9946503
+  ],
+  "Pateros (Not a Province)::Pateros": [
+    14.5447555,
+    121.067134
+  ],
+  "Quezon City (Not a Province)::Quezon City": [
+    14.6510546,
+    121.0486254
+  ],
+  "Pangasinan::City of Alaminos": [
+    16.1553857,
+    119.9792201
+  ],
+  "Ilocos Sur::City of Candon": [
+    17.1929894,
+    120.4483993
+  ],
+  "Negros Oriental::City of Guihulngan": [
+    10.1195972,
+    123.273871
+  ],
+  "Pangasinan::City of San Carlos": [
+    15.926773,
+    120.3475584
+  ],
+  "Zamboanga del Norte::Pres. Manuel A. Roxas": [
+    8.5204531,
+    123.2312256
+  ],
+  "Misamis Occidental::Don Victoriano Chiongbian": [
+    8.4530116679183,
+    123.57425948136911
+  ],
+  "Special Geographic Area::Kadayangan": [
+    7.256356742397499,
+    124.45433902688193
+  ],
+  "Special Geographic Area::Kapalawan": [
+    6.9696058511314,
+    124.8673245484399
+  ],
+  "Special Geographic Area::Ligawasan": [
+    7.133584767250247,
+    124.59309561855464
+  ],
+  "Special Geographic Area::Malidegao": [
+    7.3123235612088635,
+    124.87526366095413
+  ],
+  "Special Geographic Area::Nabalawag": [
+    6.847709669614608,
+    124.38972719849313
+  ],
+  "Special Geographic Area::Old Kaabakan": [
+    6.8446419026923,
+    124.80371765520044
+  ],
+  "Special Geographic Area::Pahamuddin": [
+    7.195994745531584,
+    124.66378980431793
+  ],
+  "Sultan Kudarat::Sen. Ninoy Aquino": [
+    6.4596414,
+    124.3221058
+  ],
+  "City of Manila::Tondo I/II": [
+    14.6189095,
+    120.9660386
+  ],
+  "Special Geographic Area::Tugunan": [
+    7.293722005268494,
+    124.38408575032001
   ]
 }

@@ -28,6 +28,13 @@ PROVINCE_CENTROIDS = {
     # NCR
     "metro manila": (14.5548, 121.0244), "ncr": (14.5548, 121.0244),
     "national capital region": (14.5548, 121.0244),
+    "city of manila": (14.5995, 120.9842),
+    # CAR
+    "abra": (17.5951, 120.7983), "apayao": (18.0126, 121.1710),
+    "benguet": (16.5500, 120.6800), "ifugao": (16.8331, 121.1710),
+    "kalinga": (17.4740, 121.3542), "mountain province": (17.0700, 121.0300),
+    # BARMM Special Geographic Area (barangays in the Cotabato area)
+    "special geographic area": (7.0500, 124.6000),
     # Region I
     "ilocos norte": (18.1647, 120.7116), "ilocos sur": (17.5755, 120.3869),
     "la union": (16.6159, 120.3209), "pangasinan": (15.8949, 120.2863),
@@ -87,6 +94,47 @@ PROVINCE_CENTROIDS = {
     "maguindanao": (6.8416, 124.4330), "sulu": (5.9747, 121.0337),
     "tawi-tawi": (5.1339, 119.9513),
 }
+
+# ── Highly Urbanized Cities (HUCs) ──────────────────────────────────────────────
+# In the `barangay` package, HUCs sit at the *province* level of the
+# Region → Province → Municipality dict, but their value is a flat list of
+# barangay names (not a nested dict of municipalities) — every other loader in
+# this file skips non-dict entries via `isinstance(prov_data, dict)`, so all 33
+# HUCs (Quezon City, Cebu City, Davao City, Makati, Baguio, etc.) were silently
+# absent from every run. Treated here as a single municipality whose "province"
+# is itself, following the same "<Name> (Not a Province)" convention the
+# barangay package already uses for City of Isabela.
+HUC_NOT_A_PROVINCE_SUFFIX = " (Not a Province)"
+
+HUC_CENTROIDS = {
+    "city of baguio": (16.4023, 120.5960), "city of puerto princesa": (9.7392, 118.7353),
+    "city of caloocan": (14.6499, 120.9833), "city of las piñas": (14.4499, 120.9829),
+    "city of makati": (14.5547, 121.0244), "city of malabon": (14.6681, 120.9569),
+    "city of mandaluyong": (14.5794, 121.0359), "city of marikina": (14.6507, 121.1029),
+    "city of muntinlupa": (14.4081, 121.0415), "city of navotas": (14.6667, 120.9437),
+    "city of parañaque": (14.4793, 121.0198), "city of pasig": (14.5764, 121.0851),
+    "city of san juan": (14.6019, 121.0355), "city of taguig": (14.5176, 121.0509),
+    "city of valenzuela": (14.7011, 120.9830), "pasay city": (14.5378, 121.0014),
+    "quezon city": (14.6760, 121.0437), "pateros": (14.5441, 121.0685),
+    "city of bacolod": (10.6713, 122.9511), "city of angeles": (15.1450, 120.5930),
+    "city of olongapo": (14.8294, 120.2825), "city of lucena": (13.9314, 121.6165),
+    "city of zamboanga": (6.9214, 122.0790), "city of iloilo": (10.7202, 122.5621),
+    "city of cebu": (10.3157, 123.8854), "city of lapu-lapu": (10.3103, 123.9494),
+    "city of mandaue": (10.3236, 123.9227), "city of tacloban": (11.2543, 125.0000),
+    "city of cagayan de oro": (8.4822, 124.6472), "city of iligan": (8.2280, 124.2452),
+    "city of davao": (7.0722, 125.6131), "city of general santos": (6.1164, 125.1716),
+    "city of butuan": (8.9475, 125.5406),
+}
+
+
+def _huc_province(name: str) -> str:
+    return f"{name}{HUC_NOT_A_PROVINCE_SUFFIX}"
+
+
+for _huc_name, _coord in HUC_CENTROIDS.items():
+    PROVINCE_CENTROIDS[_huc_province(_huc_name).lower()] = _coord
+del _huc_name, _coord
+
 
 INCOME_CLASS_MAP = {
     "1st": 6, "2nd": 5, "3rd": 4, "4th": 3, "5th": 2, "6th": 1, "special": 6,
@@ -223,10 +271,26 @@ def load_municipalities(location: str) -> list[dict]:
             region_key = region_name.lower()
             index[region_key] = ("region", region_name, None, region_data)
             for prov_name, prov_data in region_data.items():
-                if not isinstance(prov_data, dict):
-                    continue
-                prov_key = prov_name.lower()
-                index[prov_key] = ("province", region_name, prov_name, prov_data)
+                if isinstance(prov_data, dict):
+                    prov_key = prov_name.lower()
+                    index[prov_key] = ("province", region_name, prov_name, prov_data)
+                else:
+                    # HUC: province-level entry holds a flat barangay list, not a
+                    # dict of municipalities — it IS a single municipality.
+                    # Index under BOTH the bare name ("quezon city") and the
+                    # pseudo-province form ("quezon city (not a province)",
+                    # what db_store/run_all_provinces.py actually pass in) so
+                    # an exact match always wins. Without the second key, a
+                    # short/well-known real province name (Cebu, Iloilo,
+                    # Cagayan) can outscore the correct HUC in the fuzzy
+                    # fallback below — confirmed live: "City of Cebu (Not a
+                    # Province)" fuzzy-matched to Cebu *province* (50 munis)
+                    # instead of the HUC, and City of Cagayan De Oro matched
+                    # Cagayan province in Luzon, silently burning API calls on
+                    # the wrong location entirely.
+                    huc_key = prov_name.lower()
+                    index[huc_key] = ("huc", region_name, prov_name, None)
+                    index[_huc_province(prov_name).lower()] = ("huc", region_name, prov_name, None)
 
         location_lower = location.lower().strip()
         # Try exact match first
@@ -247,10 +311,13 @@ def load_municipalities(location: str) -> list[dict]:
         units = []
         if level == "region":
             for prov_name, prov_data in place_data.items():
-                if not isinstance(prov_data, dict):
-                    continue
-                for muni_name in prov_data.keys():
-                    units.append(_build_unit(muni_name, prov_name, region_name))
+                if isinstance(prov_data, dict):
+                    for muni_name in prov_data.keys():
+                        units.append(_build_unit(muni_name, prov_name, region_name))
+                else:
+                    units.append(_build_unit(prov_name, _huc_province(prov_name), region_name))
+        elif level == "huc":
+            units.append(_build_unit(province_name, _huc_province(province_name), region_name))
         else:
             for muni_name in place_data.keys():
                 units.append(_build_unit(muni_name, province_name, region_name))
@@ -275,13 +342,35 @@ def load_single_municipality(town: str, province: str) -> list[dict]:
         data = br.BARANGAY
 
         # Build province index: lowercase_name → (region_name, prov_name, prov_data)
+        # and a HUC index: lowercase_name → (region_name, prov_name) — HUCs aren't
+        # "in" any province, so a query like "Quezon City, NCR" or "Quezon City,
+        # Metro Manila" must resolve by town name alone, independent of province_key.
         prov_index = {}
+        huc_index = {}
         for region_name, region_data in data.items():
             if not isinstance(region_data, dict):
                 continue
             for prov_name, prov_data in region_data.items():
                 if isinstance(prov_data, dict):
                     prov_index[prov_name.lower()] = (region_name, prov_name, prov_data)
+                else:
+                    huc_index[prov_name.lower()] = (region_name, prov_name)
+
+        # HUC short-circuit: exact match first, then a strict fuzzy fallback
+        # (high cutoff — avoid hijacking a real municipality of similar name,
+        # e.g. "Quezon" province vs. "Quezon City" HUC).
+        town_lower = town.lower().strip()
+        huc_match = None
+        if town_lower in huc_index:
+            huc_match = huc_index[town_lower]
+        else:
+            result = rfprocess.extractOne(town_lower, list(huc_index.keys()), score_cutoff=90)
+            if result:
+                huc_match = huc_index[result[0]]
+        if huc_match:
+            region_name, prov_name = huc_match
+            logger.info(f"load_single_municipality: matched HUC '{prov_name}', {region_name}")
+            return [_build_unit(prov_name, _huc_province(prov_name), region_name)]
 
         # Match province
         prov_key = province.lower().strip()

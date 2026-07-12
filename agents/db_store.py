@@ -30,6 +30,8 @@ def _create_schema() -> None:
         population   INTEGER,
         income_class TEXT
     );
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_municipalities_name_province
+        ON municipalities(name, province);
     CREATE TABLE IF NOT EXISTS geo_scores (
         id                INTEGER PRIMARY KEY AUTOINCREMENT,
         municipality_id   INTEGER NOT NULL UNIQUE REFERENCES municipalities(id),

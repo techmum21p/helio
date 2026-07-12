@@ -33,9 +33,73 @@ def _save_cache(cache: dict) -> None:
     _CACHE_FILE.write_text(json.dumps(cache, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
-def _nominatim_lookup(name: str, province: str) -> tuple[float, float] | None:
-    """Single Nominatim query. Returns (lat, lon) or None."""
-    query = f"{name}, {province}, Philippines"
+_PSEUDO_PROVINCE_SUFFIX = " (Not a Province)"
+
+
+_HONORIFIC_PREFIXES = ("pres. ", "sen. ", "gen. ", "dr. ")
+# One-off: the only Roman-numeral-split barangay name in the whole dataset
+# (verified 2026-07-08 — no other "X I/II" pattern exists), not worth a
+# generic regex rule for n=1. "Tondo, Manila" resolves; "Tondo I/II" doesn't.
+_NAME_OVERRIDES = {"tondo i/ii": "Tondo"}
+
+
+def _strip_city_of(text: str) -> str:
+    """'City of Candon' -> 'Candon'. Nominatim/OSM indexes most PH cities by
+    their common name, not the formal PSGC 'City of X' designation — the
+    formal form alone can return zero results even for well-known, easily
+    mappable cities."""
+    if text.lower().startswith("city of "):
+        return text[len("city of "):]
+    return text
+
+
+def _strip_honorific(text: str) -> str:
+    """'Pres. Manuel A. Roxas' -> 'Manuel A. Roxas', 'Sen. Ninoy Aquino' ->
+    'Ninoy Aquino'. A handful of PH municipality names carry a formal
+    honorific (Pres./Sen./Gen./Dr.) that OSM doesn't always index by —
+    confirmed live for Pres. and Sen. cases; Gen./Dr. cases already resolve
+    on their full name today, so this is purely a fallback candidate."""
+    lower = text.lower()
+    for prefix in _HONORIFIC_PREFIXES:
+        if lower.startswith(prefix):
+            return text[len(prefix):]
+    return text
+
+
+def _query_candidates(name: str, province: str) -> list[str]:
+    """
+    Build a list of Nominatim query strings to try in order, most-specific
+    first. Confirmed live (2026-07-08) that the formal "City of X" name and/or
+    "City of Manila" as a province silently return zero results for real,
+    well-known, easily mappable places — e.g. "City of Candon, Ilocos Sur"
+    fails but "Candon, Ilocos Sur" resolves precisely; "Binondo, City of
+    Manila" fails but "Binondo, Manila" resolves precisely. Pseudo-provinces
+    (HUCs) are handled first since that fix already existed.
+    """
+    province = province.removesuffix(_PSEUDO_PROVINCE_SUFFIX)
+    if province.strip().lower() == name.strip().lower():
+        province = ""
+
+    override_name = _NAME_OVERRIDES.get(name.strip().lower())
+    bare_name = _strip_city_of(name)
+    bare_province = _strip_city_of(province) if province else province
+    honorific_name = _strip_honorific(bare_name)
+
+    candidates = []
+    seen = set()
+    name_variants = [name, bare_name, honorific_name]
+    if override_name:
+        name_variants.append(override_name)
+    for n in name_variants:
+        for p in [province, bare_province]:
+            query = f"{n}, {p}, Philippines" if p else f"{n}, Philippines"
+            if query not in seen:
+                seen.add(query)
+                candidates.append(query)
+    return candidates
+
+
+def _nominatim_query(query: str) -> tuple[float, float] | None:
     try:
         time.sleep(_DELAY)
         r = requests.get(
@@ -49,6 +113,18 @@ def _nominatim_lookup(name: str, province: str) -> tuple[float, float] | None:
             return float(results[0]["lat"]), float(results[0]["lon"])
     except Exception as e:
         logger.warning(f"Nominatim lookup failed for '{query}': {e}")
+    return None
+
+
+def _nominatim_lookup(name: str, province: str) -> tuple[float, float] | None:
+    """
+    Try progressively less formal query variants until one resolves.
+    Returns (lat, lon) from the first successful query, or None if all fail.
+    """
+    for query in _query_candidates(name, province):
+        result = _nominatim_query(query)
+        if result:
+            return result
     return None
 
 

@@ -263,7 +263,18 @@ def web_intel_agent(state: SolarLeadState) -> SolarLeadState:
     logger.info(f"[Agent 2] Web intel for: {state['location']}")
 
     geo_scores = state.get("geo_scores") or {}
-    municipalities = list(geo_scores.keys()) if geo_scores else [state["location"]]
+    # Sort by geo_score BEFORE truncating to TOP_N_TARGETS. The dict arrives in
+    # DB row-return order (no ORDER BY upstream), so slicing it unsorted selects
+    # an arbitrary 20 — in provinces with >20 municipalities the true top
+    # scorers could be silently skipped while low scorers got the web-intel and
+    # synthesis budget (confirmed live 2026-07-08: all 33 such provinces were
+    # affected; e.g. Cavite's #2/#3 by geo_score never made any run).
+    if geo_scores:
+        municipalities = sorted(
+            geo_scores, key=lambda m: geo_scores[m].get("geo_score", 0), reverse=True
+        )
+    else:
+        municipalities = [state["location"]]
     municipalities = municipalities[:config.TOP_N_TARGETS]
 
     web_intel = {}
