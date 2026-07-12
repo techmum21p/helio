@@ -15,6 +15,7 @@ from chromadb.utils import embedding_functions
 
 import config
 from graph.state import SolarLeadState
+from agents.db_store import get_latest_scored_municipalities
 
 client = anthropic.Anthropic(api_key=config.XIAOMI_API_KEY, base_url=config.XIAOMI_BASE_URL)
 
@@ -106,6 +107,23 @@ def index_documents_from_kb() -> None:
             logger.info(f"Indexed {len(new_chunks)} chunks from {md_file.name}")
 
 
+from agents.refresh import maybe_refresh_assessment  # noqa: E402 — imported here (not at top)
+# to avoid a circular import: agents.refresh imports index_documents_from_kb from this
+# module, so agents.refresh can only be imported after that function is defined above.
+
+
+def detect_municipality_id(message: str, municipalities: list[dict]) -> int | None:
+    """Return the municipality_id of the longest municipality name found in message, or None."""
+    lower_message = message.lower()
+    best: tuple[int, int] | None = None  # (name length, municipality_id)
+    for m in municipalities:
+        name = m["name"]
+        if name.lower() in lower_message:
+            if best is None or len(name) > best[0]:
+                best = (len(name), m["municipality_id"])
+    return best[1] if best else None
+
+
 def update_kb_node(state: SolarLeadState) -> SolarLeadState:
     """LangGraph node: triggered after report_gen. Builds per-municipality docs then indexes."""
     logger.info("[Agent 5] Updating knowledge base...")
@@ -185,6 +203,11 @@ def chat(user_message: str, chat_history: list, run_id: str = "") -> tuple[str, 
     Returns (assistant_response, updated_chat_history).
     Persists both turns to DB if run_id is provided.
     """
+    municipalities = get_latest_scored_municipalities()
+    municipality_id = detect_municipality_id(user_message, municipalities)
+    if municipality_id is not None:
+        maybe_refresh_assessment(municipality_id)
+
     context  = retrieve_context(user_message)
     messages = chat_history.copy()
     messages.append({
