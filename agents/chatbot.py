@@ -107,9 +107,18 @@ def index_documents_from_kb() -> None:
             logger.info(f"Indexed {len(new_chunks)} chunks from {md_file.name}")
 
 
-from agents.refresh import maybe_refresh_assessment  # noqa: E402 — imported here (not at top)
-# to avoid a circular import: agents.refresh imports index_documents_from_kb from this
-# module, so agents.refresh can only be imported after that function is defined above.
+def maybe_refresh_assessment(municipality_id: int):
+    """Thin wrapper around agents.refresh.maybe_refresh_assessment.
+
+    The import is deferred to call time (rather than module load time) to
+    avoid a circular import: agents.refresh imports index_documents_from_kb
+    from this module at its own module load time, so this module can only
+    reach back into agents.refresh once both modules have finished loading.
+    Kept as a module-level name (rather than a local import inside chat())
+    so it stays monkeypatchable via `chatbot_mod.maybe_refresh_assessment`.
+    """
+    from agents.refresh import maybe_refresh_assessment as _maybe_refresh_assessment
+    return _maybe_refresh_assessment(municipality_id)
 
 
 def detect_municipality_id(message: str, municipalities: list[dict]) -> int | None:
