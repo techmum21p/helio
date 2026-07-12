@@ -33,18 +33,29 @@ def province_slug_map() -> dict[str, str]:
     }
 
 
-def _resolve_province(fragment: str, rows: list[dict]) -> tuple[str | None, list[str]]:
+def _resolve_field(fragment: str, rows: list[dict], field: str) -> tuple[str | None, list[str]]:
     """Exact case-insensitive match wins; else a unique substring match;
-    else (None, candidates)."""
-    provinces = sorted({r["province"] for r in rows if r["province"]})
+    else (None, candidates). Generic resolver for any string field (e.g.
+    "province" or "region") whose values may be prefix-nested (region names
+    like "Region XI (Davao Region)" and "Region XII (SOCCSKSARGEN)" would
+    otherwise false-positive on plain substring matching)."""
+    values = sorted({r[field] for r in rows if r[field]})
     frag = fragment.strip().lower()
-    for p in provinces:
-        if p.lower() == frag:
-            return p, []
-    candidates = [p for p in provinces if frag in p.lower()]
+    for v in values:
+        if v.lower() == frag:
+            return v, []
+    candidates = [v for v in values if frag in v.lower()]
     if len(candidates) == 1:
         return candidates[0], []
     return None, candidates
+
+
+def _resolve_province(fragment: str, rows: list[dict]) -> tuple[str | None, list[str]]:
+    return _resolve_field(fragment, rows, "province")
+
+
+def _resolve_region(fragment: str, rows: list[dict]) -> tuple[str | None, list[str]]:
+    return _resolve_field(fragment, rows, "region")
 
 
 def _resolve_municipality(name: str, province: str | None, rows: list[dict]) -> list[dict]:
@@ -110,9 +121,13 @@ def get_top_municipalities(province=None, region=None, n=5, metric="final_score"
         rows = [r for r in rows if r["province"] == resolved]
         scope = resolved
     if region:
-        frag = region.strip().lower()
-        rows = [r for r in rows if frag in (r["region"] or "").lower()]
-        scope = f"{scope} / region matching {region!r}"
+        resolved_region, candidates = _resolve_region(region, rows)
+        if resolved_region is None:
+            return {"error": f"Ambiguous or unknown region {region!r}.",
+                    "candidates": candidates,
+                    "hint": "Retry with one exact candidate name, or ask the user which they meant."}
+        rows = [r for r in rows if r["region"] == resolved_region]
+        scope = f"{scope} / {resolved_region}"
     scored = [r for r in rows if r.get(metric) is not None]
     scored.sort(key=lambda r: r[metric], reverse=not ascending)
     n = max(1, min(int(n), MAX_RANK_N))
@@ -156,7 +171,12 @@ TOOLS: list[dict] = [
             "type": "object",
             "properties": {
                 "province": {"type": "string", "description": "Province name or fragment, e.g. 'Sulu' or 'davao'"},
-                "region": {"type": "string", "description": "Region name fragment, e.g. 'BARMM', 'Region XI'"},
+                "region": {"type": "string", "description": (
+                    "Region name or fragment, e.g. 'BARMM' or 'Region XI'. Resolved by exact "
+                    "match first, then by unique substring match — an ambiguous fragment (e.g. "
+                    "one that matches both 'Region XI (Davao Region)' and 'Region XII "
+                    "(SOCCSKSARGEN)') returns a candidates list instead of guessing."
+                )},
                 "n": {"type": "integer", "description": "How many rows to return (default 5, max 50)"},
                 "metric": {"type": "string", "enum": RANKABLE_METRICS,
                            "description": "Ranking basis. final_score = overall solar opportunity score."},

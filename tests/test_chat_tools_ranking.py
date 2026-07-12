@@ -11,12 +11,15 @@ ROWS = [
     {"municipality_id": 3, "name": "Lugus",  "province": "Sulu", "region": "BARMM",
      "final_score": None, "geo_score": 0.55, "tier": None,
      "solar_irradiance": None, "population": 20000, "pop_density": None},
-    {"municipality_id": 4, "name": "Digos",  "province": "Davao del Sur", "region": "Region XI",
+    {"municipality_id": 4, "name": "Digos",  "province": "Davao del Sur", "region": "Region XI (Davao Region)",
      "final_score": 0.70, "geo_score": 0.75, "tier": "MEDIUM",
      "solar_irradiance": 5.2, "population": 188000, "pop_density": 650.0},
-    {"municipality_id": 5, "name": "Mati",   "province": "Davao Oriental", "region": "Region XI",
+    {"municipality_id": 5, "name": "Mati",   "province": "Davao Oriental", "region": "Region XI (Davao Region)",
      "final_score": 0.65, "geo_score": 0.72, "tier": "MEDIUM",
      "solar_irradiance": 5.1, "population": 141000, "pop_density": 250.0},
+    {"municipality_id": 6, "name": "Malapatan", "province": "Sarangani", "region": "Region XII (SOCCSKSARGEN)",
+     "final_score": 0.60, "geo_score": 0.68, "tier": "MEDIUM",
+     "solar_irradiance": 5.0, "population": 5000, "pop_density": 100.0},
 ]
 
 
@@ -71,6 +74,25 @@ def test_invalid_metric_rejected(monkeypatch):
     _patch_rows(monkeypatch)
     out = get_top_municipalities(province="Sulu", metric="poverty")
     assert "error" in out and "search_kb" in out["error"]
+
+
+def test_region_xi_excludes_region_xii(monkeypatch):
+    """Regression: 'Region XI' substring-matched 'Region XII (SOCCSKSARGEN)' too,
+    pulling in Malapatan (Sarangani, Region XII) under a Davao-region query."""
+    from agents.chat_tools import get_top_municipalities
+    _patch_rows(monkeypatch)
+    out = get_top_municipalities(region="Region XI (Davao Region)", n=5, metric="final_score")
+    names = [r["name"] for r in out["results"]]
+    assert "Malapatan" not in names
+    assert set(names) == {"Digos", "Mati"}
+
+
+def test_ambiguous_region_returns_candidates(monkeypatch):
+    from agents.chat_tools import get_top_municipalities
+    _patch_rows(monkeypatch)
+    out = get_top_municipalities(region="Region XI", n=5, metric="final_score")
+    assert "error" in out
+    assert set(out["candidates"]) == {"Region XI (Davao Region)", "Region XII (SOCCSKSARGEN)"}
 
 
 def test_execute_tool_returns_json_and_never_raises(monkeypatch):
