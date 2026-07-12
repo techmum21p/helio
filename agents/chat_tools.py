@@ -47,6 +47,53 @@ def _resolve_province(fragment: str, rows: list[dict]) -> tuple[str | None, list
     return None, candidates
 
 
+def _resolve_municipality(name: str, province: str | None, rows: list[dict]) -> list[dict]:
+    frag = name.strip().lower()
+    matches = [r for r in rows if r["name"].lower() == frag]
+    if province and matches:
+        resolved, _ = _resolve_province(province, rows)
+        if resolved:
+            matches = [r for r in matches if r["province"] == resolved]
+        else:
+            pfrag = province.strip().lower()
+            matches = [r for r in matches if pfrag in r["province"].lower()]
+    return matches
+
+
+def get_municipality_profile(name: str, province: str | None = None) -> dict:
+    rows = get_latest_scored_municipalities()
+    matches = _resolve_municipality(name, province, rows)
+    if not matches:
+        where = f" in a province matching {province!r}" if province else ""
+        return {"error": f"No municipality named {name!r} found{where}."}
+    if len(matches) > 1:
+        return {"error": f"{len(matches)} municipalities are named {name!r}.",
+                "candidates": [{"name": m["name"], "province": m["province"]} for m in matches],
+                "hint": "Retry with the province parameter, or ask the user which one."}
+    m = matches[0]
+    # Call-time import: agents.refresh imports from agents.chatbot at load
+    # time, and agents.chatbot imports this module at load time.
+    from agents.refresh import maybe_refresh_assessment
+    detail = maybe_refresh_assessment(m["municipality_id"]) or m
+    return {"profile": detail,
+            "score_breakdown": get_score_breakdown(m["municipality_id"])}
+
+
+def compare_municipalities(names: list[str]) -> dict:
+    if not isinstance(names, list) or not 2 <= len(names) <= 6:
+        return {"error": "Provide a list of 2 to 6 municipality names. "
+                         "Use 'Name, Province' to disambiguate (e.g. 'Pilar, Abra')."}
+    comparison = []
+    for raw in names:
+        if "," in raw:
+            nm, prov = raw.split(",", 1)
+            entry = get_municipality_profile(nm.strip(), prov.strip())
+        else:
+            entry = get_municipality_profile(raw.strip())
+        comparison.append({"query": raw, **entry})
+    return {"comparison": comparison}
+
+
 def get_top_municipalities(province=None, region=None, n=5, metric="final_score", ascending=False) -> dict:
     if metric not in RANKABLE_METRICS:
         return {"error": f"metric must be one of {RANKABLE_METRICS}. Other metrics "
@@ -105,10 +152,42 @@ TOOLS: list[dict] = [
             "required": ["metric"],
         },
     },
+    {
+        "name": "get_municipality_profile",
+        "description": (
+            "Full current profile of one municipality: solar opportunity score, geo score, "
+            "tier, AI assessment, opportunity/risk, and a transparent score breakdown. "
+            "Automatically refreshes a stale assessment first. If the bare name is ambiguous "
+            "(several municipalities share it) you get back a candidate list."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string", "description": "Municipality name, e.g. 'Jolo'"},
+                "province": {"type": "string", "description": "Optional province to disambiguate"},
+            },
+            "required": ["name"],
+        },
+    },
+    {
+        "name": "compare_municipalities",
+        "description": "Side-by-side profiles of 2–6 municipalities. "
+                       "Use 'Name, Province' entries to disambiguate shared names.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "names": {"type": "array", "items": {"type": "string"},
+                          "description": "e.g. ['Jolo', 'Pilar, Abra']"},
+            },
+            "required": ["names"],
+        },
+    },
 ]
 
 _EXECUTORS: dict = {
     "get_top_municipalities": get_top_municipalities,
+    "get_municipality_profile": get_municipality_profile,
+    "compare_municipalities": compare_municipalities,
 }
 
 
