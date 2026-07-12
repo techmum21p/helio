@@ -64,11 +64,22 @@ before returning, so stale assessments still refresh when asked about.
 | `get_municipality_profile(name, province?)` | `maybe_refresh_assessment()` + `get_score_breakdown()` | Full current row: scores, tier, assessment, opportunity/risk, score breakdown. Ambiguous bare names (multiple Pilars) return the candidate list. |
 | `compare_municipalities(names[])` | batch of profiles | Side-by-side rows for 2–6 municipalities; each entry resolves like `get_municipality_profile`. |
 | `search_kb(query, province?)` | `retrieve_context()` + Chroma `where` filter | Semantic search over reports + intel profiles, optionally filtered by province metadata. For narrative color: assessments, risks, web intel, poverty context. |
+| `run_sql_query(sql)` | read-only SQLite connection | Escape hatch for long-tail analytics (counts, filters, aggregates) the typed tools can't express. Connection opened with `file:...?mode=ro` (enforced at the DB level), SELECT-only pre-check for friendly errors, results capped at 200 rows. Tool description documents the schema **and the staleness rule** (a `run_results` assessment is current only when its run's `completed_at >= geo_scores.computed_at`; multiple rows per municipality exist across runs) and instructs: prefer the typed tools for rankings/profiles. |
 
 **Honesty rule (system prompt + enum design):** metrics not in the DB (e.g.
 poverty incidence) are not rankable. The model must use `search_kb` for
 narrative mentions and say the ranking basis is unavailable — never rank on
 fabricated numbers.
+
+**Why not LangChain SQLDatabaseToolkit as the primary path:** free-form
+text-to-SQL forces the LLM to rediscover the staleness/dedup semantics on
+every query (high risk of resurrecting the purged stale assessments in
+`run_results`), cannot trigger the lazy re-synthesis side effect, and adds
+the LangChain agent stack over the plain Anthropic-SDK gateway client. Typed
+tools encode the business logic once, in tested code; `run_sql_query` covers
+the long tail. A spurious tool call by the model is self-correcting — tools
+only return true DB data, so a wrong call costs a round of latency, never a
+wrong answer (unlike regex misfires, which injected wrong-metric context).
 
 ## Province metadata backfill (included)
 
@@ -105,6 +116,9 @@ script `scripts/backfill_chroma_province.py`:
 
 - Unit tests per tool executor with monkeypatched `db_store` (ranking order,
   ascending, NULL exclusion, ambiguous-province candidates, metric enum).
+- `run_sql_query` tests: SELECT returns rows; INSERT/UPDATE/DELETE/DROP and
+  PRAGMA writes rejected (both by pre-check and by the read-only connection);
+  row cap applied.
 - Agent-loop test: fake Anthropic client emits `tool_use` then text; assert
   execution, `tool_result` round-trip, and round cap.
 - Regression test for the Sulu case: ranking tool returns DB order; final
