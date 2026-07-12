@@ -88,6 +88,28 @@ def test_round_cap_forces_final_answer(monkeypatch):
     assert len(fake.calls) == 6
     # forced final-answer call must not offer tools, so the model can't dodge with another tool_use
     assert "tools" not in fake.calls[5]
+    # Regression: the round-cap path must not produce two consecutive
+    # same-role messages. Most Anthropic-compatible gateways (including the
+    # MiMo gateway this project targets) require strict user/assistant
+    # alternation and will reject a request otherwise. A mock like this one
+    # accepts anything, so this assertion must check roles explicitly rather
+    # than relying on the fake gateway to reject a malformed sequence.
+    final_messages = fake.calls[5]["messages"]
+    for i in range(len(final_messages) - 1):
+        assert final_messages[i]["role"] != final_messages[i + 1]["role"], (
+            f"consecutive same-role messages at index {i}: "
+            f"{final_messages[i]['role']!r} followed by {final_messages[i + 1]['role']!r}"
+        )
+    # The round-cap instruction must be folded into the existing trailing
+    # user message (as an extra content block), not appended as a new one.
+    assert final_messages[-1]["role"] == "user"
+    assert any(
+        block.get("type") == "text" and "Answer now" in block.get("text", "")
+        for block in final_messages[-1]["content"]
+    )
+    assert any(
+        block.get("type") == "tool_result" for block in final_messages[-1]["content"]
+    )
 
 
 def test_gateway_failure_falls_back_to_rag(monkeypatch):

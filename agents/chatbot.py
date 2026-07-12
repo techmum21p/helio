@@ -228,8 +228,22 @@ def _agent_loop(messages: list) -> str:
         ]})
     else:
         # Round cap hit — demand a final answer from what was gathered.
-        working.append({"role": "user", "content":
-                        "Answer now using only the data already gathered. Do not request more tools."})
+        # IMPORTANT: fold the instruction into the trailing user message's content
+        # list rather than appending a brand-new user message. The for-loop's
+        # last iteration always leaves `working` ending in a user message (the
+        # tool_result block just appended above), so appending another
+        # {"role": "user", ...} would create two consecutive user-role messages,
+        # which most Anthropic-compatible gateways (including MiMo) reject.
+        instruction = {
+            "type": "text",
+            "text": "Answer now using only the data already gathered. Do not request more tools.",
+        }
+        if working and working[-1]["role"] == "user":
+            working[-1]["content"].append(instruction)
+        else:
+            # Defensive fallback for MAX_TOOL_ROUNDS == 0 or other edge cases
+            # where the last message isn't a user message.
+            working.append({"role": "user", "content": [instruction]})
         response = client.messages.create(
             model=config.CHATBOT_MODEL, max_tokens=4000,
             system=SYSTEM_PROMPT, messages=working,
