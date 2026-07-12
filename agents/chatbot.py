@@ -7,7 +7,6 @@ KB grows automatically after every pipeline run — the more locations
 you process, the richer the chatbot's answers become.
 """
 
-import re
 from pathlib import Path
 from loguru import logger
 import anthropic
@@ -16,7 +15,7 @@ from chromadb.utils import embedding_functions
 
 import config
 from graph.state import SolarLeadState
-from agents.db_store import get_latest_scored_municipalities
+from agents.chat_tools import TOOLS, execute_tool
 
 client = anthropic.Anthropic(api_key=config.XIAOMI_API_KEY, base_url=config.XIAOMI_BASE_URL)
 
@@ -111,20 +110,6 @@ def index_documents_from_kb() -> None:
             logger.info(f"Indexed {len(new_chunks)} chunks from {md_file.name}")
 
 
-def maybe_refresh_assessment(municipality_id: int):
-    """Thin wrapper around agents.refresh.maybe_refresh_assessment.
-
-    The import is deferred to call time (rather than module load time) to
-    avoid a circular import: agents.refresh imports index_documents_from_kb
-    from this module at its own module load time, so this module can only
-    reach back into agents.refresh once both modules have finished loading.
-    Kept as a module-level name (rather than a local import inside chat())
-    so it stays monkeypatchable via `chatbot_mod.maybe_refresh_assessment`.
-    """
-    from agents.refresh import maybe_refresh_assessment as _maybe_refresh_assessment
-    return _maybe_refresh_assessment(municipality_id)
-
-
 def detect_municipality_id(message: str, municipalities: list[dict]) -> int | None:
     """Return the municipality_id of the longest municipality name found in message, or None."""
     lower_message = message.lower()
@@ -135,56 +120,6 @@ def detect_municipality_id(message: str, municipalities: list[dict]) -> int | No
             if best is None or len(name) > best[0]:
                 best = (len(name), m["municipality_id"])
     return best[1] if best else None
-
-
-_RANKING_WORDS = re.compile(
-    r"\btop\s*\d*\b|\bbest\b|\bpriorit\w*\b|\brank\w*\b|\bhighest\b", re.IGNORECASE
-)
-_TOP_N = re.compile(r"\btop\s*(\d+)\b", re.IGNORECASE)
-
-
-def detect_province_ranking_query(message: str, municipalities: list[dict]) -> tuple[str | None, int]:
-    """If the message asks to rank/prioritize locations within a specific province,
-    return (province, n) — n from "top N" phrasing, default 5. Otherwise (None, 0).
-
-    Pure semantic search (retrieve_context) can't be trusted for this: with ~29k
-    similarly-worded chunks in the KB, it returns whatever 10 chunks are nearest
-    by embedding to the query text — not all of a province's municipalities, and
-    not sorted by score. See _exact_municipality_block for the same problem at
-    single-municipality granularity.
-    """
-    if not _RANKING_WORDS.search(message):
-        return None, 0
-    lower_message = message.lower()
-    best: tuple[int, str] | None = None  # (name length, province)
-    for province in {m["province"] for m in municipalities}:
-        if province and province.lower() in lower_message:
-            if best is None or len(province) > best[0]:
-                best = (len(province), province)
-    if best is None:
-        return None, 0
-    m = _TOP_N.search(message)
-    n = int(m.group(1)) if m else 5
-    return best[1], n
-
-
-def _province_leaderboard_block(province: str, municipalities: list[dict], n: int) -> str:
-    """Authoritative current-data ranking for a province, built straight from the
-    DB and sorted by final_score — the same source as the map/table."""
-    rows = [m for m in municipalities if m["province"] == province]
-    scored = sorted(
-        (r for r in rows if r["final_score"] is not None),
-        key=lambda r: r["final_score"],
-        reverse=True,
-    )
-    lines = [f"[Current Live Data — Top {n} Opportunities in {province} by Solar Opportunity Score]"]
-    lines.append(f"({len(scored)} of {len(rows)} municipalities in {province} have a full assessment)")
-    for i, r in enumerate(scored[:n], 1):
-        lines.append(
-            f"{i}. {r['name']} — Solar Opportunity Score: {r['final_score']:.3f}, "
-            f"Tier: {r['tier']}, Geo Score: {r['geo_score']:.3f}"
-        )
-    return "\n".join(lines)
 
 
 def update_kb_node(state: SolarLeadState) -> SolarLeadState:
@@ -251,43 +186,73 @@ def retrieve_context(query: str, n_results: int = 10, province: str | None = Non
 
 SYSTEM_PROMPT = """You are a solar installation market intelligence assistant for a solar panel business in the Philippines.
 
-You have access to analyzed data on municipalities including:
-- Solar irradiance potential
-- Population and income signals
-- Business density and economic activity
-- Ranked opportunity scores and sales tier classifications
+You have tools that query the live project database and knowledge base:
+- get_top_municipalities — authoritative rankings. ALWAYS use this for top/best/highest/lowest/worst questions; never rank from memory or from search results.
+- get_municipality_profile — current scores, tier, and AI assessment for one municipality.
+- compare_municipalities — side-by-side comparison of 2–6 municipalities.
+- search_kb — semantic search over generated reports and profiles; use for narrative context (risks, opportunities, web intelligence, poverty/economic conditions).
+- run_sql_query — read-only SELECT for counts, filters, and aggregates the other tools can't express; mind the staleness rule in its description.
 
-Answer questions about target areas, comparisons between locations, sales strategy, and solar potential.
-If the context doesn't contain enough information, say so honestly rather than guessing.
-
-Always be direct and practical — your user is a business owner, not an analyst.
+Rules:
+- Scores, rankings, and tiers must come from tool results — never invent, estimate, or rescale numbers.
+- If a requested ranking basis is not in the database (e.g. poverty incidence), say so plainly and offer the nearest available metric or narrative context from search_kb.
+- If a place name is ambiguous (e.g. "Davao"), ask the user which one they mean, or query each candidate.
+- If the tools return no data for a question, say so honestly rather than guessing.
+- Be direct and practical — your user is a business owner, not an analyst.
 """
 
+MAX_TOOL_ROUNDS = 5
 
-def _exact_municipality_block(row: dict) -> str:
-    """Authoritative current-data block for a municipality the user explicitly
-    named, built straight from the DB (same source as the map/table) rather
-    than relying on semantic ChromaDB ranking — with ~29k similarly-worded
-    profile chunks in the KB, pure similarity search doesn't reliably surface
-    the one exact-name match (e.g. "Pilar, Abra" losing to other Pilars or
-    other Abra towns). See docs/superpowers/specs — parked 2026-07-12."""
-    lines = [f"[Current Live Data — {row['name']}, {row['province']}]"]
-    lines.append(
-        f"Geo Score: {row['geo_score']:.3f}" if row["geo_score"] is not None
-        else "Geo Score: not available"
-    )
-    if row["final_score"] is not None:
-        lines.append(f"Solar Opportunity Score: {row['final_score']:.3f}")
-        lines.append(f"Tier: {row['tier']}")
-        if row["assessment"]:
-            lines.append(f"Assessment: {row['assessment']}")
-        if row["opportunities"]:
-            lines.append(f"Opportunity: {row['opportunities'][0]}")
-        if row["risks"]:
-            lines.append(f"Risk: {row['risks'][0]}")
+
+def _agent_loop(messages: list) -> str:
+    """Run the tool-use loop. Raises on gateway failure (caller handles fallback)."""
+    working = list(messages)
+    response = None
+    for _ in range(MAX_TOOL_ROUNDS):
+        response = client.messages.create(
+            model=config.CHATBOT_MODEL,
+            max_tokens=4000,
+            system=SYSTEM_PROMPT,
+            tools=TOOLS,
+            messages=working,
+        )
+        tool_uses = [b for b in response.content if getattr(b, "type", "") == "tool_use"]
+        if not tool_uses:
+            break
+        logger.info(f"[Chatbot] tool round: {[t.name for t in tool_uses]}")
+        working.append({"role": "assistant", "content": response.content})
+        working.append({"role": "user", "content": [
+            {"type": "tool_result", "tool_use_id": t.id,
+             "content": execute_tool(t.name, t.input)}
+            for t in tool_uses
+        ]})
     else:
-        lines.append("This municipality does not yet have a full AI assessment (geo-score only).")
-    return "\n".join(lines)
+        # Round cap hit — demand a final answer from what was gathered.
+        working.append({"role": "user", "content":
+                        "Answer now using only the data already gathered. Do not request more tools."})
+        response = client.messages.create(
+            model=config.CHATBOT_MODEL, max_tokens=4000,
+            system=SYSTEM_PROMPT, tools=TOOLS, messages=working,
+        )
+    text = "".join(b.text for b in response.content if getattr(b, "type", "") == "text")
+    return text or "I gathered data but couldn't finish composing an answer — please try rephrasing."
+
+
+def _rag_fallback(user_message: str, chat_history: list) -> str:
+    """Legacy single-call RAG path, used when the agent loop fails."""
+    context = retrieve_context(user_message)
+    messages = chat_history.copy()
+    messages.append({
+        "role":    "user",
+        "content": f"Context from knowledge base:\n{context}\n\nQuestion: {user_message}",
+    })
+    response = client.messages.create(
+        model=config.CHATBOT_MODEL,
+        max_tokens=2000,
+        system=SYSTEM_PROMPT,
+        messages=messages,
+    )
+    return next(b.text for b in response.content if hasattr(b, "text"))
 
 
 def chat(user_message: str, chat_history: list, run_id: str = "") -> tuple[str, list]:
@@ -295,51 +260,24 @@ def chat(user_message: str, chat_history: list, run_id: str = "") -> tuple[str, 
     Single turn of the chatbot.
     Returns (assistant_response, updated_chat_history).
     Persists both turns to DB if run_id is provided.
+    Tool_use/tool_result blocks live only within this turn — history carries text only.
     """
-    municipalities = get_latest_scored_municipalities()
-    municipality_id = detect_municipality_id(user_message, municipalities)
-    exact_block = None
-    if municipality_id is not None:
-        detail = maybe_refresh_assessment(municipality_id)
-        if detail is not None:
-            exact_block = _exact_municipality_block(detail)
-
-    ranking_province, ranking_n = detect_province_ranking_query(user_message, municipalities)
-    leaderboard_block = None
-    if ranking_province is not None:
-        leaderboard_block = _province_leaderboard_block(ranking_province, municipalities, ranking_n)
-
-    context = retrieve_context(user_message)
-    if leaderboard_block:
-        context = f"{leaderboard_block}\n\n---\n\n{context}"
-    if exact_block:
-        context = f"{exact_block}\n\n---\n\n{context}"
-    messages = chat_history.copy()
-    messages.append({
-        "role":    "user",
-        "content": f"Context from knowledge base:\n{context}\n\nQuestion: {user_message}",
-    })
-
     try:
-        response = client.messages.create(
-            model=config.CHATBOT_MODEL,
-            max_tokens=2000,
-            system=SYSTEM_PROMPT,
-            messages=messages,
-        )
-        assistant_reply = next(b.text for b in response.content if hasattr(b, "text"))
-
-        if run_id:
-            from agents.db_store import save_chat_message
-            save_chat_message(run_id, "user", user_message)
-            save_chat_message(run_id, "assistant", assistant_reply)
-
-        updated_history = chat_history + [
-            {"role": "user",      "content": user_message},
-            {"role": "assistant", "content": assistant_reply},
-        ]
-        return assistant_reply, updated_history
-
+        assistant_reply = _agent_loop(chat_history + [{"role": "user", "content": user_message}])
     except Exception as e:
-        error_msg = f"Sorry, I couldn't generate a response: {e}"
-        return error_msg, chat_history
+        logger.warning(f"Agent loop failed ({e}); falling back to RAG-only path")
+        try:
+            assistant_reply = _rag_fallback(user_message, chat_history)
+        except Exception as e2:
+            return f"Sorry, I couldn't generate a response: {e2}", chat_history
+
+    if run_id:
+        from agents.db_store import save_chat_message
+        save_chat_message(run_id, "user", user_message)
+        save_chat_message(run_id, "assistant", assistant_reply)
+
+    updated_history = chat_history + [
+        {"role": "user",      "content": user_message},
+        {"role": "assistant", "content": assistant_reply},
+    ]
+    return assistant_reply, updated_history
