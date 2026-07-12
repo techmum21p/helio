@@ -1,6 +1,65 @@
-> Last updated: 2026-07-07 | Session 8
+> Last updated: 2026-07-12 | Session 9
 
 # Helio — Solar Lead Intelligence Platform Session Notes
+
+---
+
+## Session 9 — Real Solar Data, 33 Missing HUCs, Full National Coverage, Dataset Export (2026-07-08 → 2026-07-12)
+
+### ⚠️ WIP — Helio overview document (brainstorming in progress, resume here)
+- User asked for a standalone MD doc describing Helio, the datasets used/built, and their locations. **Not a PRD** (that's pre-build) — agreed framing: project overview + dataset catalog + forward-looking roadmap section.
+- Decisions made so far: **(1) Audience = general public / portfolio-grade** (recruiter/collaborator on GitHub should get it without running anything). **(2) Include the data-integrity journey** (fake→real data audit story) as a credibility section, not appendix.
+- **Pending question (user paused to clear thread)**: shape of the future dataset-first app — options presented were (a) explorer + live RAG chatbot [recommended], (b) pure read-only explorer, (c) cache-first with opt-in refresh button, (d) leave open. User's driver: **no more Google Places/Tavily API calls** — spent ~$50 total; wants Helio to run off the built dataset and become "a useful app".
+- Brainstorming skill flow active: after the pending question → propose doc structure → write doc → (spec self-review) → user review. Suggested location when written: repo root `HELIO.md` or `docs/` (not yet decided).
+
+### Solar data was 100% synthetic — root cause + fix (`scripts/precompute_geo_scores.py`)
+- **All 1,622 solar_irradiance values matched `_stable_float(f"{name}:solar", 4.5, 6.0)` exactly** (MD5 reproduction test). Session-8 note "GEE precompute IS done" was wrong — 0 NULLs only meant an old script filled fakes.
+- Root cause: `reduceRegions` names its output after the **reducer** (`mean`/`max`), not the band — reading `surface_solar_radiation_downwards_sum` returned null for every feature, so everything fell back to hash values; resume logic (`_load_existing_solar`) then treated any non-NULL as real forever.
+- Fixed: 3-pass fetch (exact point → 11 km `Reducer.max()` → 25 km max; buffered *mean* near water reads absurdly low — lakeside Biñan 1.63 vs true ~5.0 due to ERA5-Land water-fringe pixels). Synthetic/estimated values are **never persisted** to `solar_irradiance` (stored NULL); ~31 unmappable islets score at **province mean** of real values (not a hash lottery). GEE fetch now uses DB coordinates (`_load_db_coords`), not hash placeholders.
+- Result: 1,624/1,655 (98.1%) real GEE solar; mean 4.97 ± 0.25, range 4.44–5.63; correct gradient (Ifugao 4.55 < Ilocos 5.17 < Tawi-Tawi 5.63). Backup: `data/helio.db.bak-20260708-pre-gee-solar`.
+
+### Coordinates: 98 municipalities were in the Sibuyan Sea
+- CAR provinces (Abra/Apayao/Benguet/Ifugao/Kalinga/Mountain Province), "City of Manila", "Special Geographic Area" were missing from `PROVINCE_CENTROIDS` → (12.5, 122.5) sea default. Centroids added to both `agents/geo_scoring.py` and precompute.
+- New `scripts/geocode_all_municipalities.py` — Nominatim-geocodes every municipality (fallback = corrected hash placeholder), persists to DB. Cache poisoning purged twice (baked-in fallbacks).
+
+### 33 missing Highly Urbanized Cities (Quezon City, Makati, Cebu City, Davao City, …)
+- In the `barangay` package HUCs sit at province level with a flat barangay **list**; every `isinstance(prov_data, dict)` check skipped them. Now single municipalities under `"<Name> (Not a Province)"` pseudo-provinces (package's own Isabela City convention). 1,622 → **1,655** municipalities.
+- Geocoder was silently broken for all 34: pseudo-province text in the query → zero results → hash fallback (caught because Isabela City landed 1,100 km away in Luzon). Fixed in `agents/geocoder.py`; naive strip produced duplicated queries matching random businesses — province term dropped when it collapses to the name. 4 ambiguous names (Puerto Princesa, Bacolod, Zamboanga, Lapu-Lapu) hand-set from verified reference coords.
+- **HUC fuzzy-match incident during batch runs**: `"City of Cebu (Not a Province)"` fuzzy-matched to Cebu *province* (50 munis), CDO to Cagayan province (wrong island), Iloilo to Iloilo province — burned ~120 wrong Places calls before caught mid-run. Fixed by indexing HUCs under both bare and pseudo-province names (exact match beats fuzzy); bad runs + reports + 1,188 Chroma chunks deleted, 3 cities re-run. Tests: `tests/test_geo_scoring_huc.py`.
+
+### Fix #2 — real land area + pop_density normalization
+- `scripts/fetch_land_area.py`: geoBoundaries ADM3 polygons (NAMRIA/PSA/OCHA, CC BY 3.0 IGO), true geodesic area via `pyproj.Geod`, matched **point-in-polygon** against real geocoded coords (114/1,647 shapes share names; name-matching unsafe). 1,655/1,655 matched. Output: `data/raw/municipality_land_area.csv`.
+- `normalize_and_score()` now `log1p`-transforms pop_density before MinMax. pop_density_norm mean 0.013 → **0.381** (was 96% below 0.05 → 0.4%). Bacoor (fake 23 km² outlier, old #1) → #213; new national #1 = Jolo, Sulu (real 3.0 km², 51,406/km²).
+
+### Full national pipeline coverage — 118/118 province/HUC groupings
+- Ran in 5 user-checkpointed batches (billing checks between): 34 HUCs → Albay+Cebu/Iloilo/Palawan/Pampanga/Pangasinan → Davao/Cotabato cluster → Zamboanga/Surigao/Sulu/Tawi-Tawi/SGA → final 13. Albay needed a direct run (stale `province='Albay'` done-flag from an old 3-town run would've made `run_all_provinces.py` skip it).
+- `run_all_provinces.py` now sources provinces from **helio.db** municipalities (was `ph_locations.db` via location_db — predates HUC fix, missing all 33).
+
+### PSA footnote + geocoder formal-name fixes (fabricated data 44 → 31 rows)
+- PSA appends `*` to reclassified LGUs (`"4th*"`) — broke exact match for 6 real municipalities (Tipo-Tipo, Mankayan, Alfonso Castaneda, Arteche, Lugait, Sultan Sa Barongis). Fixed: strip trailing non-alphanumerics in `_load_psa_lookup`.
+- Geocoder retries: strip `"City of "` (both name and province position — "City of Candon" fails, "Candon" resolves; "Binondo, City of Manila" fails, "Binondo, Manila" resolves), honorifics (`Pres./Sen./Gen./Dr.`), `Tondo I/II`→`Tondo` override. Recovered 7/16 fabricated coords.
+- **Remaining fabricated (documented, structural)**: 22 income/population (Manila's 14 districts + 8 BARMM SGA barangays — PSA doesn't classify below municipality level) + 9 coordinates (8 SGA + Don Victoriano Chiongbian, deliberately not auto-truncated). Decision context: user asked about NULL vs 0 vs median — 0 rejected ((0,0) is in the Gulf of Guinea; pop 0 = false worst-case claim); median acceptable for scoring if labeled imputed.
+
+### Alphabetical top-20 selection bug (the "arbitrary 20")
+- `web_intel_agent` did `list(geo_scores.keys())[:TOP_N_TARGETS]` on a dict in DB row order (= alphabetical insertion order) — "top 20" meant "first 20 alphabetically" in **all 33 provinces with >20 municipalities**. Synthesis sorted only survivors, so output looked ranked. Cavite's two worst (0.41) got paid evaluation; true #13–14 (Silang/Tanza ~0.72) never evaluated anywhere.
+- Damage: 169 true-top-20 municipalities never evaluated; 172 wasted slots. Fix: sort by geo_score desc before truncating (`agents/web_intel.py` + regression test).
+- Correction: 33 provinces re-run (~$3.60 fresh calls, rest cached). Long background jobs kept getting **killed** (3×) → self-healing 4-province chunk script (recomputes "latest run ≠ true top-20" each invocation; kill costs ≤1 in-flight province; mark stuck `running` row failed and relaunch). Verified: 0/33 mismatched, all 660 true-top-20 slots assessed. 56 old-formula (0.80/0.20-era) run_results rows from 5 day-one legacy runs deleted.
+
+### Dataset export + data dictionary (committed to repo)
+- `exports/helio_full_dataset.csv` — 1,655 rows, 20 columns; 1,487 with full AI assessment, 168 geo-only (genuinely below province top-20, by design).
+- `exports/helio_dataset_data_dictionary.csv` — per-field definition / basis / source, including honest caveats: area_km2 is **GIS-calculated geodesic area, NOT official PSA/DENR legal area** (Gemini critique incorporated; ~5–20% deviation, worst in mountains; but its UTM-projection critique didn't apply — we use ellipsoidal geodesic, not flat projection), fabricated-row counts, LLM-generated fields flagged.
+- User's Google Places spend to date: **~$50 total** — motivates the dataset-first pivot. Future enhancement saved in memory: below-top-20 full coverage ≈ $2.80 (don't run unprompted).
+
+#### Files changed (session 9)
+- `scripts/precompute_geo_scores.py` — reduceRegions property fix, 3-pass fetch, solar_synthetic non-persistence, province-mean fallback, DB coords, HUC enumeration, PSA asterisk strip, area lookup, log1p
+- `agents/geo_scoring.py` — HUC support (pseudo-provinces, dual indexing), CAR/Manila/SGA centroids
+- `agents/geocoder.py` — pseudo-province strip, City-of/honorific candidates, Tondo override, multi-candidate retry
+- `agents/web_intel.py` — top-20 sorted by geo_score before truncation
+- `agents/db_store.py` — UNIQUE(name, province) in schema (session-8 carryover, committed now)
+- `scripts/fetch_psa_data.py`, `scripts/fetch_land_area.py`, `scripts/geocode_all_municipalities.py`, `scripts/run_all_provinces.py` — new
+- `tests/test_geocoder.py`, `tests/test_geo_scoring_huc.py` — new; `tests/test_precompute.py`, `tests/test_web_intel_db.py` — extended. **115 tests passing.**
+- `exports/helio_full_dataset.csv`, `exports/helio_dataset_data_dictionary.csv` — new, committed
+- Git: committed as `819ec5c6` (dataset), `392985ed` (pipeline), `fe6ec0d3` (HUC+geocoder), `9ef3db9d` (top-20 fix), `d31c9980` (chore). Local only, no remote.
 
 ---
 
