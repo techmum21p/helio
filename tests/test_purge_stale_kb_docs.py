@@ -81,3 +81,98 @@ def test_stale_doc_ids_does_not_false_positive_on_similar_muni():
         [{"municipality_id": 1, "name": "Daraga", "province": "Albay"}],
     )
     assert matched == []
+
+
+def test_stale_doc_ids_excludes_cross_province_same_muni_slug_collision():
+    """San Isidro exists in multiple provinces. A stale San Isidro, Nueva Ecija
+    must NOT match a doc id belonging to a different, non-stale San Isidro,
+    Davao del Sur, even though the muni_slug segment ('san_isidro') is identical."""
+    from scripts.purge_stale_kb_docs import stale_doc_ids
+    collection_ids = ["davao_del_sur__san_isidro__xyz123_chunk_0"]
+    stale = [{"municipality_id": 1, "name": "San Isidro", "province": "Nueva Ecija"}]
+    assert stale_doc_ids(collection_ids, stale) == []
+
+
+def test_stale_doc_ids_matches_historical_multi_muni_location_slug():
+    """Historical kb/intel filenames from before this branch may encode a
+    multi-municipality location string as the leading segment (e.g. a report
+    run against "Tanay|San Mateo, Rizal"). The stale muni's own name-slug
+    appearing as a substring of that leading segment must still match."""
+    from scripts.purge_stale_kb_docs import stale_doc_ids
+    collection_ids = ["tanay_san-mateo_rizal__tanay__abc123_chunk_0"]
+    stale = [{"municipality_id": 1, "name": "Tanay", "province": "Rizal"}]
+    assert stale_doc_ids(collection_ids, stale) == ["tanay_san-mateo_rizal__tanay__abc123_chunk_0"]
+
+
+def test_stale_kb_intel_files_matches_and_respects_collision(tmp_path):
+    from scripts.purge_stale_kb_docs import stale_kb_intel_files
+    stale_file = tmp_path / "albay__daraga__abc123.md"
+    stale_file.write_text("x")
+    collision_file = tmp_path / "davao_del_sur__san_isidro__xyz123.md"
+    collision_file.write_text("x")
+    unrelated_file = tmp_path / "sulu__jolo__def456.md"
+    unrelated_file.write_text("x")
+
+    stale = [
+        {"municipality_id": 1, "name": "Daraga", "province": "Albay"},
+        {"municipality_id": 2, "name": "San Isidro", "province": "Nueva Ecija"},
+    ]
+    matched = stale_kb_intel_files(tmp_path, stale)
+    assert matched == [stale_file]
+
+
+class _FakeCollection:
+    def __init__(self, ids):
+        self._ids = ids
+        self.deleted = None
+
+    def get(self, include=None):
+        return {"ids": list(self._ids)}
+
+    def delete(self, ids):
+        self.deleted = list(ids)
+        self._ids = [i for i in self._ids if i not in ids]
+
+
+@pytest.fixture
+def main_env(tmp_path, db_conn, monkeypatch):
+    """Wires config.HELIO_DB / config.KB_INTEL to a temp DB/dir and stubs the
+    ChromaDB collection, so main() can be exercised end-to-end."""
+    import config
+    db_conn.commit()
+    db_path = tmp_path / "t.db"
+    monkeypatch.setattr(config, "HELIO_DB", db_path)
+
+    kb_intel_dir = tmp_path / "kb_intel"
+    kb_intel_dir.mkdir()
+    stale_file = kb_intel_dir / "albay__daraga__abc123.md"
+    stale_file.write_text("stale doc")
+    fresh_file = kb_intel_dir / "sulu__jolo__def456.md"
+    fresh_file.write_text("fresh doc")
+    monkeypatch.setattr(config, "KB_INTEL", kb_intel_dir)
+
+    fake_collection = _FakeCollection(["albay__daraga__abc123_chunk_0", "sulu__jolo__def456_chunk_0"])
+    import agents.chatbot as chatbot
+    monkeypatch.setattr(chatbot, "_get_collection", lambda: fake_collection)
+
+    return {
+        "stale_file": stale_file,
+        "fresh_file": fresh_file,
+        "collection": fake_collection,
+    }
+
+
+def test_main_dry_run_deletes_nothing(main_env):
+    from scripts.purge_stale_kb_docs import main
+    main(dry_run=True)
+    assert main_env["stale_file"].exists()
+    assert main_env["fresh_file"].exists()
+    assert main_env["collection"].deleted is None
+
+
+def test_main_execute_deletes_chroma_chunks_and_stale_files(main_env):
+    from scripts.purge_stale_kb_docs import main
+    main(dry_run=False)
+    assert not main_env["stale_file"].exists()
+    assert main_env["fresh_file"].exists()
+    assert main_env["collection"].deleted == ["albay__daraga__abc123_chunk_0"]
