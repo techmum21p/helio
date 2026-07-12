@@ -1,6 +1,111 @@
-> Last updated: 2026-07-12 | Session 9
+> Last updated: 2026-07-12 | Session 12
 
 # Helio — Solar Lead Intelligence Platform Session Notes
+
+---
+
+## Session 12 — Chatbot Tool-Use Retrieval Rollout, Replaces Regex Intent Detection (2026-07-12)
+
+### The bug this fixes
+A user asked "give me top 5 opportunities in sulu that I should prioritize" and got back the wrong municipalities with fabricated scores — the old chatbot relied on fragile ChromaDB semantic search over profile chunks with no ranking guarantee, so "top 5" questions were never actually answered from the DB.
+
+### Tool-use agent loop (`agents/chat_tools.py`, `agents/chatbot.py`)
+- Added five typed tools in `agents/chat_tools.py`: `get_top_municipalities` (authoritative DB ranking by `final_score`/`geo_score`/`solar_irradiance`/`population`/`pop_density`, ascending or descending, province/region scoped), `get_municipality_profile` (exact-match lookup with lazy re-synthesis preserved from Session 10/11), `compare_municipalities` (2–6 side-by-side), `search_kb` (semantic search over KB narrative — explicitly NOT authoritative for rankings/scores), and `run_sql_query` (read-only escape hatch over `kb/index`'s SQLite DB for counts/aggregates the other tools can't express, with the staleness-rule documented in its schema so the model applies it itself).
+- `agents/chatbot.py`'s `chat()` now runs a real tool-use agent loop against MiMo instead of regex intent detection — regex path removed entirely.
+- One-time backfill script (`scripts/backfill_chroma_province.py`) added province metadata onto existing ChromaDB intel chunks so `search_kb`'s province filter works on docs indexed before this change.
+
+### Task 7 live verification (this session)
+- Full suite: 169 passed, 0 failures.
+- Re-ran the original bug's exact query live against MiMo — correctly returned Jolo (0.842), Siasi (0.791), Indanan (0.784), Patikul (0.773), Talipao (0.749), matching the DB exactly, no fabricated scores.
+- Ran 6 adversarial queries (ambiguous province, comparison, wrong-metric-not-in-DB, inverse ranking, count/aggregate, multi-turn disambiguation) — 5 behaved correctly; found one real bug: `get_top_municipalities`'s `region` fragment filter uses plain substring matching, so `"Region XI"` also matches `"Region XII (SOCCSKSARGEN)"`, pulling an out-of-region municipality into a Davao-region ranking. Not fixed in this session (verification-only task) — flagged for follow-up.
+- Verified live in Streamlit (`app.py`) via browser automation: chat panel round-trips a live query and renders the correct leaderboard, no exceptions in the server log.
+
+#### Files changed (session 12, tasks 1–6, already committed prior to this verification task)
+- `agents/chat_tools.py` — new file: five tools + `execute_tool` dispatcher, province/municipality resolvers
+- `agents/chatbot.py` — `chat()` rewritten as tool-use agent loop, regex intent detection removed
+- `scripts/backfill_chroma_province.py` — new file: one-time ChromaDB province-metadata backfill
+- `tests/test_chat_agent_loop.py`, `tests/test_backfill_province.py` — new test files
+
+---
+
+## Session 11 — Map/Legend Polish, Stale Province Reports, Chatbot RAG Fix, Score Transparency (2026-07-12)
+
+### Map legend & marker styling (`app.py`)
+- Legend swatches now render as inline HTML `<span>` circles using the exact same hex values as the markers (`TIER_COLORS` dict), instead of emoji — guarantees legend and map colors can never visually drift apart.
+- Iterated on the medium-tier color: green/amber were too close to distinguish → tried blue (`#4575b4`) → user rejected, reverted to orange (`#f39c12`) since that was already fine, the real fix was the exact-match legend.
+- Removed black marker outline (`weight=1`, `color=color` — border matches fill) per user request; briefly had a dark `#333333` outline, removed it.
+- Renamed "Final Score" → "Solar Opportunity Score" everywhere: map legend, drill-down metric label, data table column header. No existing display name existed before this; `final_score` remains the internal DB/field name.
+- Fixed `st.dataframe(..., use_container_width=True)` deprecation warning → `width="stretch"` (Streamlit 1.57.0). `st_folium`'s own `use_container_width` param is unrelated — it converts internally to `width=None`, doesn't forward the deprecated kwarg.
+- **Selected-municipality map highlight**: draws a dashed blue `CircleMarker` ring (`color="#0000ff"`, `dash_array="4"`, `fill=False`, radius = marker radius + 8) around whichever municipality is currently drilled into. First attempt used `folium.Marker` + emoji `DivIcon`, which unreliably fell back to Leaflet's default pin icon — abandoned for the CircleMarker ring approach, verified via DOM inspection (`path[stroke="#0000ff"]`) that it renders. Note: ring only appears starting the *rerun after* selection, since the map draws before the selectbox updates `session_state` in the same script pass — expected Streamlit behavior, not a bug.
+
+### Stale province reports — root cause + fix (`agents/db_store.py`, `agents/report_gen.py`, `app.py`)
+- **Bug found**: `agents/refresh.maybe_refresh_assessment()` (lazy per-municipality re-synthesis) writes a new `run_results` row and re-indexes the KB, but never touches the `reports` table or `reports/*.md` files. Discovered via Daet, Camarines Norte showing 0.774 live in the app vs 0.569 in the downloadable province report (a snapshot from 2026-06-03, before the real-data geo_score fix).
+- `db_store.get_latest_scored_municipalities()` extended to also return `solar_irradiance`, `solar_yield_kwh`, `pop_density` (needed for report tables).
+- Added `db_store.latest_assessment_time_for_province(province)` — max `runs.completed_at` across current assessments for that province, used to detect staleness.
+- Added `db_store.get_score_breakdown(municipality_id)` — every raw + normalized geo/web component and the weights applied (reads `geo_scores` + `web_intel_cache.places_data` + current `run_results`).
+- Added `report_gen.regenerate_province_report(province)` — rebuilds the report from live data; municipalities with a current `final_score` are ranked/profiled, others listed in a **"Not Yet Fully Assessed"** section (geo score only, not fabricated/omitted) ending with a 🔄 prompt telling the user they can drill into that municipality to trigger an on-demand re-assessment.
+- `app.py` now checks staleness before showing a province report (`latest_assessment_time_for_province(...) > report["created_at"]`) and auto-regenerates if stale.
+- Also added `report_gen._score_breakdown_markdown()` / `_full_score_breakdown_section()` — deterministic (non-LLM) per-municipality Geo Score + Web Score component tables (raw, normalized, weight, formula) appended to every province report's "Full Score Breakdown" section, wired into both `regenerate_province_report()` and the original pipeline's `report_gen_agent()`. Mirrors the app's own per-municipality "🧮 Score breakdown" expander so report numbers are guaranteed to match the DB exactly (no LLM paraphrase risk).
+
+### Score transparency in the app (`agents/db_store.py`, `app.py`)
+- New "🧮 Score breakdown" expander under each municipality's drill-down: full Geo Score table (Solar Irradiance, Income Class, Population Density — raw/normalized/weight) and Web Score table (Business Density, Price Signal, Rating Signal, Anchor Signal — raw/normalized/weight), each with its formula and final value, plus the Geo→Web→Solar Opportunity Score blend formula.
+
+### Chatbot RAG retrieval fix (`agents/chatbot.py`) — resolves parked issue from Session 10
+- **Bug**: `detect_municipality_id()` correctly identifies the exact municipality named in a chat message and triggers `maybe_refresh_assessment()`, but `retrieve_context()` still did pure semantic ChromaDB search over ~29k similarly-worded profile chunks — didn't reliably rank the one exact-name match at the top. Live repro: asking about "Pilar, Abra" got "I do not have a profile for Pilar, Abra" even though it was correctly indexed, because other Pilars (Sorsogon, Surigao del Norte) and other Abra towns out-ranked it semantically.
+- **Fix**: added `_exact_municipality_block()` — when `detect_municipality_id()` finds a match, build an authoritative context block straight from the DB row (same source as the map/table: geo score, final score, tier, assessment, opportunity, risk) and prepend it to the retrieved context, instead of relying on ChromaDB ranking alone. Verified: Pilar, Abra now correctly answers 0.723/MEDIUM.
+
+### Map tooltip labeling (`app.py`)
+- Hover tooltip on each map marker previously showed only `{name} ({province}) — {final_score:.2f}, {tier}`, unlabeled — unclear whether that number was geo or total score. Now shows a smaller-font (`font-size:11px`), labeled, multi-line HTML tooltip via `folium.Tooltip`: bold name/province line, then `Geo Score: X.XX`, `Web Score: X.XX`, `Solar Opportunity Score: X.XX (TIER)` (or "Not yet fully assessed" if ungeosynthesized). Verified the click-to-drill-down logic (`clicked_tooltip.split(" (")[0]` in the `last_object_clicked_tooltip` handler) still correctly parses the municipality name out of the new HTML tooltip's returned text.
+
+#### Files changed (session 11)
+- `app.py` — legend/marker color+styling changes, "Solar Opportunity Score" renaming, `use_container_width` deprecation fix, selected-municipality map ring, score breakdown expander wiring, stale-report auto-regeneration wiring, labeled multi-line map tooltip
+- `agents/db_store.py` — extended `get_latest_scored_municipalities()`, added `latest_assessment_time_for_province()`, added `get_score_breakdown()`
+- `agents/report_gen.py` — added `regenerate_province_report()`, `_pending_section()`, `_score_breakdown_markdown()`, `_full_score_breakdown_section()`; wired breakdown section into `report_gen_agent()` too
+- `agents/chatbot.py` — added `_exact_municipality_block()`, wired into `chat()`
+
+---
+
+## Session 10 — Dataset-First Explorer: app.py Rewrite, Assessment-Staleness Fix, KB Purge (2026-07-12)
+
+Resolves Session 9's WIP pending question — went with option (a): explorer + live RAG chatbot, zero Google Places/Tavily calls, MiMo LLM only.
+
+### Design + plan
+- Design spec: `docs/superpowers/specs/2026-07-12-dataset-first-explorer-design.md`
+- Implementation plan (5 tasks): `docs/superpowers/plans/2026-07-12-dataset-first-explorer.md`
+- Executed via subagent-driven-development in an isolated worktree, one fresh subagent per task + task-level review + final whole-branch review.
+
+### Discovered mid-brainstorm: 390 stored assessments predate the real-data fix
+- `run_results.assessment` rows are frozen text written when a province was run — but `geo_scores` was recomputed 2026-07-08 with real GEE solar/PSA data. **390 of 1,487** assessed municipalities had their latest run complete **before** that fix, so their assessment prose (which cites specific score values inline) reflects the old fake numbers.
+- **Rule adopted**: a `run_results` row only counts as current if `completed_at >= geo_scores.computed_at` for that municipality. Stale rows are treated identically to "never assessed" (not just flagged) — old rows stay in the DB for audit history but are never shown as current.
+
+### New code
+- `agents/db_store.py` — `get_latest_scored_municipalities()` (basis-aware dedup, one row per municipality, current-only assessment fields) and `get_latest_report_for_province()`.
+- `agents/refresh.py` (new module) — `maybe_refresh_assessment(municipality_id)`: lazy, on-demand re-synthesis using only the MiMo LLM (`agents.synthesis.synthesize_municipality`) — never calls Google Places/Tavily. Only acts if a `web_intel_cache` row already exists for the municipality (any age); otherwise stays geo-only. Persists the fresh result as a new `run_results` row, regenerates the muni's `kb/intel` doc, deletes the superseded old one, and re-indexes into ChromaDB.
+- `scripts/purge_stale_kb_docs.py` (new, one-time) — removes stale-basis municipality docs from both ChromaDB (`kb/index/`) and disk (`kb/intel/*.md`), using a single shared `_doc_key_matches_stale()` predicate so the two deletions can't drift apart. Matches require the muni-slug segment AND a plausible location relationship (province-slug match or muni-slug substring in the location segment) — avoids over-matching same-named municipalities in different provinces (e.g. multiple "San Isidro"). Defaults to `--dry-run`; run as `python -m scripts.purge_stale_kb_docs [--execute]` (not `python scripts/...py` — needs `-m` so `config` resolves).
+- `agents/chatbot.py` — `detect_municipality_id(message, municipalities)` (longest-name match) + wired into `chat()`: if a message names a municipality, triggers `maybe_refresh_assessment` before answering. `maybe_refresh_assessment` is re-exported from `chatbot.py` as a thin wrapper with the import deferred to call time (breaks a circular import with `agents/refresh.py`, which imports `index_documents_from_kb` from `chatbot.py` at module load).
+
+### `app.py` full rewrite
+- Dropped entirely: `run_pipeline` import, background-thread pipeline runs, the `precompute_geo_scores` trigger, "Run a new province" UI, Admin page, Past Runs page. `graph/pipeline.py` and the individual pipeline agents are untouched in the codebase (still used by `scripts/run_all_provinces.py`).
+- New layout: national Folium map (current-assessed colored by `final_score`, needs-synthesis municipalities shown muted/gray, not hidden) + province filter/table + drill-down (triggers `maybe_refresh_assessment`) + province report viewer + persistent "Ask Helio" sidebar chat.
+
+### Real KB purge executed (production data)
+- Backed up `kb/index/` → `kb/index.bak-20260712-pre-purge` (287M) before running.
+- Dry-run confirmed 390 stale municipalities → 5,560 ChromaDB chunks + 568 `kb/intel/*.md` files.
+- Executed `--execute`: deleted all of the above. Re-ran dry-run afterward — 0 remaining matches, confirmed clean.
+
+### Manual smoke test (real data, streamlit on port 8502 to avoid an unrelated pre-existing process on 8501)
+- Map loaded with real markers, correct coloring/muting. Drilled into Sumisip (previously "needs synthesis") — `maybe_refresh_assessment` generated a real fresh assessment (Final Score 0.758, MEDIUM) using cached web intel, zero new API calls; confirmed persisted to `data/helio.db` as a new `refresh_*` run superseding the 2026-06-03 pre-fix one. Report viewer and chat both worked, no console/server errors.
+- **Chat RAG relevance note (parked, not a bug)**: asking the chatbot about Sumisip right after refreshing it got a "not enough data" answer even though the fresh doc was indexed — pure semantic search over ~29k largely similarly-worded municipality-profile chunks doesn't reliably surface the exact named entity. **Follow-up idea**: `detect_municipality_id()` already identifies the exact municipality before answering — use that to filter/boost `retrieve_context`'s ChromaDB query by municipality metadata instead of relying on pure semantic similarity. Cheap, reuses existing infrastructure. A general hybrid (dense+BM25) retrieval system would be a bigger, more speculative lift — not needed for this specific problem.
+
+### Process notes
+- The worktree for this feature was created from `origin/main` (stale — 6 commits behind local `main`, missing the Session 9 real-data-pipeline commit and fixes). Verified via `git diff` that none of the diverged commits touched functions this feature depends on before merging `main` into the branch and re-testing. **Lesson: check `git merge-base` against local `main` (not just origin) right after creating a worktree**, not after the fact.
+- Rewrote all 18 unpushed local commits (`git filter-branch --msg-filter`) to drop the `Co-Authored-By: Claude` line per user request — safe since none were pushed yet.
+- Final state: `main` fast-forwarded to the feature branch tip, 139/139 tests passing, worktree removed (all commits merged, nothing lost).
+
+#### Files changed (session 10)
+- New: `agents/refresh.py`, `scripts/purge_stale_kb_docs.py`, `scripts/__init__.py`, `docs/superpowers/specs/2026-07-12-dataset-first-explorer-design.md`, `docs/superpowers/plans/2026-07-12-dataset-first-explorer.md`, `tests/test_refresh.py`, `tests/test_purge_stale_kb_docs.py`, `tests/test_chatbot_refresh.py`, `tests/test_db_store.py` (additions).
+- Modified: `app.py` (full rewrite), `agents/db_store.py` (+2 functions), `agents/chatbot.py` (municipality detection + refresh wiring).
+- Data: `kb/index/` purged (390 municipalities' stale docs removed), `kb/intel/*.md` (568 stale files deleted), backup at `kb/index.bak-20260712-pre-purge`.
 
 ---
 
