@@ -1,0 +1,126 @@
+"""
+Typed data tools for the chatbot agent loop.
+Spec: docs/superpowers/specs/2026-07-12-chatbot-tool-use-retrieval-design.md
+
+Executors return JSON-serializable dicts and NEVER raise; execute_tool()
+wraps them into JSON strings for tool_result blocks. Imports from
+agents.chatbot / agents.refresh happen at call time only — agents.chatbot
+imports this module at load time.
+"""
+import json
+import sqlite3
+
+from loguru import logger
+
+import config
+from agents.db_store import get_latest_scored_municipalities, get_score_breakdown
+
+RANKABLE_METRICS = ["final_score", "geo_score", "solar_irradiance", "population", "pop_density"]
+SQL_ROW_CAP = 200
+MAX_RANK_N = 50
+
+
+def _slugify(name: str) -> str:
+    """Match kb_builder.py's filename slugging (agents/kb_builder.py:117)."""
+    return name.lower().replace(" ", "_").replace(",", "")
+
+
+def province_slug_map() -> dict[str, str]:
+    """slug → canonical province name, from current DB rows."""
+    return {
+        _slugify(p): p
+        for p in {r["province"] for r in get_latest_scored_municipalities() if r["province"]}
+    }
+
+
+def _resolve_province(fragment: str, rows: list[dict]) -> tuple[str | None, list[str]]:
+    """Exact case-insensitive match wins; else a unique substring match;
+    else (None, candidates)."""
+    provinces = sorted({r["province"] for r in rows if r["province"]})
+    frag = fragment.strip().lower()
+    for p in provinces:
+        if p.lower() == frag:
+            return p, []
+    candidates = [p for p in provinces if frag in p.lower()]
+    if len(candidates) == 1:
+        return candidates[0], []
+    return None, candidates
+
+
+def get_top_municipalities(province=None, region=None, n=5, metric="final_score", ascending=False) -> dict:
+    if metric not in RANKABLE_METRICS:
+        return {"error": f"metric must be one of {RANKABLE_METRICS}. Other metrics "
+                         "(e.g. poverty incidence) are not in the database — use "
+                         "search_kb for narrative context instead."}
+    rows = get_latest_scored_municipalities()
+    scope = "nationwide"
+    if province:
+        resolved, candidates = _resolve_province(province, rows)
+        if resolved is None:
+            return {"error": f"Ambiguous or unknown province {province!r}.",
+                    "candidates": candidates,
+                    "hint": "Retry with one exact candidate name, or ask the user which they meant."}
+        rows = [r for r in rows if r["province"] == resolved]
+        scope = resolved
+    if region:
+        frag = region.strip().lower()
+        rows = [r for r in rows if frag in (r["region"] or "").lower()]
+        scope = f"{scope} / region matching {region!r}"
+    scored = [r for r in rows if r.get(metric) is not None]
+    scored.sort(key=lambda r: r[metric], reverse=not ascending)
+    n = max(1, min(int(n), MAX_RANK_N))
+    results = []
+    for i, r in enumerate(scored[:n], 1):
+        entry = {"rank": i, "name": r["name"], "province": r["province"],
+                 "final_score": r["final_score"], "geo_score": r["geo_score"],
+                 "tier": r["tier"]}
+        entry[metric] = r[metric]
+        results.append(entry)
+    return {"scope": scope, "metric": metric, "ascending": ascending,
+            "municipalities_in_scope": len(rows),
+            "municipalities_with_metric": len(scored),
+            "results": results}
+
+
+TOOLS: list[dict] = [
+    {
+        "name": "get_top_municipalities",
+        "description": (
+            "Authoritative ranking of municipalities by a database metric, from live "
+            "current data (staleness rules already applied). ALWAYS use this for "
+            "top/best/highest/lowest/worst questions — never rank from search results. "
+            "Omit province and region for a nationwide ranking. If the province name is "
+            "ambiguous you get back a candidate list."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "province": {"type": "string", "description": "Province name or fragment, e.g. 'Sulu' or 'davao'"},
+                "region": {"type": "string", "description": "Region name fragment, e.g. 'BARMM', 'Region XI'"},
+                "n": {"type": "integer", "description": "How many rows to return (default 5, max 50)"},
+                "metric": {"type": "string", "enum": RANKABLE_METRICS,
+                           "description": "Ranking basis. final_score = overall solar opportunity score."},
+                "ascending": {"type": "boolean", "description": "true for lowest-first ('worst 5')"},
+            },
+            "required": ["metric"],
+        },
+    },
+]
+
+_EXECUTORS: dict = {
+    "get_top_municipalities": get_top_municipalities,
+}
+
+
+def execute_tool(name: str, tool_input: dict) -> str:
+    """Dispatch one tool call. Never raises — errors come back as JSON."""
+    fn = _EXECUTORS.get(name)
+    if fn is None:
+        return json.dumps({"error": f"Unknown tool: {name}"})
+    try:
+        return json.dumps(fn(**(tool_input or {})), default=str)
+    except TypeError as e:
+        return json.dumps({"error": f"Bad arguments for {name}: {e}"})
+    except Exception as e:
+        logger.warning(f"chat_tools.{name} failed: {e}")
+        return json.dumps({"error": str(e)})
