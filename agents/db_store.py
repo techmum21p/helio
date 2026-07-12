@@ -410,3 +410,82 @@ def get_municipality_id(name: str, province: str) -> int | None:
         return None
     finally:
         conn.close()
+
+
+def get_latest_scored_municipalities() -> list[dict]:
+    """
+    One row per municipality. Assessment fields (final_score, web_score, tier,
+    assessment) are None and opportunities/risks are [] unless the latest 'done'
+    run's run_results row for that municipality completed at or after the
+    municipality's geo_scores.computed_at — i.e. its basis is current.
+    """
+    conn = _get_conn()
+    try:
+        geo_rows = conn.execute(
+            """SELECT m.id AS municipality_id, m.name, m.province, m.region,
+                      m.lat, m.lon, m.population, m.income_class,
+                      g.geo_score, g.computed_at AS geo_computed_at
+               FROM municipalities m
+               LEFT JOIN geo_scores g ON g.municipality_id = m.id"""
+        ).fetchall()
+
+        current_rows = conn.execute(
+            """SELECT rr.municipality_id, rr.final_score, rr.web_score, rr.tier,
+                      rr.assessment, rr.opportunities, rr.risks, r.completed_at
+               FROM run_results rr
+               JOIN runs r ON r.id = rr.run_id AND r.status = 'done'
+               JOIN geo_scores g ON g.municipality_id = rr.municipality_id
+               WHERE rr.assessment IS NOT NULL
+                 AND r.completed_at >= g.computed_at"""
+        ).fetchall()
+    except Exception as e:
+        logger.error(f"db_store.get_latest_scored_municipalities failed: {e}")
+        return []
+    finally:
+        conn.close()
+
+    latest: dict[int, sqlite3.Row] = {}
+    for row in current_rows:
+        mid = row["municipality_id"]
+        if mid not in latest or row["completed_at"] > latest[mid]["completed_at"]:
+            latest[mid] = row
+
+    result = []
+    for g in geo_rows:
+        mid = g["municipality_id"]
+        cur = latest.get(mid)
+        result.append({
+            "municipality_id": mid,
+            "name":            g["name"],
+            "province":        g["province"],
+            "region":          g["region"],
+            "lat":             g["lat"],
+            "lon":             g["lon"],
+            "population":      g["population"],
+            "income_class":    g["income_class"],
+            "geo_score":       g["geo_score"],
+            "final_score":     cur["final_score"] if cur else None,
+            "web_score":       cur["web_score"] if cur else None,
+            "tier":            cur["tier"] if cur else None,
+            "assessment":      cur["assessment"] if cur else None,
+            "opportunities":   json.loads(cur["opportunities"]) if cur and cur["opportunities"] else [],
+            "risks":           json.loads(cur["risks"]) if cur and cur["risks"] else [],
+        })
+    return result
+
+
+def get_latest_report_for_province(province: str) -> dict | None:
+    """Most recently created report row for a province, or None."""
+    conn = _get_conn()
+    try:
+        row = conn.execute(
+            """SELECT markdown, file_path, created_at FROM reports
+               WHERE province = ? ORDER BY created_at DESC LIMIT 1""",
+            (province,),
+        ).fetchone()
+        return dict(row) if row else None
+    except Exception as e:
+        logger.error(f"db_store.get_latest_report_for_province failed: {e}")
+        return None
+    finally:
+        conn.close()

@@ -320,3 +320,128 @@ def test_load_run_fallback_join_for_old_rows(fresh_db):
     assert t["solar_irradiance"] == pytest.approx(5.1)
     assert t["pop_density"] == pytest.approx(300.0)
     assert t["solar_yield_kwh"] == pytest.approx(5.1 * 365 * 0.80, abs=1.0)
+
+
+def test_get_latest_scored_municipalities_excludes_stale_assessment(fresh_db):
+    """A run_results row completed BEFORE geo_scores.computed_at must not surface as current."""
+    from agents.db_store import get_latest_scored_municipalities
+    conn = sqlite3.connect(str(fresh_db))
+    conn.execute(
+        "INSERT INTO municipalities (id, name, province, region, lat, lon, population, income_class) "
+        "VALUES (1, 'Biñan', 'Laguna', 'Region IV-A', 14.33, 121.08, 407437, '1st')"
+    )
+    conn.execute(
+        "INSERT INTO geo_scores (municipality_id, geo_score, computed_at) "
+        "VALUES (1, 0.72, '2026-07-08 11:37:53')"
+    )
+    conn.execute(
+        "INSERT INTO runs (id, location, province, status, completed_at) "
+        "VALUES ('old_run', 'Laguna', 'Laguna', 'done', '2026-07-01 00:00:00')"
+    )
+    conn.execute(
+        "INSERT INTO run_results (run_id, municipality_id, geo_score, web_score, final_score, "
+        "tier, assessment, opportunities, risks) "
+        "VALUES ('old_run', 1, 0.72, 0.5, 0.65, 'MEDIUM', 'stale text', '[]', '[]')"
+    )
+    conn.commit()
+    conn.close()
+
+    rows = get_latest_scored_municipalities()
+    assert len(rows) == 1
+    assert rows[0]["name"] == "Biñan"
+    assert rows[0]["geo_score"] == 0.72
+    assert rows[0]["assessment"] is None
+    assert rows[0]["final_score"] is None
+    assert rows[0]["opportunities"] == []
+
+
+def test_get_latest_scored_municipalities_includes_current_assessment(fresh_db):
+    """A run_results row completed AFTER geo_scores.computed_at must surface as current."""
+    from agents.db_store import get_latest_scored_municipalities
+    conn = sqlite3.connect(str(fresh_db))
+    conn.execute(
+        "INSERT INTO municipalities (id, name, province, region, lat, lon, population, income_class) "
+        "VALUES (2, 'Jolo', 'Sulu', 'Region IX', 6.05, 121.0, 122831, '2nd')"
+    )
+    conn.execute(
+        "INSERT INTO geo_scores (municipality_id, geo_score, computed_at) "
+        "VALUES (2, 0.81, '2026-07-08 11:37:53')"
+    )
+    conn.execute(
+        "INSERT INTO runs (id, location, province, status, completed_at) "
+        "VALUES ('new_run', 'Sulu', 'Sulu', 'done', '2026-07-09 01:00:00')"
+    )
+    conn.execute(
+        "INSERT INTO run_results (run_id, municipality_id, geo_score, web_score, final_score, "
+        "tier, assessment, opportunities, risks) "
+        "VALUES ('new_run', 2, 0.81, 0.4, 0.71, 'HIGH', 'current text', '[\"opp\"]', '[\"risk\"]')"
+    )
+    conn.commit()
+    conn.close()
+
+    rows = get_latest_scored_municipalities()
+    assert rows[0]["assessment"] == "current text"
+    assert rows[0]["final_score"] == 0.71
+    assert rows[0]["opportunities"] == ["opp"]
+
+
+def test_get_latest_scored_municipalities_picks_max_completed_at(fresh_db):
+    """Two current runs for the same municipality: the later completed_at wins."""
+    from agents.db_store import get_latest_scored_municipalities
+    conn = sqlite3.connect(str(fresh_db))
+    conn.execute(
+        "INSERT INTO municipalities (id, name, province, region) VALUES (3, 'Davao City', 'Davao del Sur', 'Region XI')"
+    )
+    conn.execute(
+        "INSERT INTO geo_scores (municipality_id, geo_score, computed_at) VALUES (3, 0.6, '2026-07-08 11:37:53')"
+    )
+    conn.execute(
+        "INSERT INTO runs (id, location, province, status, completed_at) VALUES "
+        "('r1', 'Davao del Sur', 'Davao del Sur', 'done', '2026-07-08 12:00:00'), "
+        "('r2', 'Davao del Sur', 'Davao del Sur', 'done', '2026-07-09 09:00:00')"
+    )
+    conn.execute(
+        "INSERT INTO run_results (run_id, municipality_id, tier, assessment, final_score) "
+        "VALUES ('r1', 3, 'MEDIUM', 'first pass', 0.5)"
+    )
+    conn.execute(
+        "INSERT INTO run_results (run_id, municipality_id, tier, assessment, final_score) "
+        "VALUES ('r2', 3, 'HIGH', 'second pass', 0.6)"
+    )
+    conn.commit()
+    conn.close()
+
+    rows = get_latest_scored_municipalities()
+    assert rows[0]["assessment"] == "second pass"
+    assert rows[0]["tier"] == "HIGH"
+
+
+def test_get_latest_report_for_province_returns_most_recent(fresh_db):
+    from agents.db_store import get_latest_report_for_province
+    conn = sqlite3.connect(str(fresh_db))
+    conn.execute(
+        "INSERT INTO runs (id, location, province, status) VALUES ('r1', 'Laguna', 'Laguna', 'done')"
+    )
+    conn.execute(
+        "INSERT INTO runs (id, location, province, status) VALUES ('r2', 'Laguna', 'Laguna', 'done')"
+    )
+    conn.execute(
+        "INSERT INTO reports (run_id, province, municipality, slug, markdown, file_path, created_at) "
+        "VALUES ('r1', 'Laguna', NULL, 'laguna_old', '# old report', 'reports/laguna_old.md', '2026-07-01 00:00:00')"
+    )
+    conn.execute(
+        "INSERT INTO reports (run_id, province, municipality, slug, markdown, file_path, created_at) "
+        "VALUES ('r2', 'Laguna', NULL, 'laguna_new', '# new report', 'reports/laguna_new.md', '2026-07-09 00:00:00')"
+    )
+    conn.commit()
+    conn.close()
+
+    report = get_latest_report_for_province("Laguna")
+    assert report is not None
+    assert report["markdown"] == "# new report"
+    assert report["file_path"] == "reports/laguna_new.md"
+
+
+def test_get_latest_report_for_province_returns_none_when_missing(fresh_db):
+    from agents.db_store import get_latest_report_for_province
+    assert get_latest_report_for_province("Nowhere") is None
