@@ -20,6 +20,7 @@ from agents.geo_scoring import _load_scores_from_db
 from agents.synthesis import synthesize_municipality, compute_final_score
 from agents.kb_builder import save_municipality_docs
 from agents.chatbot import index_documents_from_kb
+from scripts.purge_stale_kb_docs import _stale_index, _doc_key_matches_stale
 
 
 def _load_cached_intel(municipality_id: int) -> dict | None:
@@ -43,6 +44,27 @@ def _load_cached_intel(municipality_id: int) -> dict | None:
         return None
     finally:
         conn.close()
+
+
+def _cleanup_old_kb_intel_docs(municipality_name: str, province: str, keep: set) -> None:
+    """Delete any pre-existing kb/intel/*.md file(s) for this municipality (matched
+    with the same rule scripts/purge_stale_kb_docs.py uses), except the brand-new
+    file(s) just written by save_municipality_docs.
+
+    This prevents the old stale doc and the new fresh doc from both being on disk
+    at once, which would otherwise cause chatbot.index_documents_from_kb() to
+    re-index the stale one right alongside the fresh one.
+    """
+    stale_index = _stale_index([{"name": municipality_name, "province": province}])
+    for path in config.KB_INTEL.glob("*.md"):
+        if path in keep:
+            continue
+        if _doc_key_matches_stale(path.stem, stale_index):
+            try:
+                path.unlink()
+                logger.debug(f"refresh: removed superseded kb/intel doc {path.name}")
+            except OSError as e:
+                logger.warning(f"refresh: failed to remove superseded kb/intel doc {path}: {e}")
 
 
 def maybe_refresh_assessment(municipality_id: int) -> dict | None:
@@ -117,10 +139,14 @@ def maybe_refresh_assessment(municipality_id: int) -> dict | None:
             "population":         row["population"] or 0,
             "is_urban":           (row["population"] or 0) > 50000,
         }}
-        save_municipality_docs(
+        new_paths = save_municipality_docs(
             location=row["province"], final_scores=final_scores,
             web_intel={row["name"]: intel}, run_id=run_id,
         )
+        try:
+            _cleanup_old_kb_intel_docs(row["name"], row["province"], keep=set(new_paths))
+        except Exception as e:
+            logger.warning(f"refresh.maybe_refresh_assessment stale kb/intel cleanup failed for {row['name']}: {e}")
         index_documents_from_kb()
     except Exception as e:
         logger.warning(f"refresh.maybe_refresh_assessment KB update failed for {row['name']}: {e}")

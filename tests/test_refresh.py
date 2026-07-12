@@ -119,6 +119,62 @@ def test_stale_with_cached_web_intel_resynthesizes(fresh_db, monkeypatch):
     assert result["final_score"] is not None
 
 
+def test_stale_resynthesis_deletes_old_kb_intel_file_for_same_municipality(fresh_db, monkeypatch, tmp_path):
+    """After a fresh resynthesis, exactly one kb/intel/*.md file should exist for
+    the municipality — the old stale one must be removed so it can never be
+    re-indexed alongside the new one."""
+    from agents import db_store
+    db_store.create_run("old", "Laguna", "Laguna")
+    conn = sqlite3.connect(str(fresh_db))
+    conn.execute("UPDATE runs SET completed_at='2026-07-01 00:00:00' WHERE id='old'")
+    conn.execute(
+        "INSERT INTO run_results (run_id, municipality_id, tier, assessment, final_score) "
+        "VALUES ('old', 1, 'MEDIUM', 'stale text', 0.5)"
+    )
+    conn.execute(
+        "INSERT INTO web_intel_cache (municipality_id, business_count, avg_price_level, places_data, web_score) "
+        "VALUES (1, 12, 2.5, ?, 0.4)",
+        (json.dumps({"business_count": 12, "avg_price_level": 2.5, "avg_rating": 4.1,
+                     "total_reviews": 80, "commercial_anchors": 2}),),
+    )
+    conn.commit()
+    conn.close()
+
+    kb_intel_dir = tmp_path / "kb_intel"
+    kb_intel_dir.mkdir()
+    old_file = kb_intel_dir / "laguna__biñan__old_run_id.md"
+    old_file.write_text("old stale doc")
+    unrelated_file = kb_intel_dir / "laguna__santa_rosa__other_run_id.md"
+    unrelated_file.write_text("unrelated doc")
+    monkeypatch.setattr(config, "KB_INTEL", kb_intel_dir)
+
+    from agents import refresh
+
+    def fake_save_municipality_docs(location, final_scores, web_intel, run_id):
+        path = kb_intel_dir / f"laguna__biñan__{run_id}.md"
+        path.write_text("fresh doc")
+        return [path]
+
+    monkeypatch.setattr(refresh, "save_municipality_docs", fake_save_municipality_docs)
+    monkeypatch.setattr(
+        refresh, "synthesize_municipality",
+        lambda municipality, geo, intel: {
+            "assessment": "fresh text", "confidence": "HIGH",
+            "opportunity": "opp", "risk": "risk",
+        },
+    )
+    monkeypatch.setattr(refresh, "index_documents_from_kb", lambda: None)
+
+    result = refresh.maybe_refresh_assessment(1)
+    assert result["assessment"] == "fresh text"
+
+    remaining = sorted(p.name for p in kb_intel_dir.glob("*.md"))
+    assert not old_file.exists()
+    assert unrelated_file.exists()
+    assert len(remaining) == 2  # unrelated Santa Rosa doc + brand-new Biñan doc
+    assert any(name.startswith("laguna__biñan__") and "old_run_id" not in name for name in remaining)
+
+
 def test_stale_without_cached_web_intel_stays_geo_only(fresh_db, monkeypatch):
     from agents import db_store
     db_store.create_run("old", "Laguna", "Laguna")
