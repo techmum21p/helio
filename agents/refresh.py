@@ -63,9 +63,13 @@ def maybe_refresh_assessment(municipality_id: int) -> dict | None:
     if intel is None:
         return row  # no cached web intel — stays geo-only, no API call
 
-    geo_map = _load_scores_from_db([{"name": row["name"], "province": row["province"]}])
-    geo = geo_map.get(row["name"])
-    if geo is None:
+    try:
+        geo_map = _load_scores_from_db([{"name": row["name"], "province": row["province"]}])
+        geo = geo_map.get(row["name"])
+        if geo is None:
+            return row
+    except Exception as e:
+        logger.warning(f"refresh.maybe_refresh_assessment failed to load scores for {row['name']}: {e}")
         return row
 
     try:
