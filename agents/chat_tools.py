@@ -217,12 +217,66 @@ TOOLS += [
     },
 ]
 
+_SQL_SCHEMA_DOC = """Tables:
+- municipalities(id, name, province, region, lat, lon, area_km2, population, income_class)
+- geo_scores(municipality_id UNIQUE, solar_irradiance, solar_norm, income_score, pop_density, pop_density_norm, geo_score, computed_at)
+- runs(id TEXT, location, province, status, created_at, completed_at, error)
+- run_results(run_id, municipality_id, geo_score, web_score, final_score, tier, assessment, opportunities JSON, risks JSON, solar_irradiance, solar_yield_kwh, pop_density)
+- web_intel_cache(municipality_id UNIQUE, business_count, avg_price_level, places_data JSON, tavily_snippets, web_score, fetched_at, expires_at)
+- reports(run_id, province, municipality, slug, markdown, file_path, created_at)
+
+CRITICAL STALENESS RULE: run_results holds MULTIPLE historical rows per
+municipality, including superseded assessments. A row is CURRENT only when its
+run has status='done' AND runs.completed_at >= geo_scores.computed_at for that
+municipality; if several qualify, the one with the latest completed_at wins.
+Prefer get_top_municipalities / get_municipality_profile — they already apply
+this rule. Use this tool only for counts, filters, and aggregates they cannot
+express."""
+
+
+def run_sql_query(sql: str) -> dict:
+    stripped = sql.strip().rstrip(";").strip()
+    if not stripped.lower().startswith("select"):
+        return {"error": "Only a single SELECT statement is allowed (read-only connection)."}
+    conn = None
+    try:
+        conn = sqlite3.connect(f"file:{config.HELIO_DB}?mode=ro", uri=True)
+        cur = conn.execute(stripped)
+        rows = cur.fetchmany(SQL_ROW_CAP + 1)
+        truncated = len(rows) > SQL_ROW_CAP
+        rows = rows[:SQL_ROW_CAP]
+        return {"columns": [d[0] for d in cur.description] if cur.description else [],
+                "rows": [list(r) for r in rows],
+                "row_count": len(rows),
+                "truncated": truncated}
+    except Exception as e:
+        return {"error": str(e)}
+    finally:
+        if conn is not None:
+            conn.close()
+
+
+TOOLS += [
+    {
+        "name": "run_sql_query",
+        "description": ("Run one read-only SELECT against the project SQLite database, for "
+                        "analytics the typed tools can't express (counts, filters, aggregates). "
+                        f"Results capped at {SQL_ROW_CAP} rows.\n\n{_SQL_SCHEMA_DOC}"),
+        "input_schema": {
+            "type": "object",
+            "properties": {"sql": {"type": "string", "description": "A single SELECT statement"}},
+            "required": ["sql"],
+        },
+    },
+]
+
 _EXECUTORS: dict = {
     "get_top_municipalities": get_top_municipalities,
     "get_municipality_profile": get_municipality_profile,
     "compare_municipalities": compare_municipalities,
 }
 _EXECUTORS["search_kb"] = search_kb
+_EXECUTORS["run_sql_query"] = run_sql_query
 
 
 def execute_tool(name: str, tool_input: dict) -> str:
