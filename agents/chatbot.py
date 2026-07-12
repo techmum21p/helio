@@ -7,6 +7,7 @@ KB grows automatically after every pipeline run — the more locations
 you process, the richer the chatbot's answers become.
 """
 
+import re
 from pathlib import Path
 from loguru import logger
 import anthropic
@@ -88,6 +89,8 @@ def index_documents_from_kb() -> None:
             logger.info(f"Indexed {len(new_chunks)} chunks from report {doc_id}")
 
     # ── Municipality intel files from kb/intel/ (not in DB yet) ───────────
+    from agents.chat_tools import province_slug_map
+    slug_map = province_slug_map()
     for md_file in Path(config.KB_INTEL).glob("*.md"):
         doc_id = md_file.stem
         if f"{doc_id}_chunk_0" in existing_ids:
@@ -99,10 +102,11 @@ def index_documents_from_kb() -> None:
         chunk_ids  = [f"{doc_id}_chunk_{i}" for i in range(len(chunks))]
         new_chunks = [(cid, c) for cid, c in zip(chunk_ids, chunks) if cid not in existing_ids]
         if new_chunks:
+            province = slug_map.get(doc_id.split("__")[0], "")
             collection.add(
                 documents=[c for _, c in new_chunks],
                 ids=[cid for cid, _ in new_chunks],
-                metadatas=[{"source": str(md_file)} for _ in new_chunks],
+                metadatas=[{"source": str(md_file), "province": province} for _ in new_chunks],
             )
             logger.info(f"Indexed {len(new_chunks)} chunks from {md_file.name}")
 
@@ -133,6 +137,56 @@ def detect_municipality_id(message: str, municipalities: list[dict]) -> int | No
     return best[1] if best else None
 
 
+_RANKING_WORDS = re.compile(
+    r"\btop\s*\d*\b|\bbest\b|\bpriorit\w*\b|\brank\w*\b|\bhighest\b", re.IGNORECASE
+)
+_TOP_N = re.compile(r"\btop\s*(\d+)\b", re.IGNORECASE)
+
+
+def detect_province_ranking_query(message: str, municipalities: list[dict]) -> tuple[str | None, int]:
+    """If the message asks to rank/prioritize locations within a specific province,
+    return (province, n) — n from "top N" phrasing, default 5. Otherwise (None, 0).
+
+    Pure semantic search (retrieve_context) can't be trusted for this: with ~29k
+    similarly-worded chunks in the KB, it returns whatever 10 chunks are nearest
+    by embedding to the query text — not all of a province's municipalities, and
+    not sorted by score. See _exact_municipality_block for the same problem at
+    single-municipality granularity.
+    """
+    if not _RANKING_WORDS.search(message):
+        return None, 0
+    lower_message = message.lower()
+    best: tuple[int, str] | None = None  # (name length, province)
+    for province in {m["province"] for m in municipalities}:
+        if province and province.lower() in lower_message:
+            if best is None or len(province) > best[0]:
+                best = (len(province), province)
+    if best is None:
+        return None, 0
+    m = _TOP_N.search(message)
+    n = int(m.group(1)) if m else 5
+    return best[1], n
+
+
+def _province_leaderboard_block(province: str, municipalities: list[dict], n: int) -> str:
+    """Authoritative current-data ranking for a province, built straight from the
+    DB and sorted by final_score — the same source as the map/table."""
+    rows = [m for m in municipalities if m["province"] == province]
+    scored = sorted(
+        (r for r in rows if r["final_score"] is not None),
+        key=lambda r: r["final_score"],
+        reverse=True,
+    )
+    lines = [f"[Current Live Data — Top {n} Opportunities in {province} by Solar Opportunity Score]"]
+    lines.append(f"({len(scored)} of {len(rows)} municipalities in {province} have a full assessment)")
+    for i, r in enumerate(scored[:n], 1):
+        lines.append(
+            f"{i}. {r['name']} — Solar Opportunity Score: {r['final_score']:.3f}, "
+            f"Tier: {r['tier']}, Geo Score: {r['geo_score']:.3f}"
+        )
+    return "\n".join(lines)
+
+
 def update_kb_node(state: SolarLeadState) -> SolarLeadState:
     """LangGraph node: triggered after report_gen. Builds per-municipality docs then indexes."""
     logger.info("[Agent 5] Updating knowledge base...")
@@ -160,13 +214,17 @@ def update_kb_node(state: SolarLeadState) -> SolarLeadState:
 
 # ── RAG Retrieval ──────────────────────────────────────────────────────────────
 
-def retrieve_context(query: str, n_results: int = 10) -> str:
+def retrieve_context(query: str, n_results: int = 10, province: str | None = None) -> str:
     """
     Retrieve relevant chunks from ChromaDB for the user's query.
     Returns chunks with their source file noted so the LLM knows the provenance.
+    Pass province to restrict results to chunks carrying that province metadata.
     """
     try:
-        results = _get_collection().query(query_texts=[query], n_results=n_results)
+        kwargs = {"query_texts": [query], "n_results": n_results}
+        if province:
+            kwargs["where"] = {"province": province}
+        results = _get_collection().query(**kwargs)
         docs = results.get("documents", [[]])[0]
         metas = results.get("metadatas", [[]])[0]
 
@@ -206,6 +264,32 @@ Always be direct and practical — your user is a business owner, not an analyst
 """
 
 
+def _exact_municipality_block(row: dict) -> str:
+    """Authoritative current-data block for a municipality the user explicitly
+    named, built straight from the DB (same source as the map/table) rather
+    than relying on semantic ChromaDB ranking — with ~29k similarly-worded
+    profile chunks in the KB, pure similarity search doesn't reliably surface
+    the one exact-name match (e.g. "Pilar, Abra" losing to other Pilars or
+    other Abra towns). See docs/superpowers/specs — parked 2026-07-12."""
+    lines = [f"[Current Live Data — {row['name']}, {row['province']}]"]
+    lines.append(
+        f"Geo Score: {row['geo_score']:.3f}" if row["geo_score"] is not None
+        else "Geo Score: not available"
+    )
+    if row["final_score"] is not None:
+        lines.append(f"Solar Opportunity Score: {row['final_score']:.3f}")
+        lines.append(f"Tier: {row['tier']}")
+        if row["assessment"]:
+            lines.append(f"Assessment: {row['assessment']}")
+        if row["opportunities"]:
+            lines.append(f"Opportunity: {row['opportunities'][0]}")
+        if row["risks"]:
+            lines.append(f"Risk: {row['risks'][0]}")
+    else:
+        lines.append("This municipality does not yet have a full AI assessment (geo-score only).")
+    return "\n".join(lines)
+
+
 def chat(user_message: str, chat_history: list, run_id: str = "") -> tuple[str, list]:
     """
     Single turn of the chatbot.
@@ -214,10 +298,22 @@ def chat(user_message: str, chat_history: list, run_id: str = "") -> tuple[str, 
     """
     municipalities = get_latest_scored_municipalities()
     municipality_id = detect_municipality_id(user_message, municipalities)
+    exact_block = None
     if municipality_id is not None:
-        maybe_refresh_assessment(municipality_id)
+        detail = maybe_refresh_assessment(municipality_id)
+        if detail is not None:
+            exact_block = _exact_municipality_block(detail)
 
-    context  = retrieve_context(user_message)
+    ranking_province, ranking_n = detect_province_ranking_query(user_message, municipalities)
+    leaderboard_block = None
+    if ranking_province is not None:
+        leaderboard_block = _province_leaderboard_block(ranking_province, municipalities, ranking_n)
+
+    context = retrieve_context(user_message)
+    if leaderboard_block:
+        context = f"{leaderboard_block}\n\n---\n\n{context}"
+    if exact_block:
+        context = f"{exact_block}\n\n---\n\n{context}"
     messages = chat_history.copy()
     messages.append({
         "role":    "user",

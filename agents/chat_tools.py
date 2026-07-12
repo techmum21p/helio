@@ -129,6 +129,19 @@ def get_top_municipalities(province=None, region=None, n=5, metric="final_score"
             "results": results}
 
 
+def search_kb(query: str, province: str | None = None) -> dict:
+    # Call-time import — agents.chatbot imports this module at load time.
+    import agents.chatbot as chatbot_mod
+    resolved = None
+    if province:
+        rows = get_latest_scored_municipalities()
+        resolved, candidates = _resolve_province(province, rows)
+        if resolved is None:
+            return {"error": f"Ambiguous or unknown province {province!r}.",
+                    "candidates": candidates}
+    return {"results": chatbot_mod.retrieve_context(query, n_results=8, province=resolved)}
+
+
 TOOLS: list[dict] = [
     {
         "name": "get_top_municipalities",
@@ -184,11 +197,32 @@ TOOLS: list[dict] = [
     },
 ]
 
+TOOLS += [
+    {
+        "name": "search_kb",
+        "description": (
+            "Semantic search over generated province reports and municipality intelligence "
+            "profiles. Use for narrative context: assessments, risks, opportunities, web "
+            "intelligence, poverty/economic conditions. NOT authoritative for rankings or "
+            "exact scores — use get_top_municipalities / get_municipality_profile for those."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string"},
+                "province": {"type": "string", "description": "Optional: restrict results to one province"},
+            },
+            "required": ["query"],
+        },
+    },
+]
+
 _EXECUTORS: dict = {
     "get_top_municipalities": get_top_municipalities,
     "get_municipality_profile": get_municipality_profile,
     "compare_municipalities": compare_municipalities,
 }
+_EXECUTORS["search_kb"] = search_kb
 
 
 def execute_tool(name: str, tool_input: dict) -> str:
