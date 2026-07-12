@@ -36,9 +36,26 @@ def _slug(text: str) -> str:
 
 
 def stale_doc_ids(collection_ids: list[str], stale: list[dict]) -> list[str]:
-    """Chunk ids in the Chroma collection whose kb/intel filename prefix matches a stale municipality."""
-    prefixes = [f"{_slug(m['province'])}__{_slug(m['name'])}__" for m in stale]
-    return [cid for cid in collection_ids if any(cid.startswith(p) for p in prefixes)]
+    """Chunk ids in the Chroma collection whose muni_slug segment matches a stale municipality.
+
+    Doc ids from agents/kb_builder.py's save_municipality_docs are always
+    ``{location_slug}__{muni_slug}__{run_id}`` (chunk ids append ``_chunk_N`` to the
+    run_id segment). location_slug is derived from the caller-supplied `location`
+    string (e.g. "Daraga, Albay" -> "daraga_albay"), which is NOT reliably the
+    municipality's province column, so we must not match on it. Instead, split on
+    "__" and match the middle segment (always the muni_slug) against the stale
+    municipality's name-slug.
+    """
+    stale_muni_slugs = {_slug(m["name"]) for m in stale}
+    matched = []
+    for cid in collection_ids:
+        parts = cid.split("__")
+        if len(parts) != 3:
+            continue
+        _location_slug, muni_slug, _run_chunk = parts
+        if muni_slug in stale_muni_slugs:
+            matched.append(cid)
+    return matched
 
 
 def main(dry_run: bool = True) -> None:

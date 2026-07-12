@@ -56,3 +56,28 @@ def test_stale_doc_ids_matches_by_province_and_muni_slug():
 def test_stale_doc_ids_returns_empty_when_no_match():
     from scripts.purge_stale_kb_docs import stale_doc_ids
     assert stale_doc_ids(["sulu__jolo__def456_chunk_0"], [{"municipality_id": 1, "name": "Daraga", "province": "Albay"}]) == []
+
+
+def test_stale_doc_ids_matches_non_province_location_slug():
+    """location_slug can be '{muni}_{province}' (e.g. Streamlit multi-muni runs), not the
+    municipality's province column. The middle segment (muni_slug) must still match."""
+    from scripts.purge_stale_kb_docs import stale_doc_ids
+    collection_ids = [
+        "daraga_albay__daraga__abc123_chunk_0",
+        "daraga_albay__daraga__abc123_chunk_1",
+        "sulu__jolo__def456_chunk_0",
+    ]
+    stale = [{"municipality_id": 1, "name": "Daraga", "province": "Albay"}]
+    matched = stale_doc_ids(collection_ids, stale)
+    assert matched == ["daraga_albay__daraga__abc123_chunk_0", "daraga_albay__daraga__abc123_chunk_1"]
+
+
+def test_stale_doc_ids_does_not_false_positive_on_similar_muni():
+    """A different municipality (city_of_tabaco) in the same province must not match
+    Daraga, even though the location_slug segment ('albay') looks similar."""
+    from scripts.purge_stale_kb_docs import stale_doc_ids
+    matched = stale_doc_ids(
+        ["albay__city_of_tabaco__ghi789_chunk_0"],
+        [{"municipality_id": 1, "name": "Daraga", "province": "Albay"}],
+    )
+    assert matched == []
