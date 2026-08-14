@@ -433,7 +433,8 @@ def get_latest_scored_municipalities() -> list[dict]:
 
         current_rows = conn.execute(
             """SELECT rr.municipality_id, rr.final_score, rr.web_score, rr.tier,
-                      rr.assessment, rr.opportunities, rr.risks, r.completed_at
+                      rr.assessment, rr.opportunities, rr.risks, r.completed_at,
+                      rr.solar_irradiance, rr.solar_yield_kwh, rr.pop_density
                FROM run_results rr
                JOIN runs r ON r.id = rr.run_id AND r.status = 'done'
                JOIN geo_scores g ON g.municipality_id = rr.municipality_id
@@ -472,6 +473,9 @@ def get_latest_scored_municipalities() -> list[dict]:
             "assessment":      cur["assessment"] if cur else None,
             "opportunities":   json.loads(cur["opportunities"]) if cur and cur["opportunities"] else [],
             "risks":           json.loads(cur["risks"]) if cur and cur["risks"] else [],
+            "solar_irradiance": cur["solar_irradiance"] if cur else None,
+            "solar_yield_kwh":  cur["solar_yield_kwh"] if cur else None,
+            "pop_density":      cur["pop_density"] if cur else None,
         })
     return result
 
@@ -491,3 +495,106 @@ def get_latest_report_for_province(province: str) -> dict | None:
         return None
     finally:
         conn.close()
+
+
+def latest_assessment_time_for_province(province: str) -> str | None:
+    """Completion time of the most recent current assessment among the province's
+    municipalities, or None if none are assessed yet. Used to detect a stale report."""
+    conn = _get_conn()
+    try:
+        row = conn.execute(
+            """SELECT MAX(r.completed_at) AS latest
+               FROM run_results rr
+               JOIN runs r ON r.id = rr.run_id AND r.status = 'done'
+               JOIN municipalities m ON m.id = rr.municipality_id
+               JOIN geo_scores g ON g.municipality_id = rr.municipality_id
+               WHERE m.province = ?
+                 AND rr.assessment IS NOT NULL
+                 AND r.completed_at >= g.computed_at""",
+            (province,),
+        ).fetchone()
+        return row["latest"] if row else None
+    except Exception as e:
+        logger.error(f"db_store.latest_assessment_time_for_province failed: {e}")
+        return None
+    finally:
+        conn.close()
+
+
+def get_score_breakdown(municipality_id: int) -> dict | None:
+    """Every raw and normalized input behind a municipality's geo_score, web_score,
+    and final_score, plus the weights applied — for a transparent score breakdown
+    in the UI. Returns None if the municipality has no geo_scores row yet."""
+    conn = _get_conn()
+    try:
+        geo_row = conn.execute(
+            """SELECT g.solar_irradiance, g.solar_norm, g.income_score,
+                      g.pop_density, g.pop_density_norm, g.geo_score,
+                      m.income_class
+               FROM geo_scores g JOIN municipalities m ON m.id = g.municipality_id
+               WHERE g.municipality_id = ?""",
+            (municipality_id,),
+        ).fetchone()
+        if geo_row is None:
+            return None
+
+        web_row = conn.execute(
+            """SELECT business_count, avg_price_level, places_data, web_score
+               FROM web_intel_cache WHERE municipality_id = ?""",
+            (municipality_id,),
+        ).fetchone()
+
+        current = next(
+            (r for r in get_latest_scored_municipalities() if r["municipality_id"] == municipality_id),
+            None,
+        )
+    except Exception as e:
+        logger.error(f"db_store.get_score_breakdown failed: {e}")
+        return None
+    finally:
+        conn.close()
+
+    income_norm = (geo_row["income_score"] - 1) / 5.0 if geo_row["income_score"] else 0.0
+    breakdown = {
+        "weights": {"solar": config.WEIGHTS["solar"], "income": config.WEIGHTS["income"],
+                    "population": config.WEIGHTS["population"]},
+        "geo": {
+            "solar_irradiance": geo_row["solar_irradiance"],
+            "solar_norm":       geo_row["solar_norm"],
+            "income_class":     geo_row["income_class"],
+            "income_score":     geo_row["income_score"],
+            "income_norm":      income_norm,
+            "pop_density":      geo_row["pop_density"],
+            "pop_density_norm": geo_row["pop_density_norm"],
+            "geo_score":        geo_row["geo_score"],
+        },
+        "web": None,
+        "final_weights": {"geo": config.FINAL_GEO_WEIGHT, "web": config.FINAL_WEB_WEIGHT},
+        "final_score": current["final_score"] if current else None,
+    }
+
+    if web_row is not None:
+        places = json.loads(web_row["places_data"]) if web_row["places_data"] else {}
+        business_count     = places.get("business_count", web_row["business_count"] or 0)
+        avg_price_level    = places.get("avg_price_level", web_row["avg_price_level"] or 0)
+        avg_rating         = places.get("avg_rating", 0)
+        commercial_anchors = places.get("commercial_anchors", 0)
+        biz_density   = min(business_count / 20, 1.0)
+        price_signal  = min(avg_price_level / 4, 1.0)
+        rating_signal = max((avg_rating - 1.0) / 4.0, 0) if avg_rating else 0
+        anchor_signal = min(commercial_anchors / 5, 1.0)
+        breakdown["web"] = {
+            "weights": {"business_density": 0.35, "price_signal": 0.25,
+                        "rating_signal": 0.25, "anchor_signal": 0.15},
+            "business_count":     business_count,
+            "business_density":   biz_density,
+            "avg_price_level":    avg_price_level,
+            "price_signal":       price_signal,
+            "avg_rating":         avg_rating,
+            "rating_signal":      rating_signal,
+            "commercial_anchors": commercial_anchors,
+            "anchor_signal":      anchor_signal,
+            "web_score":          web_row["web_score"],
+        }
+
+    return breakdown
