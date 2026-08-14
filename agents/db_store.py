@@ -94,6 +94,17 @@ def _create_schema() -> None:
         file_path    TEXT,
         created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
     );
+    CREATE TABLE IF NOT EXISTS kb_docs (
+        id              INTEGER PRIMARY KEY AUTOINCREMENT,
+        municipality_id INTEGER NOT NULL REFERENCES municipalities(id),
+        province        TEXT NOT NULL,
+        file_path       TEXT NOT NULL,
+        run_id          TEXT NOT NULL,
+        generated_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
+        is_current      INTEGER NOT NULL DEFAULT 1
+    );
+    CREATE INDEX IF NOT EXISTS idx_kb_docs_current
+        ON kb_docs(province, municipality_id, is_current);
     """
     conn = _get_conn()
     try:
@@ -478,6 +489,55 @@ def get_latest_scored_municipalities() -> list[dict]:
             "pop_density":      cur["pop_density"] if cur else None,
         })
     return result
+
+
+def register_kb_doc(municipality_id: int, province: str, file_path: str, run_id: str) -> list[str]:
+    """Insert a new current kb_doc row for a municipality, marking any previously
+    current row(s) for that municipality as superseded. Returns the file_path(s)
+    of the rows just superseded, so the caller can delete those files from disk."""
+    conn = _get_conn()
+    try:
+        superseded = [
+            r["file_path"] for r in conn.execute(
+                "SELECT file_path FROM kb_docs WHERE municipality_id=? AND is_current=1",
+                (municipality_id,),
+            ).fetchall()
+        ]
+        conn.execute(
+            "UPDATE kb_docs SET is_current=0 WHERE municipality_id=? AND is_current=1",
+            (municipality_id,),
+        )
+        conn.execute(
+            "INSERT INTO kb_docs (municipality_id, province, file_path, run_id) VALUES (?,?,?,?)",
+            (municipality_id, province, file_path, run_id),
+        )
+        conn.commit()
+        return superseded
+    except Exception as e:
+        logger.error(f"db_store.register_kb_doc failed: {e}")
+        return []
+    finally:
+        conn.close()
+
+
+def get_current_kb_docs(province: str | None = None, municipality_id: int | None = None) -> list[dict]:
+    """Current (is_current=1) kb_docs rows, optionally filtered by province and/or municipality_id."""
+    conn = _get_conn()
+    try:
+        query = "SELECT * FROM kb_docs WHERE is_current=1"
+        params: list = []
+        if province is not None:
+            query += " AND province=?"
+            params.append(province)
+        if municipality_id is not None:
+            query += " AND municipality_id=?"
+            params.append(municipality_id)
+        return [dict(r) for r in conn.execute(query, params).fetchall()]
+    except Exception as e:
+        logger.error(f"db_store.get_current_kb_docs failed: {e}")
+        return []
+    finally:
+        conn.close()
 
 
 def get_latest_report_for_province(province: str) -> dict | None:

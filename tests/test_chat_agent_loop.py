@@ -32,8 +32,6 @@ def _wire(monkeypatch, queue):
     monkeypatch.setattr(chatbot_mod.client, "messages", fake)
     monkeypatch.setattr(chatbot_mod, "execute_tool",
                         lambda name, tool_input: json.dumps({"echo": name, "input": tool_input}))
-    monkeypatch.setattr(chatbot_mod, "retrieve_context",
-                        lambda query, n_results=10, province=None: "fallback-context")
     return fake, chatbot_mod
 
 
@@ -112,16 +110,17 @@ def test_round_cap_forces_final_answer(monkeypatch):
     )
 
 
-def test_gateway_failure_falls_back_to_rag(monkeypatch):
+def test_gateway_failure_falls_back_to_toolless_call(monkeypatch):
     fake, chatbot_mod = _wire(monkeypatch, [
         RuntimeError("gateway down"),
-        _Resp([_Block("text", text="rag answer")]),
+        _Resp([_Block("text", text="fallback answer")]),
     ])
     reply, history = chatbot_mod.chat("q", [], run_id="")
-    assert reply == "rag answer"
-    # fallback call is toolless and context-stuffed
+    assert reply == "fallback answer"
+    # fallback call is toolless — no context stuffing, since there's no more
+    # retrieval to fall back to; it's just the plain conversation without tools
     assert "tools" not in fake.calls[1]
-    assert "fallback-context" in fake.calls[1]["messages"][-1]["content"]
+    assert fake.calls[1]["messages"][-1]["content"] == "q"
 
 
 def test_total_failure_returns_apology_not_exception(monkeypatch):

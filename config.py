@@ -23,13 +23,12 @@ DATA_PROCESSED = ROOT_DIR / "data" / "processed"
 KB_DIR = ROOT_DIR / "kb"
 KB_REPORTS = KB_DIR / "reports"
 KB_INTEL = KB_DIR / "intel"
-KB_INDEX = KB_DIR / "index"
 REPORTS_DIR = ROOT_DIR / "reports"
 SESSIONS_DIR = ROOT_DIR / "sessions"
 LOCATION_DB = ROOT_DIR / "data" / "ph_locations.db"
 
 # Create dirs if missing
-for d in [DATA_RAW, DATA_PROCESSED, KB_REPORTS, KB_INTEL, KB_INDEX, REPORTS_DIR, SESSIONS_DIR]:
+for d in [DATA_RAW, DATA_PROCESSED, KB_REPORTS, KB_INTEL, REPORTS_DIR, SESSIONS_DIR]:
     d.mkdir(parents=True, exist_ok=True)
 
 
@@ -47,10 +46,6 @@ WEIGHTS = {
 # Final score blend weights
 FINAL_GEO_WEIGHT = 0.70   # was 0.80
 FINAL_WEB_WEIGHT = 0.30   # was 0.20
-
-# Ollama embedding
-OLLAMA_URL         = os.getenv("OLLAMA_URL", "http://localhost:11434")
-OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "qwen3-embedding:0.6b")
 
 # Consolidated DB (helio.db replaces ph_locations.db for all structured data)
 HELIO_DB = ROOT_DIR / "data" / "helio.db"

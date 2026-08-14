@@ -83,8 +83,11 @@ def test_current_assessment_is_returned_without_resynthesis(fresh_db, monkeypatc
     assert result["assessment"] == "current"
 
 
-def test_stale_with_cached_web_intel_resynthesizes(fresh_db, monkeypatch):
+def test_stale_with_cached_web_intel_resynthesizes(fresh_db, monkeypatch, tmp_path):
     from agents import db_store
+    kb_intel_dir = tmp_path / "kb_intel"
+    kb_intel_dir.mkdir()
+    monkeypatch.setattr(config, "KB_INTEL", kb_intel_dir)
     db_store.create_run("old", "Laguna", "Laguna")
     conn = sqlite3.connect(str(fresh_db))
     conn.execute(
@@ -111,7 +114,6 @@ def test_stale_with_cached_web_intel_resynthesizes(fresh_db, monkeypatch):
             "opportunity": "opp", "risk": "risk",
         },
     )
-    monkeypatch.setattr(refresh, "index_documents_from_kb", lambda: None)
 
     result = refresh.maybe_refresh_assessment(1)
     assert result["assessment"] == "fresh text"
@@ -121,8 +123,9 @@ def test_stale_with_cached_web_intel_resynthesizes(fresh_db, monkeypatch):
 
 def test_stale_resynthesis_deletes_old_kb_intel_file_for_same_municipality(fresh_db, monkeypatch, tmp_path):
     """After a fresh resynthesis, exactly one kb/intel/*.md file should exist for
-    the municipality — the old stale one must be removed so it can never be
-    re-indexed alongside the new one."""
+    the municipality — the old stale one must be removed (via the kb_docs table's
+    supersede-on-register bookkeeping in kb_builder.save_municipality_docs, see
+    tests/test_kb_builder.py) so it can never be read alongside the new one."""
     from agents import db_store
     db_store.create_run("old", "Laguna", "Laguna")
     conn = sqlite3.connect(str(fresh_db))
@@ -142,20 +145,13 @@ def test_stale_resynthesis_deletes_old_kb_intel_file_for_same_municipality(fresh
 
     kb_intel_dir = tmp_path / "kb_intel"
     kb_intel_dir.mkdir()
-    old_file = kb_intel_dir / "laguna__biñan__old_run_id.md"
-    old_file.write_text("old stale doc")
-    unrelated_file = kb_intel_dir / "laguna__santa_rosa__other_run_id.md"
-    unrelated_file.write_text("unrelated doc")
     monkeypatch.setattr(config, "KB_INTEL", kb_intel_dir)
 
-    from agents import refresh
+    from agents import db_store, refresh
+    old_file = kb_intel_dir / "laguna__biñan__old_run_id.md"
+    old_file.write_text("old stale doc")
+    db_store.register_kb_doc(1, "Laguna", str(old_file), "old_run_id")
 
-    def fake_save_municipality_docs(location, final_scores, web_intel, run_id):
-        path = kb_intel_dir / f"laguna__biñan__{run_id}.md"
-        path.write_text("fresh doc")
-        return [path]
-
-    monkeypatch.setattr(refresh, "save_municipality_docs", fake_save_municipality_docs)
     monkeypatch.setattr(
         refresh, "synthesize_municipality",
         lambda municipality, geo, intel: {
@@ -163,16 +159,14 @@ def test_stale_resynthesis_deletes_old_kb_intel_file_for_same_municipality(fresh
             "opportunity": "opp", "risk": "risk",
         },
     )
-    monkeypatch.setattr(refresh, "index_documents_from_kb", lambda: None)
 
     result = refresh.maybe_refresh_assessment(1)
     assert result["assessment"] == "fresh text"
 
     remaining = sorted(p.name for p in kb_intel_dir.glob("*.md"))
     assert not old_file.exists()
-    assert unrelated_file.exists()
-    assert len(remaining) == 2  # unrelated Santa Rosa doc + brand-new Biñan doc
-    assert any(name.startswith("laguna__biñan__") and "old_run_id" not in name for name in remaining)
+    assert len(remaining) == 1  # only the brand-new Biñan doc
+    assert "old_run_id" not in remaining[0]
 
 
 def test_stale_without_cached_web_intel_stays_geo_only(fresh_db, monkeypatch):

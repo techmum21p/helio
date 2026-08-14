@@ -17,6 +17,7 @@ from pathlib import Path
 from loguru import logger
 
 import config
+from agents import db_store
 
 
 def _get_barangays(municipality: str, province: str) -> list[str]:
@@ -119,6 +120,7 @@ def save_municipality_docs(
 
     for municipality, scores in final_scores.items():
         intel = web_intel.get(municipality, {})
+        province = scores.get("province", location)
         doc = _build_municipality_doc(municipality, scores, intel)
 
         muni_slug = (
@@ -133,6 +135,19 @@ def save_municipality_docs(
         path.write_text(doc, encoding="utf-8")
         saved.append(path)
         logger.debug(f"KB doc saved: {path.name}")
+
+        municipality_id = db_store.get_municipality_id(municipality, province)
+        if municipality_id is None:
+            logger.warning(
+                f"kb_builder: no municipality_id for {municipality!r}, {province!r} — kb_doc not registered"
+            )
+            continue
+        superseded = db_store.register_kb_doc(municipality_id, province, str(path), run_id)
+        for old_path in superseded:
+            try:
+                Path(old_path).unlink(missing_ok=True)
+            except OSError as e:
+                logger.warning(f"kb_builder: failed to remove superseded doc {old_path}: {e}")
 
     logger.info(f"[KB Builder] Saved {len(saved)} municipality documents to kb/intel/")
     return saved

@@ -445,3 +445,65 @@ def test_get_latest_report_for_province_returns_most_recent(fresh_db):
 def test_get_latest_report_for_province_returns_none_when_missing(fresh_db):
     from agents.db_store import get_latest_report_for_province
     assert get_latest_report_for_province("Nowhere") is None
+
+
+def test_register_kb_doc_inserts_current_row(fresh_db):
+    from agents.db_store import register_kb_doc, get_current_kb_docs
+    conn = sqlite3.connect(str(fresh_db))
+    conn.execute(
+        "INSERT INTO municipalities (id, name, province, region) VALUES (1, 'Jolo', 'Sulu', 'Region IX')"
+    )
+    conn.commit()
+    conn.close()
+
+    superseded = register_kb_doc(1, "Sulu", "kb/intel/sulu__jolo__run1.md", "run1")
+    assert superseded == []
+
+    docs = get_current_kb_docs(province="Sulu")
+    assert len(docs) == 1
+    assert docs[0]["file_path"] == "kb/intel/sulu__jolo__run1.md"
+    assert docs[0]["municipality_id"] == 1
+    assert docs[0]["run_id"] == "run1"
+
+
+def test_register_kb_doc_supersedes_previous_current_row(fresh_db):
+    from agents.db_store import register_kb_doc, get_current_kb_docs
+    conn = sqlite3.connect(str(fresh_db))
+    conn.execute(
+        "INSERT INTO municipalities (id, name, province, region) VALUES (1, 'Jolo', 'Sulu', 'Region IX')"
+    )
+    conn.commit()
+    conn.close()
+
+    register_kb_doc(1, "Sulu", "kb/intel/sulu__jolo__run1.md", "run1")
+    superseded = register_kb_doc(1, "Sulu", "kb/intel/sulu__jolo__run2.md", "run2")
+
+    assert superseded == ["kb/intel/sulu__jolo__run1.md"]
+    docs = get_current_kb_docs(province="Sulu")
+    assert len(docs) == 1
+    assert docs[0]["file_path"] == "kb/intel/sulu__jolo__run2.md"
+
+
+def test_get_current_kb_docs_filters_by_municipality_id(fresh_db):
+    from agents.db_store import register_kb_doc, get_current_kb_docs
+    conn = sqlite3.connect(str(fresh_db))
+    conn.execute(
+        "INSERT INTO municipalities (id, name, province, region) VALUES (1, 'Jolo', 'Sulu', 'Region IX')"
+    )
+    conn.execute(
+        "INSERT INTO municipalities (id, name, province, region) VALUES (2, 'Patikul', 'Sulu', 'Region IX')"
+    )
+    conn.commit()
+    conn.close()
+
+    register_kb_doc(1, "Sulu", "kb/intel/sulu__jolo__run1.md", "run1")
+    register_kb_doc(2, "Sulu", "kb/intel/sulu__patikul__run1.md", "run1")
+
+    docs = get_current_kb_docs(municipality_id=2)
+    assert len(docs) == 1
+    assert docs[0]["file_path"] == "kb/intel/sulu__patikul__run1.md"
+
+
+def test_get_current_kb_docs_returns_empty_when_no_match(fresh_db):
+    from agents.db_store import get_current_kb_docs
+    assert get_current_kb_docs(province="Nowhere") == []

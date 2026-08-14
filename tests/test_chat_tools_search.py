@@ -1,26 +1,9 @@
-def test_search_kb_passes_province_filter(monkeypatch):
+def test_search_kb_requires_resolvable_province(monkeypatch):
     import agents.chat_tools as ct
-    import agents.chatbot as chatbot_mod
     monkeypatch.setattr(ct, "get_latest_scored_municipalities",
                         lambda: [{"municipality_id": 1, "name": "Jolo", "province": "Sulu"}])
-    seen = {}
-
-    def fake_retrieve(query, n_results=10, province=None):
-        seen.update(query=query, province=province)
-        return "chunks"
-
-    monkeypatch.setattr(chatbot_mod, "retrieve_context", fake_retrieve)
-    out = ct.search_kb("poverty conditions", province="sulu")
-    assert out == {"results": "chunks"}
-    assert seen["province"] == "Sulu"          # canonicalized, not raw fragment
-
-
-def test_search_kb_without_province(monkeypatch):
-    import agents.chat_tools as ct
-    import agents.chatbot as chatbot_mod
-    monkeypatch.setattr(chatbot_mod, "retrieve_context",
-                        lambda query, n_results=10, province=None: f"p={province}")
-    assert ct.search_kb("solar trends") == {"results": "p=None"}
+    out = ct.search_kb(province="nowhere")
+    assert "error" in out
 
 
 def test_search_kb_ambiguous_province(monkeypatch):
@@ -28,33 +11,70 @@ def test_search_kb_ambiguous_province(monkeypatch):
     monkeypatch.setattr(ct, "get_latest_scored_municipalities",
                         lambda: [{"municipality_id": 1, "name": "A", "province": "Davao del Sur"},
                                  {"municipality_id": 2, "name": "B", "province": "Davao Oriental"}])
-    out = ct.search_kb("anything", province="davao")
+    out = ct.search_kb(province="davao")
     assert "error" in out and len(out["candidates"]) == 2
 
 
-def test_retrieve_context_builds_where_clause(monkeypatch):
-    import agents.chatbot as chatbot_mod
+def test_search_kb_loads_province_report_and_all_current_intel_docs(monkeypatch, tmp_path):
+    import agents.chat_tools as ct
+    monkeypatch.setattr(ct, "get_latest_scored_municipalities",
+                        lambda: [{"municipality_id": 1, "name": "Jolo", "province": "Sulu"},
+                                 {"municipality_id": 2, "name": "Patikul", "province": "Sulu"}])
+    monkeypatch.setattr(ct, "get_latest_report_for_province",
+                        lambda province: {"markdown": "# Sulu report"} if province == "Sulu" else None)
+
+    jolo_doc = tmp_path / "jolo.md"
+    jolo_doc.write_text("Jolo intel body")
+    patikul_doc = tmp_path / "patikul.md"
+    patikul_doc.write_text("Patikul intel body")
+    monkeypatch.setattr(ct, "get_current_kb_docs", lambda province=None, municipality_id=None: [
+        {"file_path": str(jolo_doc), "municipality_id": 1},
+        {"file_path": str(patikul_doc), "municipality_id": 2},
+    ])
+
+    out = ct.search_kb(province="sulu")
+    assert "# Sulu report" in out["results"]
+    assert "Jolo intel body" in out["results"]
+    assert "Patikul intel body" in out["results"]
+
+
+def test_search_kb_narrows_to_one_municipality(monkeypatch, tmp_path):
+    import agents.chat_tools as ct
+    monkeypatch.setattr(ct, "get_latest_scored_municipalities",
+                        lambda: [{"municipality_id": 1, "name": "Jolo", "province": "Sulu"},
+                                 {"municipality_id": 2, "name": "Patikul", "province": "Sulu"}])
+    monkeypatch.setattr(ct, "get_latest_report_for_province", lambda province: None)
+
+    jolo_doc = tmp_path / "jolo.md"
+    jolo_doc.write_text("Jolo intel body")
     captured = {}
 
-    class FakeCollection:
-        def query(self, **kwargs):
-            captured.update(kwargs)
-            return {"documents": [["doc1"]], "metadatas": [[{"source": "kb/intel/x.md"}]]}
+    def fake_get_current_kb_docs(province=None, municipality_id=None):
+        captured["municipality_id"] = municipality_id
+        return [{"file_path": str(jolo_doc), "municipality_id": 1}] if municipality_id == 1 else []
 
-    monkeypatch.setattr(chatbot_mod, "_get_collection", lambda: FakeCollection())
-    chatbot_mod.retrieve_context("q", province="Sulu")
-    assert captured["where"] == {"province": "Sulu"}
+    monkeypatch.setattr(ct, "get_current_kb_docs", fake_get_current_kb_docs)
+
+    out = ct.search_kb(province="sulu", municipality="Jolo")
+    assert captured["municipality_id"] == 1
+    assert "Jolo intel body" in out["results"]
 
 
-def test_retrieve_context_no_filter_omits_where(monkeypatch):
-    import agents.chatbot as chatbot_mod
-    calls = []
+def test_search_kb_unresolvable_municipality_returns_error(monkeypatch):
+    import agents.chat_tools as ct
+    monkeypatch.setattr(ct, "get_latest_scored_municipalities",
+                        lambda: [{"municipality_id": 1, "name": "Jolo", "province": "Sulu"}])
+    out = ct.search_kb(province="sulu", municipality="Nonexistent Town")
+    assert "error" in out
 
-    class FakeCollection:
-        def query(self, **kwargs):
-            calls.append(kwargs)
-            return {"documents": [["doc1"]], "metadatas": [[{"source": "kb/intel/x.md"}]]}
 
-    monkeypatch.setattr(chatbot_mod, "_get_collection", lambda: FakeCollection())
-    chatbot_mod.retrieve_context("q")
-    assert "where" not in calls[0]
+def test_search_kb_no_docs_yet_returns_informative_message(monkeypatch):
+    import agents.chat_tools as ct
+    monkeypatch.setattr(ct, "get_latest_scored_municipalities",
+                        lambda: [{"municipality_id": 1, "name": "Jolo", "province": "Sulu"}])
+    monkeypatch.setattr(ct, "get_latest_report_for_province", lambda province: None)
+    monkeypatch.setattr(ct, "get_current_kb_docs", lambda province=None, municipality_id=None: [])
+
+    out = ct.search_kb(province="sulu")
+    assert "results" in out
+    assert "no" in out["results"].lower() or "not" in out["results"].lower()

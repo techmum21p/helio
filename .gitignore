@@ -9,14 +9,26 @@ __pycache__/
 *.py[cod]
 *.pyo
 
-# Databases & vector stores
+# Databases (seed data committed deliberately — see helio's storage decision:
+# no Render persistent disk, so the repo ships the paid-for data as its own
+# backup/seed. Backfilled/refreshed writes since the last commit are expected
+# to reset on redeploy.)
 data/*.db
+!data/helio.db
 data/*.db-shm
 data/*.db-wal
-kb/index/
 
-# Generated runtime outputs (reports, intel cache, sessions)
-kb/intel/
+# kb/intel/*.md is committed deliberately too — agents/chat_tools.py::search_kb
+# reads these files directly off disk by the path stored in the kb_docs DB
+# table, so a fresh checkout needs them present, not regenerated.
+
+# Retired ChromaDB vector index (dropped — see agents/chat_tools.py::search_kb,
+# which reads scoped kb/intel + kb/reports content directly instead)
+kb/index/
+kb/index.bak*/
+
+# Generated runtime outputs not required for the app to run (report file
+# download degrades gracefully if these are absent — see app.py)
 reports/
 sessions/
 

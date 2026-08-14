@@ -13,7 +13,14 @@ import sqlite3
 from loguru import logger
 
 import config
-from agents.db_store import get_latest_scored_municipalities, get_score_breakdown
+from agents.db_store import (
+    get_latest_scored_municipalities,
+    get_score_breakdown,
+    get_latest_report_for_province,
+    get_current_kb_docs,
+)
+
+MAX_KB_CONTEXT_CHARS = 60_000
 
 RANKABLE_METRICS = ["final_score", "geo_score", "solar_irradiance", "population", "pop_density"]
 SQL_ROW_CAP = 200
@@ -144,17 +151,45 @@ def get_top_municipalities(province=None, region=None, n=5, metric="final_score"
             "results": results}
 
 
-def search_kb(query: str, province: str | None = None) -> dict:
-    # Call-time import — agents.chatbot imports this module at load time.
-    import agents.chatbot as chatbot_mod
-    resolved = None
-    if province:
-        rows = get_latest_scored_municipalities()
-        resolved, candidates = _resolve_province(province, rows)
-        if resolved is None:
-            return {"error": f"Ambiguous or unknown province {province!r}.",
-                    "candidates": candidates}
-    return {"results": chatbot_mod.retrieve_context(query, n_results=8, province=resolved)}
+def search_kb(province: str, municipality: str | None = None) -> dict:
+    """Load the province report and current municipality intel doc(s) for a
+    scope, straight off disk (no semantic search) — the LLM synthesizes the
+    answer from this raw text. Narrow to one municipality when possible; a
+    whole-province load is capped at MAX_KB_CONTEXT_CHARS as a safety guard."""
+    rows = get_latest_scored_municipalities()
+    resolved, candidates = _resolve_province(province, rows)
+    if resolved is None:
+        return {"error": f"Ambiguous or unknown province {province!r}.",
+                "candidates": candidates}
+
+    municipality_id = None
+    if municipality:
+        matches = _resolve_municipality(municipality, resolved, rows)
+        if len(matches) != 1:
+            return {"error": f"No municipality named {municipality!r} found in {resolved!r}."}
+        municipality_id = matches[0]["municipality_id"]
+
+    sections = []
+    if municipality_id is None:
+        report = get_latest_report_for_province(resolved)
+        if report:
+            sections.append(f"[Province Report: {resolved}]\n{report['markdown']}")
+
+    docs = get_current_kb_docs(province=resolved, municipality_id=municipality_id)
+    for doc in docs:
+        try:
+            with open(doc["file_path"], "r", encoding="utf-8") as f:
+                text = f.read()
+        except OSError as e:
+            logger.warning(f"chat_tools.search_kb: failed to read {doc['file_path']}: {e}")
+            continue
+        sections.append(f"[Municipality Profile]\n{text}")
+
+    if not sections:
+        return {"results": f"No report or municipality intel documents are available yet for {resolved}."}
+
+    combined = "\n\n---\n\n".join(sections)
+    return {"results": combined[:MAX_KB_CONTEXT_CHARS]}
 
 
 TOOLS: list[dict] = [
@@ -221,18 +256,20 @@ TOOLS += [
     {
         "name": "search_kb",
         "description": (
-            "Semantic search over generated province reports and municipality intelligence "
-            "profiles. Use for narrative context: assessments, risks, opportunities, web "
-            "intelligence, poverty/economic conditions. NOT authoritative for rankings or "
-            "exact scores — use get_top_municipalities / get_municipality_profile for those."
+            "Loads the generated province report and current municipality intelligence "
+            "profile(s) for a scope, straight from the knowledge base — not semantic search, "
+            "so it requires a province (and optionally a municipality to narrow it further). "
+            "Use for narrative context: assessments, risks, opportunities, web intelligence, "
+            "poverty/economic conditions. NOT authoritative for rankings or exact scores — use "
+            "get_top_municipalities / get_municipality_profile for those."
         ),
         "input_schema": {
             "type": "object",
             "properties": {
-                "query": {"type": "string"},
-                "province": {"type": "string", "description": "Optional: restrict results to one province"},
+                "province": {"type": "string", "description": "Province name or fragment, e.g. 'Sulu' or 'davao'"},
+                "municipality": {"type": "string", "description": "Optional: narrow to one municipality's profile"},
             },
-            "required": ["query"],
+            "required": ["province"],
         },
     },
 ]

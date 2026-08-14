@@ -8,7 +8,7 @@ import folium
 import streamlit as st
 from streamlit_folium import st_folium
 
-from agents.chatbot import chat, index_documents_from_kb
+from agents.chatbot import chat
 from agents.db_store import (
     get_latest_scored_municipalities,
     get_latest_report_for_province,
@@ -284,7 +284,6 @@ with col_map:
 
 with col_chat:
     st.subheader("💬 Ask Helio")
-    index_documents_from_kb()
 
     for msg in st.session_state.chat_history:
         with st.chat_message(msg["role"]):

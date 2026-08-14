@@ -30,6 +30,3 @@ def test_helio_db_path_defined():
     assert config.HELIO_DB.parent.name == "data"
 
 
-def test_ollama_defaults():
-    assert config.OLLAMA_EMBED_MODEL == "qwen3-embedding:0.6b"
-    assert "11434" in config.OLLAMA_URL
